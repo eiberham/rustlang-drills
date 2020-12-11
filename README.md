@@ -34,6 +34,28 @@ $ cargo new sample_project
 To create a new cargo project without git init:
 
 ```console
-cargo new --vcs none sample_project
+$ cargo new --vcs none sample_project
+```
+
+### Building & executing programs
+
+In order to build the program run the following command:
+
+```console
+$ cargo build
+```
+
+This command will generate the ***Cargo.lock*** file which keeps track of the dependencies in the program and also will generate an executable file which is either for release or debug depending on the presence of the ***--release*** flag.
+
+If you want to build & run in one step you can use the following command:
+
+```console
+$ cargo run
+```
+
+To check if your program compiles simply run check which is faster than a build as it does not generate an executable file:
+
+```console
+$ cargo check
 ```
 
