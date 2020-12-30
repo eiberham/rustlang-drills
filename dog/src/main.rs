@@ -4,6 +4,7 @@
 
 use std::io;
 
+#[derive(Debug)]
 struct Dog {
     name: String,
     age: u32,
@@ -36,5 +37,5 @@ fn main() {
         alive: true
     };
 
-
+    println!("{:?}", doggy);
 }
