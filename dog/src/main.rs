@@ -11,6 +11,26 @@ struct Dog {
     alive: bool,
 }
 
+// Tie methods to the dog struct
+
+impl Dog {
+    fn bark(&self) {
+        println!("Wuff wuff !");
+    }
+
+    fn pee(&self) {
+        println!("I'm peeing at the car's tire ...")
+    }
+
+    fn growl(&self) {
+        println!("Grrrr !");
+    }
+
+    fn move_tail(&self) {
+        println!("I'm so happy !! ");
+    }
+}
+
 fn main() {
     println!("Welcome! Please answer the following questions about ur dog.");
     println!("Enter your dog's name: ");
@@ -37,5 +57,11 @@ fn main() {
         alive: true
     };
 
-    println!("{:?}", doggy);
+    println!("{:#?}", doggy);
+
+    doggy.growl();
+    doggy.bark();
+
+    doggy.pee(); // best method ever ...
+    doggy.move_tail();
 }
