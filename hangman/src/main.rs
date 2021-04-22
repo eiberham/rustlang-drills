@@ -1,3 +1,6 @@
+mod dictionary;
+use dictionary::*;
+
 use console_engine::screen::Screen;
 use console_engine::ConsoleEngine;
 use console_engine::Color;
@@ -7,6 +10,8 @@ fn main() {
     const SCREEN_WIDTH: u32 = 50;
     const SCREEN_HEIGHT: u32 = 20;
     const TARGET_FPS: u32 = 10;
+
+    words::get();
 
     let mut engine = ConsoleEngine::init(SCREEN_WIDTH, SCREEN_HEIGHT, TARGET_FPS);
 
