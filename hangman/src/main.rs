@@ -1,10 +1,7 @@
 mod dictionary;
 use dictionary::*;
 
-use console_engine::screen::Screen;
-use console_engine::ConsoleEngine;
-use console_engine::Color;
-use console_engine::KeyCode;
+use console_engine::{screen::Screen, ConsoleEngine, Color, KeyCode};
 
 fn main() {
     const SCREEN_WIDTH: u32 = 50;
