@@ -1,19 +1,25 @@
-pub use std::{fs, io};
-pub use rand::seq::IteratorRandom;
+extern crate rand;
 
-// https://stackoverflow.com/questions/31192956/whats-the-de-facto-way-of-reading-and-writing-files-in-rust-1-x
-// https://stackoverflow.com/questions/30801031/read-a-file-and-get-an-array-of-strings
+pub use std::{fs, io};
 
 pub mod words {
-    pub fn get() -> () {
+    use rand::{self, Rng};
+
+    pub fn get() -> Result<String, String> {
         let data = super::file::read("src/dictionary/words.txt").unwrap();
+        let mut rng = rand::thread_rng();
         let lines: Vec<&str> = data.lines().collect();
-        lines.iter().map(|l| l.expect("Couldn't read line")).choose(&mut rand::thread_rng())
-        .expect("File had no lines")
-        /* for line in lines {
-            println!("{:?}", line);
-        } */
-        // println!("{:?}", data)
+        let num: usize = rng.gen_range(0..lines.len());
+
+        // ok_or transforms Option<T> into Result<T, E>
+        // lines.get(num).ok_or("error")
+
+        match lines.get(num) {
+            None => return Err("ups, couldn't get a word".to_string()),
+            Some(word) => Ok(
+                String::from(*word)
+            ),
+        }
     }
 }
 

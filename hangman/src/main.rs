@@ -8,7 +8,7 @@ fn main() {
     const SCREEN_HEIGHT: u32 = 20;
     const TARGET_FPS: u32 = 10;
 
-    words::get();
+    println!("{:?}", words::get());
 
     let mut engine = ConsoleEngine::init(SCREEN_WIDTH, SCREEN_HEIGHT, TARGET_FPS);
 
