@@ -1,3 +1,5 @@
+//! Provides a method for getting a randomized word from the dictionary.
+
 extern crate rand;
 
 pub use std::{fs, io};
@@ -6,7 +8,7 @@ pub mod words {
     use rand::{self, Rng};
 
     pub fn get() -> Result<String, String> {
-        let data = super::file::read("src/dictionary/words.txt").unwrap();
+        let data = read("src/dictionary/words.txt").unwrap();
         let mut rng = rand::thread_rng();
         let lines: Vec<&str> = data.lines().collect();
         let num: usize = rng.gen_range(0..lines.len());
@@ -21,10 +23,8 @@ pub mod words {
             ),
         }
     }
-}
 
-pub mod file {
-    pub fn read(filepath: &str) -> Result<String, std::io::Error> {
+    fn read(filepath: &str) -> Result<String, std::io::Error> {
          
         match std::fs::read_to_string(filepath) {
             Ok(content) => Ok(content),
