@@ -5,34 +5,54 @@
 
 use console_engine::{screen::Screen, ConsoleEngine, Color};
 
+use crate::dictionary::*;
+
+pub struct Player {
+    pub chances: u32
+}
+
 pub struct Config {
-    height: u32,
-    width:  u32,
-    fps:    u32
+    pub height: u32,
+    pub width:  u32,
+    pub fps:    u32
 }
 
 pub struct Game {
     pub engine: ConsoleEngine,
-    pub screen: Screen
+    pub screen: Screen,
+    word: String,
 }
 
 impl Game {
     pub fn new(config: Config) -> Game {
+        let word = words::get().expect("fail.");
+        
         Game { 
-            engine: ConsoleEngine::init(config.width, config.height, config.fps),
-            screen: Screen::new(config.width, config.height)
+            engine: ConsoleEngine::init(
+                config.width, config.height, config.fps),
+            screen: Screen::new(config.width, config.height),
+            word:   word
         }
     }
 
-    pub fn init(&mut self) -> () {
+    pub fn start(&mut self) {
+        let title = "The Hangman - Guess or die";
         self.engine.clear_screen();
+        self.engine.set_title(title);
+
         self.screen.print_fbg(
             (self.screen.get_width() as i32 / 2) / 2 , 
             2, 
-            "The Hangman - Guess or die",
+            title,
             Color::Red, 
             Color::Reset
         );
+
+        let size: i32 = self.word.len() as i32;
+
+        for x in 1..size {
+            self.screen.print_fbg(x, 10, "_", Color::Red, Color::Reset);
+        }
 
         // print the game screen
         self.engine.print_screen(1, 0, &self.screen); 
