@@ -1,5 +1,5 @@
 mod dictionary;
-use dictionary::*;
+//use dictionary::*;
 
 mod game;
 use crate::game::*;
@@ -7,13 +7,15 @@ use crate::game::*;
 use console_engine::{KeyCode};
 
 fn main() {
-    println!("{:?}", words::get());
+    // println!("{:?}", words::get());
 
     let conf: Config = Config { height: 20, width: 50, fps: 10 };
 
     let mut game = Game::new(conf);
 
-    let player = Player { chances: 7 };
+    println!("game: {}", game);
+
+    // let player = Player { chances: 7 };
 
     game.start();
 

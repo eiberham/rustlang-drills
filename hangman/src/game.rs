@@ -4,12 +4,13 @@
 //! use foo::*; is from foo import *
 
 use console_engine::{screen::Screen, ConsoleEngine, Color};
+use std::fmt;
 
 use crate::dictionary::*;
 
-pub struct Player {
+/* pub struct Player {
     pub chances: u32
-}
+} */
 
 pub struct Config {
     pub height: u32,
@@ -21,6 +22,12 @@ pub struct Game {
     pub engine: ConsoleEngine,
     pub screen: Screen,
     word: String,
+}
+
+impl fmt::Display for Game {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({})", self.word)
+    }
 }
 
 impl Game {
@@ -50,8 +57,8 @@ impl Game {
 
         let size: i32 = self.word.len() as i32;
 
-        for x in 1..size {
-            self.screen.print_fbg(x, 10, "_", Color::Red, Color::Reset);
+        for x in (1..(size * 5)).step_by(5) {
+            self.screen.print_fbg(x, 10, " ___ ", Color::Red, Color::Reset);
         }
 
         // print the game screen
