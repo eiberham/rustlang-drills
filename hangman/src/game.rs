@@ -5,6 +5,14 @@
 
 use console_engine::{screen::Screen, ConsoleEngine, Color};
 use std::fmt;
+use std::iter::FromIterator;
+use std::str;
+
+extern crate rand;
+   use rand::seq::IteratorRandom;
+
+//use rand::{self, Rng, IteratorRandom};
+
 
 use crate::dictionary::*;
 
@@ -21,24 +29,23 @@ pub struct Config {
 pub struct Game {
     pub engine: ConsoleEngine,
     pub screen: Screen,
-    word: String,
+    phrase: String,
 }
 
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "({})", self.word)
+        write!(f, "({})", self.phrase)
     }
 }
 
 impl Game {
     pub fn new(config: Config) -> Game {
-        let word = words::get().expect("fail.");
+        let phrase = words::get().expect("fail.");
         
         Game { 
-            engine: ConsoleEngine::init(
-                config.width, config.height, config.fps),
+            engine: ConsoleEngine::init(config.width, config.height, config.fps),
             screen: Screen::new(config.width, config.height),
-            word:   word
+            phrase: phrase
         }
     }
 
@@ -55,10 +62,28 @@ impl Game {
             Color::Reset
         );
 
-        let size: i32 = self.word.len() as i32;
+        let size: i32 = self.phrase.len() as i32;
+
+        let mut rng = rand::thread_rng();
+
+        // let clues : Vec<char> = self.word.chars().choose_multiple(&mut rng, 3);
+        // gets three random values from the word in order to help the player.
+        let clues : Vec<String> = self.phrase
+        .chars()
+        .choose_multiple(&mut rng, 3)
+        .iter()
+        .map(|val| val.to_string())
+        .collect();
+
+        self.screen.print_fbg(1, 12, &String::from_iter(clues), Color::Red, Color::Reset);
 
         for x in (1..(size * 5)).step_by(5) {
             self.screen.print_fbg(x, 10, " ___ ", Color::Red, Color::Reset);
+        }
+
+        for y in clues.iter() {
+            let pos = self.position(y);
+            self.screen.print_fbg(1, 14, &pos.to_string()[..], Color::Red, Color::Reset);
         }
 
         // print the game screen
@@ -69,5 +94,15 @@ impl Game {
         self.engine.wait_frame();
         // engine.clear_screen(); // reset the screen
         self.engine.draw(); // draw the screen
+    }
+
+    fn position(&mut self, character: &String) -> usize {
+        let bytes = self.phrase.as_bytes();
+        let position = bytes.iter().enumerate().position(|(index, &val)| val.to_string() == *character);
+        match position {
+            Some(pos) => pos,
+            None => panic!("we are fucked up")
+        }
+        
     }
 }
