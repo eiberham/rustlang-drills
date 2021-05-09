@@ -9,7 +9,7 @@ use console_engine::{KeyCode};
 fn main() {
     // println!("{:?}", words::get());
 
-    let conf: Config = Config { height: 20, width: 50, fps: 10 };
+    let conf: Config = Config { height: 30, width: 80, fps: 10 };
 
     let mut game = Game::new(conf);
 

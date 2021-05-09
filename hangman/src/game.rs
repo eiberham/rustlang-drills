@@ -3,16 +3,13 @@
 //! (similarly if you add more super:: or dots)
 //! use foo::*; is from foo import *
 
-use console_engine::{screen::Screen, ConsoleEngine, Color};
+use console_engine::{screen::Screen, ConsoleEngine, Color, pixel};
 use std::fmt;
-use std::iter::FromIterator;
-use std::str;
+use std::collections::HashMap;
+use std::convert::TryInto;
 
 extern crate rand;
-   use rand::seq::IteratorRandom;
-
-//use rand::{self, Rng, IteratorRandom};
-
+use rand::seq::IteratorRandom;
 
 use crate::dictionary::*;
 
@@ -54,40 +51,47 @@ impl Game {
         self.engine.clear_screen();
         self.engine.set_title(title);
 
+        self.screen.fill(pixel::pxl_bg('.', Color::Reset));
+
         self.screen.print_fbg(
             (self.screen.get_width() as i32 / 2) / 2 , 
             2, 
             title,
-            Color::Red, 
+            Color::Yellow, 
             Color::Reset
         );
 
-        let size: i32 = self.phrase.len() as i32;
+        let size: i32 = self.phrase.len().try_into().unwrap();
 
-        let mut rng = rand::thread_rng();
+        let mut random = rand::thread_rng();
 
-        // let clues : Vec<char> = self.word.chars().choose_multiple(&mut rng, 3);
-        // gets three random values from the word in order to help the player.
-        let clues : Vec<String> = self.phrase
+        let mut hint = HashMap::new();
+
+        let clue : String = self.phrase
         .chars()
-        .choose_multiple(&mut rng, 3)
+        .choose_multiple(&mut random, 3)
         .iter()
         .map(|val| val.to_string())
-        .collect();
+        .collect::<String>();
 
-        self.screen.print_fbg(1, 12, &String::from_iter(clues), Color::Red, Color::Reset);
+        self.screen.print_fbg(1, 12, &clue , Color::Red, Color::Reset);
 
-        for x in (1..(size * 5)).step_by(5) {
-            self.screen.print_fbg(x, 10, " ___ ", Color::Red, Color::Reset);
+        for x in (5..(size * 5)).step_by(5) {
+            self.screen.set_pxl(x, 10, pixel::pxl('🦀'));
         }
 
-        for y in clues.iter() {
-            let pos = self.position(y);
-            self.screen.print_fbg(1, 14, &pos.to_string()[..], Color::Red, Color::Reset);
+        for (x, y) in clue.as_bytes().iter().enumerate() {
+            let position = self.position(*y);
+            hint.insert(position, *y);
+            self.screen.print_fbg(x.try_into().unwrap(), 14, &position.to_string()[..], Color::Red, Color::Reset);
+        }
+
+        for (key, value) in hint.iter() {
+            self.screen.set_pxl((*key *5).try_into().unwrap(), 10, pixel::pxl(*value  as char));
         }
 
         // print the game screen
-        self.engine.print_screen(1, 0, &self.screen); 
+        self.engine.print_screen(0, 0, &self.screen); 
     }
 
     pub fn update(&mut self){
@@ -96,13 +100,12 @@ impl Game {
         self.engine.draw(); // draw the screen
     }
 
-    fn position(&mut self, character: &String) -> usize {
+    fn position(&mut self, character: u8) -> usize {
         let bytes = self.phrase.as_bytes();
-        let position = bytes.iter().enumerate().position(|(index, &val)| val.to_string() == *character);
+        let position = bytes.iter().position(|&val| val == character);
         match position {
             Some(pos) => pos,
             None => panic!("we are fucked up")
         }
-        
     }
 }
