@@ -3,7 +3,7 @@
 //! (similarly if you add more super:: or dots)
 //! use foo::*; is from foo import *
 
-use console_engine::{screen::Screen, ConsoleEngine, Color, pixel};
+use console_engine::{screen::Screen, ConsoleEngine, Color, pixel, KeyCode};
 use std::fmt;
 use std::collections::HashMap;
 use std::convert::TryInto;
@@ -41,7 +41,7 @@ impl Game {
         
         Game { 
             engine: ConsoleEngine::init(config.width, config.height, config.fps),
-            screen: Screen::new(config.width, config.height),
+            screen: Screen::new(70, 20),
             phrase: phrase
         }
     }
@@ -51,7 +51,7 @@ impl Game {
         self.engine.clear_screen();
         self.engine.set_title(title);
 
-        self.screen.fill(pixel::pxl_bg('.', Color::Reset));
+        self.screen.fill(pixel::pxl_bg(' ', Color::Reset));
 
         self.screen.print_fbg(
             (self.screen.get_width() as i32 / 2) / 2 , 
@@ -76,12 +76,12 @@ impl Game {
 
         self.screen.print_fbg(1, 12, &clue , Color::Red, Color::Reset);
 
-        for x in (5..(size * 5)).step_by(5) {
+        for x in (10..(size * 5)).step_by(5) {
             self.screen.set_pxl(x, 10, pixel::pxl('🦀'));
         }
 
         for (x, y) in clue.as_bytes().iter().enumerate() {
-            let position = self.position(*y);
+            let position = self.index_of(*y);
             hint.insert(position, *y);
             self.screen.print_fbg(x.try_into().unwrap(), 14, &position.to_string()[..], Color::Red, Color::Reset);
         }
@@ -90,17 +90,29 @@ impl Game {
             self.screen.set_pxl((*key *5).try_into().unwrap(), 10, pixel::pxl(*value  as char));
         }
 
+        self.screen.set_pxl(10, 16, pixel::pxl('J'));
+
         // print the game screen
         self.engine.print_screen(0, 0, &self.screen); 
+        
     }
 
     pub fn update(&mut self){
         self.engine.wait_frame();
-        // engine.clear_screen(); // reset the screen
-        self.engine.draw(); // draw the screen
+
+        let alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        for letter in alphabet.chars() {
+            self.screen.set_pxl(10, 20, pixel::pxl(letter));
+            if self.engine.is_key_pressed(KeyCode::Char(letter as char)) {
+                self.engine.print(10, 16, &letter.to_string()[..]);
+            }
+        }
+
+        self.engine.draw();
     }
 
-    fn position(&mut self, character: u8) -> usize {
+    fn index_of(&mut self, character: u8) -> usize {
         let bytes = self.phrase.as_bytes();
         let position = bytes.iter().position(|&val| val == character);
         match position {
