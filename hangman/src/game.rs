@@ -13,9 +13,9 @@ use rand::seq::IteratorRandom;
 
 use crate::dictionary::*;
 
-/* pub struct Player {
+pub struct Player {
     pub chances: u32
-} */
+}
 
 pub struct Config {
     pub height: u32,
@@ -61,6 +61,8 @@ impl Game {
             Color::Reset
         );
 
+        // TODO: draw player's lives on the right side of the screen
+
         let size: i32 = self.phrase.len().try_into().unwrap();
 
         let mut random = rand::thread_rng();
@@ -76,14 +78,15 @@ impl Game {
 
         self.screen.print_fbg(1, 12, &clue , Color::Red, Color::Reset);
 
-        for x in (10..(size * 5)).step_by(5) {
+        for x in (0..(size * 5)).step_by(5) {
             self.screen.set_pxl(x, 10, pixel::pxl('🦀'));
         }
 
         for (x, y) in clue.as_bytes().iter().enumerate() {
-            let position = self.index_of(*y);
-            hint.insert(position, *y);
-            self.screen.print_fbg(x.try_into().unwrap(), 14, &position.to_string()[..], Color::Red, Color::Reset);
+            if let Some(position) = self.index_of(*y) {
+                hint.insert(position, *y);
+                self.screen.print_fbg(x.try_into().unwrap(), 14, &position.to_string()[..], Color::Red, Color::Reset);
+            }
         }
 
         for (key, value) in hint.iter() {
@@ -103,21 +106,26 @@ impl Game {
         let alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         for letter in alphabet.chars() {
-            self.screen.set_pxl(10, 20, pixel::pxl(letter));
             if self.engine.is_key_pressed(KeyCode::Char(letter as char)) {
-                self.engine.print(10, 16, &letter.to_string()[..]);
+                if !self.phrase.contains(letter) { continue; }
+                for (index, character) in self.phrase.char_indices() {
+                    if letter == character {
+                        // TODO: decrement characters left to discover
+                        self.engine.print(((index *5)).try_into().unwrap(), 10, &letter.to_string()[..]);
+                    }
+                }
             }
         }
 
         self.engine.draw();
     }
 
-    fn index_of(&mut self, character: u8) -> usize {
+    fn index_of(&mut self, character: u8) -> Option<usize> {
         let bytes = self.phrase.as_bytes();
         let position = bytes.iter().position(|&val| val == character);
         match position {
-            Some(pos) => pos,
-            None => panic!("we are fucked up")
+            Some(pos) => Some(pos),
+            None => None
         }
     }
 }

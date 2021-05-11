@@ -4,18 +4,13 @@ mod dictionary;
 mod game;
 use crate::game::*;
 
-use console_engine::{KeyCode, pixel};
+use console_engine::{KeyCode};
 
 fn main() {
-    // println!("{:?}", words::get());
 
     let conf: Config = Config { height: 30, width: 100, fps: 10 };
-
     let mut game = Game::new(conf);
-
-    println!("game: {}", game);
-
-    // let player = Player { chances: 7 };
+    let player = Player { chances: 7 };
 
     game.start();
 
