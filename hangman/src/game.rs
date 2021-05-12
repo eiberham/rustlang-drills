@@ -3,7 +3,7 @@
 //! (similarly if you add more super:: or dots)
 //! use foo::*; is from foo import *
 
-use console_engine::{screen::Screen, ConsoleEngine, Color, pixel, KeyCode};
+use console_engine::{screen::Screen, ConsoleEngine, Color, pixel, KeyCode, KeyModifiers};
 use std::fmt;
 use std::collections::HashMap;
 use std::convert::TryInto;
@@ -14,7 +14,9 @@ use rand::seq::IteratorRandom;
 use crate::dictionary::*;
 
 pub struct Player {
-    pub chances: u32
+    pub chances: u32,
+    pub wins: u32,
+    pub defeats: u32
 }
 
 pub struct Config {
@@ -106,10 +108,10 @@ impl Game {
         let alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         for letter in alphabet.chars() {
-            if self.engine.is_key_pressed(KeyCode::Char(letter as char)) {
-                if !self.phrase.contains(letter) { continue; }
+            if self.engine.is_key_pressed(KeyCode::Char(letter as char)) || self.engine.is_key_pressed_with_modifier(KeyCode::Char(letter as char), KeyModifiers::SHIFT) {
+                if !self.phrase.contains(letter) || !letter.is_ascii_alphabetic(){ continue; }
                 for (index, character) in self.phrase.char_indices() {
-                    if letter == character {
+                    if letter.to_lowercase().to_string() == character.to_lowercase().to_string() {
                         // TODO: decrement characters left to discover
                         self.engine.print(((index *5)).try_into().unwrap(), 10, &letter.to_string()[..]);
                     }
