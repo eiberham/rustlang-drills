@@ -10,20 +10,21 @@ fn main() {
 
     let conf: Config = Config { height: 30, width: 100, fps: 10 };
     let mut game = Game::new(conf);
-    let player = Player { chances: 7 };
+
+    let mut player = Player { chances: 5, wins: 0, defeats: 0, lives: 5 };
 
     game.start();
+    game.stats(&player);
 
     loop {
-
-        game.update();
+        game.update(&mut player);
 
         if game.engine.is_key_pressed_with_modifier(KeyCode::Char('c'), KeyModifiers::CONTROL) {
-            break; // exits app
+            break;
         }
 
         if game.engine.is_key_pressed(KeyCode::Esc) { // if the user presses escape
-            break; // exits app
+            break;
         }
     };
 
