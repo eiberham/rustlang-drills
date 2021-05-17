@@ -64,6 +64,9 @@ impl Game {
             Color::Reset
         );
 
+        self.screen.line(60, 2, 60, 6, pixel::pxl('⛓'));
+        self.screen.line(60, 7, 60, 7, pixel::pxl('😰'));
+
         // TODO: draw player's lives on the right side of the screen
 
         let size: i32 = self.phrase.len().try_into().unwrap();
@@ -82,7 +85,7 @@ impl Game {
         // self.screen.print_fbg(1, 12, &clue , Color::Red, Color::Reset);
 
         for x in (0..(size * 5)).step_by(5) {
-            self.screen.set_pxl(x, 10, pixel::pxl('🦀'));
+            self.screen.set_pxl(x, 10, pixel::pxl('_'));
         }
 
         for (_, y) in clue.as_bytes().iter().enumerate() {
@@ -134,13 +137,16 @@ impl Game {
     }
 
     pub fn stats(&mut self, player: & Player) -> () {
-        let chances = "Chances: ".to_owned(); // converts &str to string.
-        self.engine.print_fbg(0, 4, &(chances.clone() + &player.lives.to_string()), Color::Green, Color::Reset);
+        let chances = "Tries: ".to_owned(); // converts &str to string.
+        self.engine.print_fbg(0, 4, &(chances.clone() + &player.lives.to_string()), Color::Blue, Color::Reset);
+
+        let lives = "Lives: ";
+        self.engine.print_fbg(0, 5, lives, Color::Green, Color::Reset);
 
         let mut n = 0;
         
         while n < (player.lives * 2) { // multiplied by two cuz every pxl ocupies two spaces ?)
-            self.engine.set_pxl((0 + n).try_into().unwrap(), 5, pixel::pxl('💊'));
+            self.engine.set_pxl((lives.len() as i32 + n).try_into().unwrap(), 5, pixel::pxl('🧉'));
             n += 2;
         }
     }
