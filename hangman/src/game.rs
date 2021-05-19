@@ -15,9 +15,8 @@ use crate::dictionary::*;
 
 pub struct Player {
     pub chances: u32,
-    pub wins: u32,
-    pub defeats: u32,
-    pub lives: i32
+    pub lives:   i32,
+    pub asserts: i32
 }
 
 pub struct Config {
@@ -111,14 +110,23 @@ impl Game {
 
         for letter in alphabet.chars() {
             if self.engine.is_key_pressed(KeyCode::Char(letter as char)) || self.engine.is_key_pressed_with_modifier(KeyCode::Char(letter as char), KeyModifiers::SHIFT) {
-                if !self.phrase.contains(letter) || !letter.is_ascii_alphabetic(){ 
-                    // TODO: decrement characters left to discover
-                    // player.chances -= 1;
+                if !self.phrase.contains(letter) || !letter.is_ascii_alphabetic(){
+                    if player.chances < 1 {
+                        // you lose !!
+                        break;
+                    }
+                    player.chances -= 1;
+                    self.engine.print_fbg(7, 4, &player.chances.to_string()[..], Color::White, Color::Reset);
                     continue; 
                 }
                 for (index, character) in self.phrase.char_indices() {
                     if letter.to_lowercase().to_string() == character.to_lowercase().to_string() {
                         self.engine.print(((index *5)).try_into().unwrap(), 10, &letter.to_string()[..]);
+                        player.asserts += 1;
+                        if player.asserts == self.phrase.len().try_into().unwrap(){
+                            // you win !!
+                            break;
+                        }
                     }
                 }
             }
@@ -138,7 +146,7 @@ impl Game {
 
     pub fn stats(&mut self, player: & Player) -> () {
         let chances = "Tries: ".to_owned(); // converts &str to string.
-        self.engine.print_fbg(0, 4, &(chances.clone() + &player.lives.to_string()), Color::Blue, Color::Reset);
+        self.engine.print_fbg(0, 4, &(chances.clone() + &player.chances.to_string()), Color::White, Color::Reset);
 
         let lives = "Lives: ";
         self.engine.print_fbg(0, 5, lives, Color::Green, Color::Reset);

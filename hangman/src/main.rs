@@ -11,7 +11,7 @@ fn main() {
     let conf: Config = Config { height: 30, width: 100, fps: 10 };
     let mut game = Game::new(conf);
 
-    let mut player = Player { chances: 5, wins: 0, defeats: 0, lives: 5 };
+    let mut player = Player { chances: 5, asserts: 0, lives: 5 };
 
     game.start();
     game.stats(&player);

@@ -53,9 +53,7 @@ fn multiply(a: i32, b: i32) -> i32 {
 }
 
 fn divide(a: i32, b: i32) -> i32 {
-    if b == 0 { 
-        panic!("Cannot divide {} by zero.", a);
-    }
+    assert!(b > 0);
 
     a / b
 }
