@@ -61,7 +61,7 @@ $ cargo check
 
 ### Installing crates locally
 
-In order to install a crate to your project you have to type the crate name and desired version in you Cargo.toml file:
+In order to install a crate into your project you have to type the crate name and the desired version in you Cargo.toml file:
 
 ```console
 [dependencies]
