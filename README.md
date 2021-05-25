@@ -59,3 +59,11 @@ To check if your program compiles simply run check which is faster than a build 
 $ cargo check
 ```
 
+### Installing crates locally
+
+In order to install a crate to your project you have to type the crate name and desired version in you Cargo.toml file:
+
+```console
+[dependencies]
+rsa = "0.4.0"
+```
