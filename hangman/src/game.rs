@@ -28,7 +28,7 @@ pub struct Config {
 pub struct Game {
     pub engine: ConsoleEngine,
     pub screen: Screen,
-    phrase: String,
+    pub phrase: String,
 }
 
 impl fmt::Display for Game {
@@ -39,12 +39,11 @@ impl fmt::Display for Game {
 
 impl Game {
     pub fn new(config: Config) -> Game {
-        let phrase = words::get().expect("fail.");
         
         Game { 
             engine: ConsoleEngine::init(config.width, config.height, config.fps),
             screen: Screen::new(70, 20),
-            phrase: phrase
+            phrase: "".to_string()
         }
     }
 
@@ -52,6 +51,8 @@ impl Game {
         let title = "The Hangman ∞ Guess or Get Slaughtered";
         self.engine.clear_screen();
         self.engine.set_title(title);
+
+        self.screen.clear();
 
         self.screen.fill(pixel::pxl_bg(' ', Color::Reset));
 
@@ -62,6 +63,8 @@ impl Game {
             Color::Yellow, 
             Color::Reset
         );
+        
+        self.phrase = words::get().expect("fail.");
 
         self.screen.line(60, 2, 60, 6, pixel::pxl('⛓'));
         self.screen.line(60, 7, 60, 7, pixel::pxl('😰'));
@@ -113,6 +116,7 @@ impl Game {
                 if !self.phrase.contains(letter) || !letter.is_ascii_alphabetic(){
                     if player.chances < 1 {
                         // you lose !!
+                        self.start();
                         break;
                     }
                     player.chances -= 1;
