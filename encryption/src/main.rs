@@ -4,14 +4,14 @@
 use wasm_bindgen::prelude::*;
 use rsa::{PublicKey, RSAPrivateKey, RSAPublicKey, PaddingScheme};
 use rand::{rngs::OsRng};
-use aes_gcm::{Aes256Gcm, Nonce}; // Or `Aes128Gcm`
+use aes_gcm::{Aes256Gcm, Key, Nonce}; // Or `Aes128Gcm`
 use aes_gcm::aead::{Aead, NewAead};
 use std::str;
 extern crate base64;
 
 
 fn main() {
-    println!("Proof of concept RSA encryption");
+    println!("Proof of concept encryption");
     // To generate my own key.
     // let mut rng = OsRng;
     // let bits = 2048;
@@ -28,10 +28,17 @@ fn main() {
 
     // println!("encrypted: {:?}", String::from_utf8(encrypted));
     println!("decrypted: {:?}", String::from_utf8(decrypted));
+
+    let key = "13d5e16c29764887a6f9630a23ecb069"; // TODO: get rid of hyphens (-) ?)
+    
+    let se = symmetric_encrypt("encriptado simetrico", key);
+    let sd = symmetric_decrypt(se, key);
+
+    println!("symmetric decrypted: {:?}", String::from_utf8(sd));
 }
 
 #[wasm_bindgen]
-pub fn asymmetric_encrypt(pk: &str, text: String) -> Vec<u8> {
+pub fn asymmetric_encrypt(pk: &str, plaintext: String) -> Vec<u8> {
     let mut rng = OsRng;
     // the public key string comes as a base64 encoded string so we should decode it to a Vec<u8>
     // becase it's a sequence of 8-bit bytes.
@@ -45,12 +52,12 @@ pub fn asymmetric_encrypt(pk: &str, text: String) -> Vec<u8> {
         .expect("failed to parse key");
 
     let padding = PaddingScheme::new_oaep::<sha2::Sha256>();
-    return public_key.encrypt(&mut rng, padding, text.as_bytes())
+    return public_key.encrypt(&mut rng, padding, plaintext.as_bytes())
         .expect("failed to encrypt");
 }
 
 #[wasm_bindgen]
-pub fn asymmetric_decrypt(pk: &str, enc_data: Vec<u8>) -> Vec<u8> {
+pub fn asymmetric_decrypt(pk: &str, ciphertext: Vec<u8>) -> Vec<u8> {
     
     let bytes = base64::decode(&pk).unwrap();
     
@@ -58,26 +65,28 @@ pub fn asymmetric_decrypt(pk: &str, enc_data: Vec<u8>) -> Vec<u8> {
         .expect("failed to parse key");
     
     let padding = PaddingScheme::new_oaep::<sha2::Sha256>();
-    return private_key.decrypt(padding, &enc_data)
+    return private_key.decrypt(padding, &ciphertext)
         .expect("failed to decrypt");
 }
 
+// Encrypts the given plaintext with aes-256 (32 bytes).
+
 #[wasm_bindgen]
-pub fn symmetric_encrypt(text: &str, key: &str) -> Vec<u8> {
-    let cipher = Aes256Gcm::new(key);
-    // In cryptography, a nonce is an arbitrary number that can be used just once in a cryptographic 
-    // communication. It is similar in spirit to a nonce word, hence the name. It is often a random 
-    // or pseudo-random number issued in an authentication protocol to ensure that old communications 
-    // cannot be reused in replay attacks. They can also be useful as initialization vectors and in 
-    // cryptographic hash functions.
+pub fn symmetric_encrypt(plaintext: &str, key: &str) -> Vec<u8> {
+    let cipher_key = Key::from_slice(key.as_bytes());
+
+    let cipher = Aes256Gcm::new(&cipher_key);
+    // In cryptography, a nonce is an arbitrary number that can be used just once in a 
+    // cryptographic communication.
     let nonce = Nonce::from_slice(b"unique nonce");
-    cipher.encrypt(nonce, text).expect("failed to encrypt")
+    cipher.encrypt(nonce, plaintext.as_ref()).expect("failed to encrypt")
 }
 
 #[wasm_bindgen]
-pub fn symmetric_decrypt(text: &str, key: &str) -> Vec<u8> {
-    let cipher = Aes256Gcm::new(key);
+pub fn symmetric_decrypt(ciphertext: Vec<u8>, key: &str) -> Vec<u8> {
+    let cipher_key = Key::from_slice(key.as_bytes());
+    let cipher = Aes256Gcm::new(&cipher_key);
     let nonce = Nonce::from_slice(b"unique nonce");
-    cipher.decrypt(nonce, text.as_ref()).expect("failed to decrypt")
+    cipher.decrypt(nonce, ciphertext.as_ref()).expect("failed to decrypt")
 }
 

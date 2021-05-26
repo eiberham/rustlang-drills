@@ -25,6 +25,7 @@ pub struct Config {
     pub fps:    u32
 }
 
+#[derive(Display)]
 pub struct Game {
     pub engine: ConsoleEngine,
     pub screen: Screen,
