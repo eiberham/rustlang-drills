@@ -13,7 +13,7 @@ Before compiling your rust lib to webassembly, make sure you have installed the 
 rustup target add wasm32-unknown-unknown
 ```
 
-Include in your Cargo.tml file the following dependency
+Now include in your Cargo.tml file the following dependency
 
 ```console
 getrandom = { version = "0.2", features = ["js"] }
@@ -23,4 +23,10 @@ Then proceed to build into webassembly
 
 ```console
     cargo build --target wasm32-unknown-unknown --release
+```
+
+To see it working you can start a http server:
+
+```console
+python -m SimpleHTTPServer
 ```
