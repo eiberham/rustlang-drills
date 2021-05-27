@@ -17,3 +17,4 @@ base64 = "0.13.0"
 wasm-bindgen = "0.2.74"
 aes-gcm = "0.9.1"
 getrandom = { version = "0.2", features = ["js"] }
+console_error_panic_hook = "0.1.6"

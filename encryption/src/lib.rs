@@ -8,9 +8,11 @@ use aes_gcm::{Aes256Gcm, Key, Nonce}; // Or `Aes128Gcm`
 use aes_gcm::aead::{Aead, NewAead};
 use std::str;
 extern crate base64;
+extern crate console_error_panic_hook;
 
-#[wasm_bindgen]
+# [wasm_bindgen]
 pub fn asymmetric_encrypt(pk: &str, plaintext: String) -> Vec<u8> {
+    console_error_panic_hook::set_once();
     let mut rng = OsRng;
     // the public key string comes as a base64 encoded string so we should decode it to a Vec<u8>
     // becase it's a sequence of 8-bit bytes.
@@ -30,7 +32,7 @@ pub fn asymmetric_encrypt(pk: &str, plaintext: String) -> Vec<u8> {
 
 #[wasm_bindgen]
 pub fn asymmetric_decrypt(pk: &str, ciphertext: Vec<u8>) -> Vec<u8> {
-    
+    console_error_panic_hook::set_once();
     let bytes = base64::decode(&pk).unwrap();
     
     let private_key = RSAPrivateKey::from_pkcs8(&bytes)
@@ -41,11 +43,10 @@ pub fn asymmetric_decrypt(pk: &str, ciphertext: Vec<u8>) -> Vec<u8> {
         .expect("failed to decrypt");
 }
 
-// Encrypts the given plaintext with aes-256 (32 bytes).
-
 #[wasm_bindgen]
 pub fn symmetric_encrypt(plaintext: &str, key: &str) -> Vec<u8> {
-    let cipher_key = Key::from_slice(key.as_bytes());
+    console_error_panic_hook::set_once();
+    let cipher_key = Key::from_slice(key.as_bytes()); // key must be 32 bytes length
 
     let cipher = Aes256Gcm::new(&cipher_key);
     // In cryptography, a nonce is an arbitrary number that can be used just once in a 
@@ -56,9 +57,9 @@ pub fn symmetric_encrypt(plaintext: &str, key: &str) -> Vec<u8> {
 
 #[wasm_bindgen]
 pub fn symmetric_decrypt(ciphertext: Vec<u8>, key: &str) -> Vec<u8> {
+    console_error_panic_hook::set_once();
     let cipher_key = Key::from_slice(key.as_bytes());
     let cipher = Aes256Gcm::new(&cipher_key);
     let nonce = Nonce::from_slice(b"unique nonce");
     cipher.decrypt(nonce, ciphertext.as_ref()).expect("failed to decrypt")
 }
-

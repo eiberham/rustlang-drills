@@ -22,7 +22,19 @@ getrandom = { version = "0.2", features = ["js"] }
 Then proceed to build into webassembly
 
 ```console
-    cargo build --target wasm32-unknown-unknown --release
+cargo build --target wasm32-unknown-unknown --release
+```
+
+Now install wasm-bindgen-cli
+
+```console
+cargo install wasm-bindgen-cli   
+```
+
+Finally:
+
+```console
+wasm-bindgen target/wasm32-unknown-unknown/release/encryption.wasm --target web --out-dir ./www --omit-default-module-path --no-typescript --omit-imports
 ```
 
 To see it working you can start a http server:
