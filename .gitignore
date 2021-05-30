@@ -6,3 +6,8 @@
 # The library shouldn't decide about the exact versions of 
 # its dependencies, but let the downstream crate decide.
 Cargo.lock
+
+# WASM www folder generted by wasm-bindgen
+www
+
+trash

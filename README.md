@@ -67,3 +67,21 @@ In order to install a crate into your project you have to type the crate name an
 [dependencies]
 rsa = "0.4.0"
 ```
+
+### Fix warnings with rustfix
+
+Rustfix comes by default in every rust installation so, in order to fix your code simply run:
+
+```console
+cargo fix
+```
+
+### Improve your code by using Clippy
+
+To install clipy run 
+
+```console
+rustup component add clippy
+````
+
+then you can run it by entering cargo clippy in the console.
