@@ -176,21 +176,12 @@ mod tests {
     fn test_index_of() {
         let mut game = Game {
             engine: console_engine::ConsoleEngine::init(20, 10, 3),
-<<<<<<< HEAD
-            screen: Screen::new(20, 11),
-            phrase: "test".to_string(),
-=======
             screen: Screen::new(20,11),
             phrase: "test".to_string()
->>>>>>> 53c1311c4fb7092ee689b10ac94ca94a4789cb81
         };
 
         let chr: u8 = 's' as u8;
 
         assert_eq!(game.index_of(chr).unwrap(), 2);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 53c1311c4fb7092ee689b10ac94ca94a4789cb81
