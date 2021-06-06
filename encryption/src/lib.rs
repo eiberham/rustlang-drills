@@ -9,6 +9,7 @@ use aes_gcm::{Aes256Gcm, Key, Nonce};
 use aes_gcm::aead::{Aead, NewAead};
 use std::str;
 use serde::{Serialize, Deserialize};
+use js_sys::{JsString};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RSAKeyPair {
@@ -58,11 +59,15 @@ pub fn asymmetric_decrypt(pk: &str, ciphertext: Vec<u8>) -> Vec<u8> {
 }
 
 #[wasm_bindgen]
-pub fn symmetric_encrypt(plaintext: &str, key: &str) -> Vec<u8> {
+pub fn symmetric_encrypt(plaintext: &str, key: &str) -> Vec<u8>  {
     console_error_panic_hook::set_once();
+    
     let cipher_key = Key::from_slice(key.as_bytes()); // key must be 32 bytes length
 
     let cipher = Aes256Gcm::new(&cipher_key);
+
+    // web_sys::console::log_1(&"Hello".into());
+    
     // In cryptography, a nonce is an arbitrary number that can be used just once in a 
     // cryptographic communication.
     let nonce = Nonce::from_slice(b"unique nonce");
