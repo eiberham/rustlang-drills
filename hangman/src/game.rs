@@ -62,8 +62,6 @@ impl Game {
         self.screen.line(60, 2, 60, 6, pixel::pxl('⛓'));
         self.screen.line(60, 7, 60, 7, pixel::pxl('😰'));
 
-        // TODO: draw player's lives on the right side of the screen
-
         let size: i32 = self.phrase.len().try_into().unwrap();
 
         let mut random = rand::thread_rng();
@@ -78,8 +76,6 @@ impl Game {
             .map(|val| val.to_string())
             .collect::<String>();
 
-        // self.screen.print_fbg(1, 12, &clue , Color::Red, Color::Reset);
-
         for x in (0..(size * 5)).step_by(5) {
             self.screen.set_pxl(x, 10, pixel::pxl('_'));
         }
@@ -87,7 +83,6 @@ impl Game {
         for (_, y) in clue.as_bytes().iter().enumerate() {
             if let Some(position) = self.index_of(*y) {
                 hint.insert(position, *y);
-                // self.screen.print_fbg(x.try_into().unwrap(), 14, &position.to_string()[..], Color::DarkMagenta, Color::Reset);
             }
         }
 
@@ -170,5 +165,23 @@ impl Game {
             Color::White,
             Color::Reset,
         );
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_index_of() {
+        let mut game = Game {
+            engine: console_engine::ConsoleEngine::init(20, 10, 3),
+            screen: Screen::new(20, 11),
+            phrase: "test".to_string(),
+        };
+
+        let chr: u8 = 's' as u8;
+
+        assert_eq!(game.index_of(chr).unwrap(), 2);
     }
 }

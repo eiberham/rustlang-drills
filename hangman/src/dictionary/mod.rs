@@ -42,3 +42,13 @@ pub mod words {
          */
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get() {
+        assert!(words::get().unwrap().len() > 0)
+    }
+}
