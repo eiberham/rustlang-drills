@@ -15,8 +15,7 @@ use crate::dictionary::*;
 
 pub struct Player {
     pub chances: u32,
-    pub lives:   i32,
-    pub asserts: i32
+    pub asserts: Vec<char>
 }
 
 pub struct Config {
@@ -25,7 +24,6 @@ pub struct Config {
     pub fps:    u32
 }
 
-#[derive(Display)]
 pub struct Game {
     pub engine: ConsoleEngine,
     pub screen: Screen,
@@ -98,10 +96,6 @@ impl Game {
             }
         }
 
-        /* for (key, value) in hint.iter() {
-            self.screen.set_pxl((*key *5).try_into().unwrap(), 10, pixel::pxl(*value  as char));
-        } */
-
         // print the game screen
         self.engine.print_screen(0, 0, &self.screen); 
         
@@ -117,19 +111,28 @@ impl Game {
                 if !self.phrase.contains(letter) || !letter.is_ascii_alphabetic(){
                     if player.chances < 1 {
                         // you lose !!
-                        self.start();
+                        // self.start();
                         break;
                     }
                     player.chances -= 1;
                     self.engine.print_fbg(7, 4, &player.chances.to_string()[..], Color::White, Color::Reset);
                     continue; 
                 }
+                if player.asserts.contains(&letter) {
+                    continue;
+                }
                 for (index, character) in self.phrase.char_indices() {
                     if letter.to_lowercase().to_string() == character.to_lowercase().to_string() {
                         self.engine.print(((index *5)).try_into().unwrap(), 10, &letter.to_string()[..]);
-                        player.asserts += 1;
-                        if player.asserts == self.phrase.len().try_into().unwrap(){
+                        player.asserts.push(letter);
+                        if player.asserts.len() == self.phrase.len().try_into().unwrap(){
                             // you win !!
+                            let player = Player {
+                                asserts: vec![],
+                                chances: 5
+                            };
+                            self.start();
+                            self.stats(&player);
                             break;
                         }
                     }
@@ -152,15 +155,5 @@ impl Game {
     pub fn stats(&mut self, player: & Player) -> () {
         let chances = "Tries: ".to_owned(); // converts &str to string.
         self.engine.print_fbg(0, 4, &(chances.clone() + &player.chances.to_string()), Color::White, Color::Reset);
-
-        let lives = "Lives: ";
-        self.engine.print_fbg(0, 5, lives, Color::Green, Color::Reset);
-
-        let mut n = 0;
-        
-        while n < (player.lives * 2) { // multiplied by two cuz every pxl ocupies two spaces ?)
-            self.engine.set_pxl((lives.len() as i32 + n).try_into().unwrap(), 5, pixel::pxl('🧉'));
-            n += 2;
-        }
     }
 }
