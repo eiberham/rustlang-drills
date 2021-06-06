@@ -3,10 +3,10 @@
 //! (similarly if you add more super:: or dots)
 //! use foo::*; is from foo import *
 
-use console_engine::{screen::Screen, ConsoleEngine, Color, pixel, KeyCode, KeyModifiers};
-use std::fmt;
+use console_engine::{pixel, screen::Screen, Color, ConsoleEngine, KeyCode, KeyModifiers};
 use std::collections::HashMap;
 use std::convert::TryInto;
+use std::fmt;
 
 extern crate rand;
 use rand::seq::IteratorRandom;
@@ -15,13 +15,13 @@ use crate::dictionary::*;
 
 pub struct Player {
     pub chances: u32,
-    pub asserts: Vec<char>
+    pub asserts: Vec<char>,
 }
 
 pub struct Config {
     pub height: u32,
-    pub width:  u32,
-    pub fps:    u32
+    pub width: u32,
+    pub fps: u32,
 }
 
 pub struct Game {
@@ -38,11 +38,10 @@ impl fmt::Display for Game {
 
 impl Game {
     pub fn new(config: Config) -> Game {
-        
-        Game { 
+        Game {
             engine: ConsoleEngine::init(config.width, config.height, config.fps),
             screen: Screen::new(70, 20),
-            phrase: "".to_string()
+            phrase: "".to_string(),
         }
     }
 
@@ -55,14 +54,9 @@ impl Game {
 
         self.screen.fill(pixel::pxl_bg(' ', Color::Reset));
 
-        self.screen.print_fbg(
-            0 , 
-            2, 
-            title,
-            Color::Yellow, 
-            Color::Reset
-        );
-        
+        self.screen
+            .print_fbg(0, 2, title, Color::Yellow, Color::Reset);
+
         self.phrase = words::get().expect("fail.");
 
         self.screen.line(60, 2, 60, 6, pixel::pxl('⛓'));
@@ -76,12 +70,13 @@ impl Game {
 
         let mut hint = HashMap::new();
 
-        let clue : String = self.phrase
-        .chars()
-        .choose_multiple(&mut random, 3)
-        .iter()
-        .map(|val| val.to_string())
-        .collect::<String>();
+        let clue: String = self
+            .phrase
+            .chars()
+            .choose_multiple(&mut random, 3)
+            .iter()
+            .map(|val| val.to_string())
+            .collect::<String>();
 
         // self.screen.print_fbg(1, 12, &clue , Color::Red, Color::Reset);
 
@@ -97,39 +92,53 @@ impl Game {
         }
 
         // print the game screen
-        self.engine.print_screen(0, 0, &self.screen); 
-        
+        self.engine.print_screen(0, 0, &self.screen);
     }
 
-    pub fn update(&mut self, player: &mut Player){
+    pub fn update(&mut self, player: &mut Player) {
         self.engine.wait_frame();
 
         let alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         for letter in alphabet.chars() {
-            if self.engine.is_key_pressed(KeyCode::Char(letter as char)) || self.engine.is_key_pressed_with_modifier(KeyCode::Char(letter as char), KeyModifiers::SHIFT) {
-                if !self.phrase.contains(letter) || !letter.is_ascii_alphabetic(){
+            if self.engine.is_key_pressed(KeyCode::Char(letter as char))
+                || self.engine.is_key_pressed_with_modifier(
+                    KeyCode::Char(letter as char),
+                    KeyModifiers::SHIFT,
+                )
+            {
+                if !self.phrase.contains(letter) || !letter.is_ascii_alphabetic() {
                     if player.chances < 1 {
                         // you lose !!
                         // self.start();
                         break;
                     }
                     player.chances -= 1;
-                    self.engine.print_fbg(7, 4, &player.chances.to_string()[..], Color::White, Color::Reset);
-                    continue; 
+                    self.engine.print_fbg(
+                        7,
+                        4,
+                        &player.chances.to_string()[..],
+                        Color::White,
+                        Color::Reset,
+                    );
+                    continue;
                 }
                 if player.asserts.contains(&letter) {
                     continue;
                 }
                 for (index, character) in self.phrase.char_indices() {
                     if letter.to_lowercase().to_string() == character.to_lowercase().to_string() {
-                        self.engine.print(((index *5)).try_into().unwrap(), 10, &letter.to_string()[..]);
+                        self.engine.print(
+                            (index * 5).try_into().unwrap(),
+                            10,
+                            &letter.to_string()[..],
+                        );
                         player.asserts.push(letter);
-                        if player.asserts.len() == self.phrase.len().try_into().unwrap(){
+                        if player.asserts.len() == self.phrase.len().try_into().unwrap() {
                             // you win !!
                             let player = Player {
                                 asserts: vec![],
-                                chances: 5
+                                chances: 5,
                             };
                             self.start();
                             self.stats(&player);
@@ -148,12 +157,18 @@ impl Game {
         let position = bytes.iter().position(|&val| val == character);
         match position {
             Some(pos) => Some(pos),
-            None => None
+            None => None,
         }
     }
 
-    pub fn stats(&mut self, player: & Player) -> () {
+    pub fn stats(&mut self, player: &Player) -> () {
         let chances = "Tries: ".to_owned(); // converts &str to string.
-        self.engine.print_fbg(0, 4, &(chances.clone() + &player.chances.to_string()), Color::White, Color::Reset);
+        self.engine.print_fbg(
+            0,
+            4,
+            &(chances.clone() + &player.chances.to_string()),
+            Color::White,
+            Color::Reset,
+        );
     }
 }
