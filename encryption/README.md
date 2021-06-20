@@ -1,3 +1,14 @@
+# Encryption
+
+![](./encryption.png)
+
+This is a WebAssembly module I built for the company I work for. The idea is to propose it to improve the 
+performance of our chat module which is using javascript libs to handle encryption of messages. With the 
+power of wasm we could abstract away that feature and provide a better approach in terms of speed for such 
+task at the same time.
+
+Below you can find my annotations.
+
 Somehow I ran into an issue when trying to build the project with the AES-GCM crate, 
 fortunatelly it got solved after running the following commands:
 
