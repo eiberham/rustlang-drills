@@ -34,7 +34,14 @@ cargo install wasm-bindgen-cli
 Finally:
 
 ```console
-wasm-bindgen target/wasm32-unknown-unknown/release/encryption.wasm --target web --out-dir ./www --omit-default-module-path --no-typescript --omit-imports
+wasm-bindgen target/wasm32-unknown-unknown/release/encryption.wasm --target web --out-dir ./www --omit-default-module-path --no-typescript
+```
+
+Another way to compile your web assembly module is to use wasm-pack
+
+```console
+cargo install wasm-pack  
+wasm-pack build --target web 
 ```
 
 To see it working you can start a http server:
