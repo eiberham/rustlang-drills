@@ -51,13 +51,11 @@ fortunatelly it got solved after running the following commands:
 
 
 
-
-`rustup update nightly`
-
-`rustup update stable`
-
-`cargo build`
-
+```console
+rustup update nightly
+rustup update stable
+cargo build
+```
 
 
 Before compiling your rust lib to webassembly, make sure you have installed the wasm32-unknown-unknown target
@@ -65,55 +63,56 @@ Before compiling your rust lib to webassembly, make sure you have installed the 
 
 
 
-
-`rustup target add wasm32-unknown-unknown`
-
+```console
+rustup target add wasm32-unknown-unknown
+```
 
 
 Now include in your Cargo.tml file the following dependency
 
 
-
-`getrandom = { version = "0.2", features = ["js"] }`
-
+```console
+getrandom = { version = "0.2", features = ["js"] }
+```
 
 
 Then proceed to build into webassembly
 
 
-
-`cargo build --target wasm32-unknown-unknown --release`
-
+```console
+cargo build --target wasm32-unknown-unknown --release
+```
 
 
 Now install wasm-bindgen-cli
 
 
-
-`cargo install wasm-bindgen-cli`   
-
+```console
+cargo install wasm-bindgen-cli   
+```
 
 
 Finally:
 
 
-
-`wasm-bindgen target/wasm32-unknown-unknown/release/encryption.wasm --target web --out-dir ./www --omit-default-module-path --no-typescript`
+```console
+wasm-bindgen target/wasm32-unknown-unknown/release/encryption.wasm --target web --out-dir ./www --omit-default-module-path --no-typescript
+```
 
 
 
 Another way to compile your web assembly module is to use wasm-pack
 
 
-
-`cargo install wasm-pack`  
-
-`wasm-pack build --target web` 
-
+```console
+cargo install wasm-pack
+wasm-pack build --target web
+```
 
 
 To see it working you can start a http server:
 
 
-
+```console
 python -m SimpleHTTPServer
+```
