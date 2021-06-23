@@ -13,11 +13,11 @@ task at the same time.
 
 
 
-## What is WebAssembly :question:
+## What is WebAssembly ?
 
 > WebAssembly (abbreviated *Wasm*) is a binary instruction format for a stack-based virtual machine. Wasm is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.
 
-## Reason for using it.
+## Benefits we'd get out of it :comet:
 
 A web assembly module for the aforementioned task would bring us five important assets:
 
