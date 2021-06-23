@@ -86,3 +86,11 @@ To see it working you can start a http server:
 ```console
 foo@bar:~$ python -m SimpleHTTPServer
 ```
+
+## Profiling
+
+In order to benchmark this tool the approach carried out was the console.time function in javascript, the
+last test got the following output:
+
+**Asymmetric**: 43.134765625 ms
+**Symmetric** : 0.260986328125 ms
