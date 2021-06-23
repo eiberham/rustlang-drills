@@ -19,16 +19,14 @@ task at the same time.
 
 ## Why WebAssembly ?
 
-A web assembly module for the aforementioned task would bring us four important assets:
+A web assembly module for the aforementioned task would bring us five important assets:
 
 
 - Portabilty
-
 - Reusabily
-
 - Flexibility
-
 - Encapsulation
+- Speed
 
 
 Below you can find my annotations.
