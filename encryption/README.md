@@ -1,4 +1,4 @@
-**# Encryption**
+# Encryption
 
 
 
@@ -16,13 +16,13 @@ task at the same time.
 
 
 
-**## What is WebAssembly ?**
+## What is WebAssembly ?
 
 > WebAssembly (abbreviated *Wasm*) is a binary instruction format for a stack-based virtual machine. Wasm is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.
 
 
 
-**## Why WebAssembly ?**
+## Why WebAssembly ?
 
 
 
@@ -50,15 +50,13 @@ fortunatelly it got solved after running the following commands:
 
 
 
-\```console
 
-rustup update nightly
 
-rustup update stable
+`rustup update nightly`
 
-cargo build
+`rustup update stable`
 
-\```
+`cargo build`
 
 
 
@@ -66,11 +64,9 @@ Before compiling your rust lib to webassembly, make sure you have installed the 
 
 
 
-\```console
 
-rustup target add wasm32-unknown-unknown
 
-\```
+`rustup target add wasm32-unknown-unknown`
 
 
 
@@ -78,11 +74,7 @@ Now include in your Cargo.tml file the following dependency
 
 
 
-\```console
-
-getrandom = { version = "0.2", features = ["js"] }
-
-\```
+`getrandom = { version = "0.2", features = ["js"] }`
 
 
 
@@ -90,11 +82,7 @@ Then proceed to build into webassembly
 
 
 
-\```console
-
-cargo build --target wasm32-unknown-unknown --release
-
-\```
+`cargo build --target wasm32-unknown-unknown --release`
 
 
 
@@ -102,11 +90,7 @@ Now install wasm-bindgen-cli
 
 
 
-\```console
-
-cargo install wasm-bindgen-cli   
-
-\```
+`cargo install wasm-bindgen-cli`   
 
 
 
@@ -114,11 +98,7 @@ Finally:
 
 
 
-\```console
-
-wasm-bindgen target/wasm32-unknown-unknown/release/encryption.wasm --target web --out-dir ./www --omit-default-module-path --no-typescript
-
-\```
+`wasm-bindgen target/wasm32-unknown-unknown/release/encryption.wasm --target web --out-dir ./www --omit-default-module-path --no-typescript`
 
 
 
@@ -126,13 +106,9 @@ Another way to compile your web assembly module is to use wasm-pack
 
 
 
-\```console
+`cargo install wasm-pack`  
 
-cargo install wasm-pack  
-
-wasm-pack build --target web 
-
-\```
+`wasm-pack build --target web` 
 
 
 
@@ -140,8 +116,4 @@ To see it working you can start a http server:
 
 
 
-\```console
-
 python -m SimpleHTTPServer
-
-\```
