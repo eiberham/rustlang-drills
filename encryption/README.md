@@ -81,10 +81,17 @@ foo@bar:~$ cargo install wasm-pack
 foo@bar:~$ wasm-pack build --target web
 ```
 
-To see it working you can start a http server:
+To see it working you can start a http server with python:
 
 ```console
 foo@bar:~$ python -m SimpleHTTPServer
+```
+
+Otherwise ypou could start an express server by running:
+
+```console
+foo@bar:~$ cd www
+foo@bar:~$ npm run start
 ```
 
 ## Profiling :alarm_clock:
