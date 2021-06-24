@@ -17,7 +17,7 @@ task at the same time.
 
 > WebAssembly (abbreviated *Wasm*) is a binary instruction format for a stack-based virtual machine. Wasm is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.
 
-## Why WebAssembly ?
+## Benefits we'd get out of it :comet:
 
 A web assembly module for the aforementioned task would bring us five important assets:
 
@@ -87,10 +87,13 @@ To see it working you can start a http server:
 foo@bar:~$ python -m SimpleHTTPServer
 ```
 
-## Profiling
+## Profiling :alarm_clock:
 
 In order to benchmark this tool the approach carried out was the console.time function in javascript, the
 last test got the following output:
 
 **Asymmetric**: 43.134765625 ms
 **Symmetric** : 0.260986328125 ms
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
