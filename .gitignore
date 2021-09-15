@@ -8,6 +8,7 @@
 Cargo.lock
 
 # WASM www folder generted by wasm-bindgen
-www
+www/encryption.js
+www/encryption_bg.wasm
 
 trash
