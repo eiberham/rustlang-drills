@@ -1,23 +1,34 @@
 use sha2::{Sha256, Digest};
 use serde;
 
-pub struct Data {
-    amount: usize,
-    receiver: String,
-    sender: String,
+type Hash = Vec<u8>;
+
+#[derive(Debug)]
+pub struct Payload {
+    pub amount: u64,
+    pub receiver: String,
+    pub sender: String,
 }
 
+#[derive(Debug)]
 pub struct Block {
-    pub data: Data,
-    pub hash: String,
-    pub previous_hash: String,
-    pub timestamp: usize
+    pub index: u32,
+    pub nonce: u64,
+    pub hash: Hash,
+    pub payload: Payload,
+    pub previous_hash: Hash,
+    pub timestamp: u64
 }
 
 impl Block {
-  pub fn new() -> Block {
+  pub fn new(index: u32, nonce: u64, hash: Hash, payload: Payload, previous_hash: Hash, timestamp: u64) -> Self {
     Block {
-
+      index,
+      nonce,
+      hash: vec![0; 32],
+      payload,
+      previous_hash,
+      timestamp
     }
   }
 
