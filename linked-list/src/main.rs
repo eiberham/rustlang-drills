@@ -78,26 +78,17 @@ impl<T> List<T> where
 
     /// Removes the last child from the linked list
     pub fn pop(&mut self) -> () {
-        match self {
-            Self::Child { value: _, next } => {
-                match next {
-                    Some(item) => {
-                        let child = &mut *item.borrow_mut();
-                        match child {
-                            Self::Child { value: _, next } => {
-                                if next.is_none() {
-                                    *child = Self::new();
-                                    return;
-                                }
-                                child.pop()
-                            },
-                            _ => unreachable!()
+        if let Self::Child { value: _, next } = self {
+            if let Some(item) = next {
+                    let child = &mut *item.borrow_mut();
+                        if let Self::Child { value: _, next } = child {
+                            if next.is_none() {
+                                *child = Self::new();
+                                return;
+                            }
+                            child.pop()
                         }
-                    }
-                    _ => unreachable!()
                 }
-            }
-            _ => unreachable!()
         }
     }
 }
