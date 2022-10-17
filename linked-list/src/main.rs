@@ -91,13 +91,13 @@ impl<T> List<T> where
                                 }
                                 child.pop()
                             },
-                            Self::None => ()
+                            _ => unreachable!()
                         }
                     }
-                    None => ()
+                    _ => unreachable!()
                 }
             }
-            Self::None => ()
+            _ => unreachable!()
         }
     }
 }
