@@ -1,5 +1,9 @@
 
-//! Each value in Rust has a variable that’s called its owner.
+//! Linked List
+//! This is a simple data structure particularly difficult to implement using rust.
+//!
+//! Keep always in mind:
+//! Each value in rust has a variable that’s called its owner.
 //! There can only be one owner at a time.
 //! When the owner goes out of scope, the value will be dropped.
 
@@ -7,6 +11,8 @@ use std::fmt::{ self, Display };
 use std::rc::Rc;
 use std::cell::RefCell;
 use core::fmt::{ Debug };
+
+// A list is either empty or has an element followed by another list
 
 #[derive(Debug)]
 enum List<T> {
@@ -70,56 +76,31 @@ impl<T> List<T> where
         }
     }
 
+    /// Removes the last child from the linked list
     pub fn pop(&mut self) -> () {
         match self {
-            // Child { value: 5, next: Some(RefCell { value: Child { value: 6, next: Some(RefCell { value: None }) } }) }
             Self::Child { value: _, next } => {
                 match next {
                     Some(item) => {
-                        let tail = &mut *item.borrow_mut();
-
-                        // recursively call pop only under the condition where tail.next has some value on it.
-
-                        println!("tail {:?}", tail);
-
-                        match tail {
-                            Self::Child { value, next } => {
-                                match next {
-                                    Some(link) => {
-                                        println!("it has a value, look: {:?}", link);
-                                        let mut_s = &mut *link.borrow_mut(); // this is retrieving List<T>
-                                        // I must access the value field from the enum's Child
-
-                                        // madness here
-                                        match mut_s {
-                                            Self::Child { value, next } => {
-                                                match next {
-                                                    None => mut_s.pop(), //tail.pop()
-                                                    _ => ()
-                                                }
-                                            },
-                                            _ => ()
-                                        }
-                                    }
-                                    None => ()
+                        let child = &mut *item.borrow_mut();
+                        match child {
+                            Self::Child { value: _, next } => {
+                                if next.is_none() {
+                                    *child = Self::new();
+                                    return;
                                 }
+                                child.pop()
                             },
-                            _ => ()
+                            Self::None => ()
                         }
                     }
-                    _ => ()
+                    None => ()
                 }
             }
-            Self::None => {
-                println!("delete the god damned node");
-                // deletes the node
-                *self = Self::None
-            }
+            Self::None => ()
         }
     }
 }
-
-// a List is either Empty or has an element followed by another List
 
 fn main() {
     println!("Linked list in rust");
@@ -130,9 +111,12 @@ fn main() {
     list.push(3);
     list.push(4);
     list.push(5);
-    list.push(6);
 
     list.pop();
+
+    println!("{:?}", list);
+
+    list.push(5);
 
     println!("{:?}", list);
 }
