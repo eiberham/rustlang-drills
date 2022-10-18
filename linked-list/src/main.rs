@@ -111,3 +111,17 @@ fn main() {
 
     println!("{:?}", list);
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let mut list = List::new();
+        list.push(1);
+        list.push(2);
+
+        assert_eq!(list, 3);
+    }
+}
