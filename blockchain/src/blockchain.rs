@@ -32,13 +32,14 @@ impl Block {
     }
   }
 
-  pub fn calculate_hash(data: &str) -> String {
+  pub fn calculate_hash(&mut self, data: &str) -> () {
     let mut hasher = Sha256::new();
     // write input message
     hasher.update(data);
     // read hash digest and consume hasher
     // {:x} means format as hexadecimal using the std::fmt::UpperHex trait, which is implemented for GenericArray.
-    let hash : String = format!("{:X}", hasher.finalize());
-    hash
+    let hash = format!("{:X}", hasher.finalize());
+    self.hash = hash.as_bytes()
+                    .to_vec();
   }
 }

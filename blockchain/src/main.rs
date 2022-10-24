@@ -4,7 +4,7 @@ use crate::blockchain::*;
 fn main() {
     println!("Hello, blockchain!");
 
-    let block = Block::new(
+    let mut block = Block::new(
         0,
         0,
         vec![0; 32],
@@ -16,6 +16,10 @@ fn main() {
         vec![0; 32],
         0
     );
+
+    println!("{:?}", block);
+
+    block.calculate_hash("Hello bitcoin");
 
     println!("{:?}", block);
 }

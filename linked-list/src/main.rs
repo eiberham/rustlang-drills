@@ -10,11 +10,12 @@
 use std::fmt::{ self, Display };
 use std::rc::Rc;
 use std::cell::RefCell;
+use std::mem::{ replace, swap};
 use core::fmt::{ Debug };
 
 // A list is either empty or has an element followed by another list
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum List<T> {
     None,
     Child {
@@ -93,6 +94,39 @@ impl<T> List<T> where
     }
 }
 
+// The `Iterator` trait only requires a method to be defined for the `next` element.
+impl<T> Iterator for List<T> where T: Copy + Debug + Display {
+    type Item = T;
+    fn next(&mut self) -> Option<Self::Item> {
+        return match self {
+            Self::Child { value, next } => {
+                if let Some(item) = next {
+                    let child = &mut *item.borrow_mut();
+                    let link = item.clone();
+                    return match child {
+                        Self::Child { value: _, next } => {
+                            if !next.is_none() {
+                                /* let mut list = List::new();
+                                swap(child, &mut list); */
+                                let a = next.clone();
+                                /* *self = *next.borrow_mut();
+                                Some(*value) */
+                                *self = a.unwrap().into_inner();
+                                Some(link)
+                            } else {
+                                None
+                            }
+                        }
+                        Self::None => None
+                    };
+                }
+                None
+            }
+            Self::None => None
+        }
+    }
+}
+
 fn main() {
     println!("Linked list in rust");
 
@@ -103,11 +137,13 @@ fn main() {
     list.push(4);
     list.push(5);
 
-    list.pop();
+    /* list.pop();
 
-    println!("{:?}", list);
+    println!("{:?}", list); */
 
-    list.push(5);
+    println!("next > {:?}", list.next());
+    println!("next > {:?}", list.next());
+    println!("next > {:?}", list.next());
 
     println!("{:?}", list);
 }
