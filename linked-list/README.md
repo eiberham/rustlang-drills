@@ -21,6 +21,8 @@ enum List<T> {
 
 Note how I'm using generics within the enum, that's because I want the linked list to hold any type of value. So we have the none state, intended to represent the empty state of our list, and a child link which will hold either another list or nothing.
 
+Note how I'm using the *option* enum in order to wrap the next link. This is because we may or may not have a next link so we can represent the lack thereof with a *none*.
+
 So far we only have the list defined, we need to find a way to instantiate our list, right ? let's do it:
 
 ```shell
@@ -90,4 +92,6 @@ Now let's add the `pop` function:
         }
     }
 ```
+
+That's it.
 
