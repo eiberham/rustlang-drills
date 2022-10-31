@@ -16,7 +16,7 @@ fn main() {
     // Make a Context.
     let (mut ctx, event_loop) = ContextBuilder::new("snake", "eiberham")
         .window_setup(ggez::conf::WindowSetup::default().title("snake game"))
-        .window_mode(ggez::conf::WindowMode::default().dimensions(1200.0, 800.0))
+        .window_mode(ggez::conf::WindowMode::default().dimensions(900.0, 900.0))
         .build()
         .expect("upsss, could not create ggez context!");
 

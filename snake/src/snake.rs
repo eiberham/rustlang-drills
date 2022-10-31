@@ -43,7 +43,7 @@ impl Snake {
       h: 32 as f32
     };
 
-    let position = Position::new(10 as f32, 10 as f32);
+    let position = Position::new(64 as f32, 64 as f32);
     let head = Rect::new(position.x, position.y, size.w, size.h);
 
     Snake {

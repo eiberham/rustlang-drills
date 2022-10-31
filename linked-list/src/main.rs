@@ -10,6 +10,7 @@
 use std::fmt::{ self, Display };
 use std::rc::Rc;
 use std::cell::RefCell;
+use std::collections::{ LinkedList };
 use core::fmt::{ Debug };
 
 // A list is either empty or has an element followed by another list
@@ -106,4 +107,15 @@ fn main() {
     list.pop();
 
     println!("{:?}", list);
+
+    let mut ll = LinkedList::new();
+    ll.push_back(1);
+    ll.push_front(0);
+    ll.push_back(2);
+
+    ll.pop_back();
+
+    ll.push_back(3);
+
+    println!("{:?}", ll);
 }
