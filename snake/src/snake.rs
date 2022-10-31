@@ -39,36 +39,65 @@ impl Snake {
   pub fn new() -> Snake {
 
     let size = Size {
-      w: 32 as f32,
-      h: 32 as f32
+      w: 0x20 as f32,
+      h: 0x20 as f32
     };
 
-    let position = Position::new(64 as f32, 64 as f32);
+    let position = Position::new(0x40 as f32, 0x40 as f32);
     let head = Rect::new(position.x, position.y, size.w, size.h);
+    let mut body =  LinkedList::new();
+    body.push_back(Rect::new(32.0, 64.0, size.w, size.h));
 
     Snake {
       head,
       previous: Direction::Right,
       current: Some(Direction::Right),
-      body: LinkedList::new()
+      body
     }
   }
 
   pub fn draw(&mut self, canvas: &mut Canvas) -> () {
-    /* let mut body = LinkedList::new();
-    let mut rect = Rect::new(10.0, 10.0, 32.0, 32.0);
-    body.push_back(rect);
-    self.body = body; */
+
+    for square in self.body.iter() {
+      canvas.draw(
+            &graphics::Quad,
+            graphics::DrawParam::new()
+                .dest_rect(*square)
+                .color(graphics::Color::GREEN),
+        );
+    }
 
     canvas.draw(
             &graphics::Quad,
             graphics::DrawParam::new()
                 .dest_rect(self.head)
-                .color(graphics::Color::WHITE),
+                .color(graphics::Color::YELLOW),
         );
   }
 
   pub fn update(&mut self) {
     println!("updating the snake's position based on its current direction");
+
+    match &self.current {
+      Some(current) => {
+        match current {
+          Direction::Right => {
+            self.body.push_front(self.head);
+            self.head = Rect::new(self.head.x + 32.0, self.head.y, self.head.w, self.head.h);
+            self.body.pop_back();
+          }
+          Direction::Left => {
+
+          }
+          Direction::Up => {
+
+          }
+          Direction::Down => {
+
+          }
+        }
+      }
+      None => ()
+    }
   }
 }
