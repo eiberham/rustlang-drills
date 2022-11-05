@@ -78,20 +78,28 @@ impl EventHandler for Game {
     fn key_up_event(&mut self, _ctx: &mut Context, input: keyboard::KeyInput) -> GameResult {
         match input.keycode {
             Some(keyboard::KeyCode::Up) => {
-              println!("Up arrow key has been pressed");
-              self.snake.current = Some(Direction::Up)
+              if !matches!(self.snake.previous, Direction::Down ) {
+                self.snake.current = Some(Direction::Up);
+                self.snake.previous = Direction::Up;
+              }
             }
             Some(keyboard::KeyCode::Left) => {
-              println!("Left arrow key has been pressed");
-              self.snake.current = Some(Direction::Left)
+              if !matches!(self.snake.previous, Direction::Right ) {
+                self.snake.current = Some(Direction::Left);
+                self.snake.previous = Direction::Left;
+              }
             }
             Some(keyboard::KeyCode::Right) => {
-              println!("Right arrow key has been pressed");
-              self.snake.current = Some(Direction::Right)
+              if !matches!(self.snake.previous, Direction::Left ) {
+                self.snake.current = Some(Direction::Right);
+                self.snake.previous = Direction::Right;
+              }
             }
             Some(keyboard::KeyCode::Down) => {
-              println!("Down arrow key has been pressed");
-              self.snake.current = Some(Direction::Down)
+              if !matches!(self.snake.previous, Direction::Up ) {
+                self.snake.current = Some(Direction::Down);
+                self.snake.previous = Direction::Down;
+              }
             }
             Some(keyboard::KeyCode::Escape) => {
               _ctx.request_quit();

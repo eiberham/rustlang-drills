@@ -82,18 +82,26 @@ impl Snake {
       Some(current) => {
         match current {
           Direction::Right => {
+            // if !matches!(self.previous, Direction::Right ) {}
             self.body.push_front(self.head);
             self.head = Rect::new(self.head.x + 32.0, self.head.y, self.head.w, self.head.h);
             self.body.pop_back();
+
           }
           Direction::Left => {
-
+            self.body.push_front(self.head);
+            self.head = Rect::new(self.head.x - 32.0, self.head.y, self.head.w, self.head.h);
+            self.body.pop_back();
           }
           Direction::Up => {
-
+            self.body.push_front(self.head);
+            self.head = Rect::new(self.head.x, self.head.y -32.0, self.head.w, self.head.h);
+            self.body.pop_back();
           }
           Direction::Down => {
-
+            self.body.push_front(self.head);
+            self.head = Rect::new(self.head.x, self.head.y + 32.0, self.head.w, self.head.h);
+            self.body.pop_back();
           }
         }
       }
