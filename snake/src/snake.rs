@@ -1,6 +1,8 @@
 use ggez::graphics::{ self, Rect, Canvas };
 use std::collections::{ LinkedList };
 
+use crate::place::*;
+
 pub enum Direction {
   Up,
   Down,
@@ -11,20 +13,6 @@ pub enum Direction {
 pub struct Size<T> {
   w: T,
   h: T
-}
-
-pub struct Position<T> {
-  x: T,
-  y: T
-}
-
-impl <T> Position<T> {
-  pub fn new(x: T, y: T) -> Self {
-    Self {
-      x,
-      y
-    }
-  }
 }
 
 pub struct Snake {
@@ -43,8 +31,8 @@ impl Snake {
       h: 0x20 as f32
     };
 
-    let position = Position::new(0x40 as f32, 0x40 as f32);
-    let head = Rect::new(position.x, position.y, size.w, size.h);
+    let place = Place::new(0x40 as f32, 0x40 as f32);
+    let head = Rect::new(place.x, place.y, size.w, size.h);
     let mut body =  LinkedList::new();
     body.push_back(Rect::new(32.0, 64.0, size.w, size.h));
 
@@ -75,35 +63,27 @@ impl Snake {
         );
   }
 
+  // updates the snake's position based on its current direction
   pub fn update(&mut self) {
-    println!("updating the snake's position based on its current direction");
 
     match &self.current {
       Some(current) => {
+        self.body.push_front(self.head);
         match current {
           Direction::Right => {
-            // if !matches!(self.previous, Direction::Right ) {}
-            self.body.push_front(self.head);
             self.head = Rect::new(self.head.x + 32.0, self.head.y, self.head.w, self.head.h);
-            self.body.pop_back();
-
           }
           Direction::Left => {
-            self.body.push_front(self.head);
             self.head = Rect::new(self.head.x - 32.0, self.head.y, self.head.w, self.head.h);
-            self.body.pop_back();
           }
           Direction::Up => {
-            self.body.push_front(self.head);
             self.head = Rect::new(self.head.x, self.head.y -32.0, self.head.w, self.head.h);
-            self.body.pop_back();
           }
           Direction::Down => {
-            self.body.push_front(self.head);
             self.head = Rect::new(self.head.x, self.head.y + 32.0, self.head.w, self.head.h);
-            self.body.pop_back();
           }
         }
+        self.body.pop_back();
       }
       None => ()
     }

@@ -1,11 +1,9 @@
 mod game;
 use crate::game::*; // bring all public stuff into scope
 
-/* mod board;
-use crate::board::*; */
-
 mod snake;
 mod food;
+mod place;
 
 use ggez::{
     event,
@@ -16,7 +14,7 @@ fn main() {
     // Make a Context.
     let (mut ctx, event_loop) = ContextBuilder::new("snake", "eiberham")
         .window_setup(ggez::conf::WindowSetup::default().title("snake game"))
-        .window_mode(ggez::conf::WindowMode::default().dimensions(900.0, 900.0))
+        .window_mode(ggez::conf::WindowMode::default().dimensions(960.0, 960.0))
         .build()
         .expect("upsss, could not create ggez context!");
 

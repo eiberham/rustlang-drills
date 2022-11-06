@@ -7,7 +7,7 @@ use ggez::{
     Context, GameResult
 };
 
-use crate::{ snake::*, };
+use crate::{ snake::*, food::*};
 
 const fps: u32 = 8;
 
@@ -23,6 +23,7 @@ impl Game {
         // Create here new instances of the game entities.
 
         let snake = Snake::new();
+        let food = Food::new();
 
         Game {
           snake,
@@ -49,25 +50,8 @@ impl EventHandler for Game {
         // Here I'm supposed to draw the snake and the food.
         // The snake is going to have its own draw method.
 
-        /* let circle = graphics::Mesh::new_circle(
-            ctx,
-            graphics::DrawMode::fill(),
-            mint::Point2{x: 200.0, y: 300.0},
-            100.0,
-            0.1,
-            graphics::Color::WHITE,
-        )?; */
-
-        /* let rect = graphics::Rect::new(100.0, 100.0, 16.0, 16.0);
-
-        canvas.draw(
-            &graphics::Quad,
-            graphics::DrawParam::new()
-                .dest_rect(rect)
-                .color(graphics::Color::WHITE),
-        ); */
-
         self.snake.draw(&mut canvas);
+        self.food.draw(&mut canvas);
 
         canvas.finish(ctx)?;
 
