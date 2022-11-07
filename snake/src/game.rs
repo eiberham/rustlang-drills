@@ -14,7 +14,7 @@ const fps: u32 = 8;
 pub struct Game {
     pub snake: Snake,
     pub food: Food,
-    pub over: bool,
+    pub game_over: bool,
 }
 
 impl Game {
@@ -29,7 +29,7 @@ impl Game {
         Game {
           snake,
           food,
-          over: false,
+          game_over: false,
         }
     }
 }
@@ -37,7 +37,7 @@ impl Game {
 impl EventHandler for Game {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
       while ctx.time.check_update_time(fps) {
-        self.snake.update()
+        self.snake.update(&mut self.food)
       }
 
       Ok(())

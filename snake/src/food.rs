@@ -4,7 +4,7 @@ use ggez::graphics::{ self, Rect, Canvas };
 use crate::place::*;
 
 pub struct Food {
-  place: Place
+  pub place: Place
 }
 
 impl Food {
@@ -29,6 +29,7 @@ impl Food {
 
   pub fn fade(&mut self) {
     // makes the food disappear from the playground
+    self.place = Place::get();
   }
 
 }

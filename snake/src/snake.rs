@@ -2,6 +2,7 @@ use ggez::graphics::{ self, Rect, Canvas };
 use std::collections::{ LinkedList };
 
 use crate::place::*;
+use crate::food::*;
 
 #[derive(Copy, Clone)]
 pub enum Direction {
@@ -65,21 +66,46 @@ impl Snake {
   }
 
   // updates the snake's position based on its current direction
-  pub fn update(&mut self) {
-
-    match &self.current_direction {
-      Some(direction) => {
-        self.body.push_front(self.head);
-        match direction {
-          Direction::R => { self.head = Rect::new(self.head.x + 32.0, self.head.y, self.head.w, self.head.h); }
-          Direction::L => { self.head = Rect::new(self.head.x - 32.0, self.head.y, self.head.w, self.head.h); }
-          Direction::U => { self.head = Rect::new(self.head.x, self.head.y - 32.0, self.head.w, self.head.h); }
-          Direction::D => { self.head = Rect::new(self.head.x, self.head.y + 32.0, self.head.w, self.head.h); }
+  pub fn update(&mut self, food: &mut Food) {
+    if self.current_direction.is_some() {
+      self.body.push_front(self.head);
+      match self.current_direction.unwrap() {
+        Direction::R => {
+          self.head = Rect::new(self.head.x + 32.0, self.head.y, self.head.w, self.head.h);
+          if self.head.x >= 960.0 {
+            self.head.x = 0.0;
+          }
         }
+        Direction::L => {
+          self.head = Rect::new(self.head.x - 32.0, self.head.y, self.head.w, self.head.h);
+          if self.head.x <= -32.0 {
+            self.head.x = 928.0;
+          }
+        }
+        Direction::U => {
+          self.head = Rect::new(self.head.x, self.head.y - 32.0, self.head.w, self.head.h);
+          if self.head.y <= -32.0 {
+            self.head.y = 928.0;
+          }
+        }
+        Direction::D => {
+          self.head = Rect::new(self.head.x, self.head.y + 32.0, self.head.w, self.head.h);
+          if self.head.y >= 960.0 {
+            self.head.y = -32.0;
+          }
+        }
+      }
+      if self.eats(&food) {
+        food.fade();
+      } else {
         self.body.pop_back();
       }
-      None => ()
     }
+  }
+
+  pub fn eats(&mut self, food: &Food) -> bool {
+    self.head.x == food.place.x &&
+    self.head.y == food.place.y
   }
 
   pub fn divert(&mut self, direction: Direction) {
