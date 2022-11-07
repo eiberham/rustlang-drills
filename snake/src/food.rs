@@ -1,4 +1,5 @@
 use ggez::{ mint };
+use ggez::graphics::{ self, Rect, Canvas };
 
 use crate::place::*;
 
@@ -15,20 +16,13 @@ impl Food {
   pub fn draw(&mut self, canvas: &mut Canvas) {
     //randomly places the food within the playground
 
-    let circle = graphics::Mesh::new_circle(
-            ctx,
-            graphics::DrawMode::fill(),
-            mint::Point2{x: 200.0, y: 300.0},
-            100.0,
-            0.1,
-            graphics::Color::WHITE,
-        )?;
+    let square = Rect::new(self.place.x, self.place.y, 0x20 as f32, 0x20 as f32);
 
     canvas.draw(
             &graphics::Quad,
             graphics::DrawParam::new()
-                .dest_rect(*square)
-                .color(graphics::Color::GREEN),
+                .dest_rect(square)
+                .color(graphics::Color::WHITE),
         );
 
   }

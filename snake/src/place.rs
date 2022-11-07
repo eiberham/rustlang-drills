@@ -17,7 +17,7 @@ impl Place {
       .map(|v| v)
       .collect();
 
-    let randomize = move || board.to_vec()
+    let randomize = move || *board.to_vec()
         .choose(&mut rand::thread_rng())
         .unwrap();
 
@@ -25,8 +25,8 @@ impl Place {
     let y = randomize();
 
     Self {
-      x: *x as f32,
-      y: *y as f32
+      x: x as f32,
+      y: y as f32
     }
   }
 }

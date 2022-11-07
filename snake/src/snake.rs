@@ -3,11 +3,12 @@ use std::collections::{ LinkedList };
 
 use crate::place::*;
 
+#[derive(Copy, Clone)]
 pub enum Direction {
-  Up,
-  Down,
-  Left,
-  Right
+  U,
+  D,
+  L,
+  R
 }
 
 pub struct Size<T> {
@@ -18,7 +19,7 @@ pub struct Size<T> {
 pub struct Snake {
   pub head: Rect,
   pub previous: Direction,
-  pub current: Option<Direction>,
+  pub current_direction: Option<Direction>,
   pub body: LinkedList<Rect>,
 }
 
@@ -38,8 +39,8 @@ impl Snake {
 
     Snake {
       head,
-      previous: Direction::Right,
-      current: Some(Direction::Right),
+      previous: Direction::R,
+      current_direction: Some(Direction::R),
       body
     }
   }
@@ -66,26 +67,23 @@ impl Snake {
   // updates the snake's position based on its current direction
   pub fn update(&mut self) {
 
-    match &self.current {
-      Some(current) => {
+    match &self.current_direction {
+      Some(direction) => {
         self.body.push_front(self.head);
-        match current {
-          Direction::Right => {
-            self.head = Rect::new(self.head.x + 32.0, self.head.y, self.head.w, self.head.h);
-          }
-          Direction::Left => {
-            self.head = Rect::new(self.head.x - 32.0, self.head.y, self.head.w, self.head.h);
-          }
-          Direction::Up => {
-            self.head = Rect::new(self.head.x, self.head.y -32.0, self.head.w, self.head.h);
-          }
-          Direction::Down => {
-            self.head = Rect::new(self.head.x, self.head.y + 32.0, self.head.w, self.head.h);
-          }
+        match direction {
+          Direction::R => { self.head = Rect::new(self.head.x + 32.0, self.head.y, self.head.w, self.head.h); }
+          Direction::L => { self.head = Rect::new(self.head.x - 32.0, self.head.y, self.head.w, self.head.h); }
+          Direction::U => { self.head = Rect::new(self.head.x, self.head.y - 32.0, self.head.w, self.head.h); }
+          Direction::D => { self.head = Rect::new(self.head.x, self.head.y + 32.0, self.head.w, self.head.h); }
         }
         self.body.pop_back();
       }
       None => ()
     }
+  }
+
+  pub fn divert(&mut self, direction: Direction) {
+    self.current_direction = Some(direction);
+    self.previous = direction;
   }
 }

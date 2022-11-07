@@ -13,6 +13,7 @@ const fps: u32 = 8;
 
 pub struct Game {
     pub snake: Snake,
+    pub food: Food,
     pub over: bool,
 }
 
@@ -27,6 +28,7 @@ impl Game {
 
         Game {
           snake,
+          food,
           over: false,
         }
     }
@@ -60,36 +62,32 @@ impl EventHandler for Game {
     }
 
     fn key_up_event(&mut self, _ctx: &mut Context, input: keyboard::KeyInput) -> GameResult {
-        match input.keycode {
-            Some(keyboard::KeyCode::Up) => {
-              if !matches!(self.snake.previous, Direction::Down ) {
-                self.snake.current = Some(Direction::Up);
-                self.snake.previous = Direction::Up;
-              }
-            }
-            Some(keyboard::KeyCode::Left) => {
-              if !matches!(self.snake.previous, Direction::Right ) {
-                self.snake.current = Some(Direction::Left);
-                self.snake.previous = Direction::Left;
-              }
-            }
-            Some(keyboard::KeyCode::Right) => {
-              if !matches!(self.snake.previous, Direction::Left ) {
-                self.snake.current = Some(Direction::Right);
-                self.snake.previous = Direction::Right;
-              }
-            }
-            Some(keyboard::KeyCode::Down) => {
-              if !matches!(self.snake.previous, Direction::Up ) {
-                self.snake.current = Some(Direction::Down);
-                self.snake.previous = Direction::Down;
-              }
-            }
-            Some(keyboard::KeyCode::Escape) => {
-              _ctx.request_quit();
-            }
-            _ => (), // Do nothing
+      match input.keycode {
+        Some(keyboard::KeyCode::Up) => {
+          if !matches!(self.snake.previous, Direction::D ) {
+            self.snake.divert(Direction::U);
+          }
         }
-        Ok(())
+        Some(keyboard::KeyCode::Left) => {
+          if !matches!(self.snake.previous, Direction::R ) {
+            self.snake.divert(Direction::L);
+          }
+        }
+        Some(keyboard::KeyCode::Right) => {
+          if !matches!(self.snake.previous, Direction::L ) {
+            self.snake.divert(Direction::R);
+          }
+        }
+        Some(keyboard::KeyCode::Down) => {
+          if !matches!(self.snake.previous, Direction::U ) {
+            self.snake.divert(Direction::D);
+          }
+        }
+        Some(keyboard::KeyCode::Escape) => {
+          _ctx.request_quit();
+        }
+        _ => (), // Do nothing
+      }
+      Ok(())
     }
 }
