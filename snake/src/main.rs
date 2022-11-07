@@ -9,10 +9,12 @@ use ggez::{
     event,
     ContextBuilder
 };
+use std::path;
 
 fn main() {
     // Make a Context.
     let (mut ctx, event_loop) = ContextBuilder::new("snake", "eiberham")
+        .add_resource_path(path::PathBuf::from("./resources"))
         .window_setup(ggez::conf::WindowSetup::default().title("snake game"))
         .window_mode(ggez::conf::WindowMode::default().dimensions(960.0, 960.0))
         .build()

@@ -1,6 +1,7 @@
 use rand::{ self };
 use rand::seq::SliceRandom;
 
+// #[derive(Eq, PartialEq)]
 pub struct Place {
   pub x: f32,
   pub y: f32

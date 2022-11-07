@@ -1,4 +1,6 @@
 use ggez::graphics::{ self, Rect, Canvas };
+use ggez::audio::{ self, Source, SoundSource };
+use ggez::Context;
 use std::collections::{ LinkedList };
 
 use crate::place::*;
@@ -66,7 +68,7 @@ impl Snake {
   }
 
   // updates the snake's position based on its current direction
-  pub fn update(&mut self, food: &mut Food) {
+  pub fn update(&mut self, food: &mut Food, ctx: &mut Context) {
     if self.current_direction.is_some() {
       self.body.push_front(self.head);
       match self.current_direction.unwrap() {
@@ -95,7 +97,9 @@ impl Snake {
           }
         }
       }
-      if self.eats(&food) {
+      if self.eats(&food){
+        let mut sound = Source::new(ctx, "/sound.wav").unwrap();
+        sound.play_detached(ctx).unwrap();
         food.serve();
       } else {
         self.body.pop_back();

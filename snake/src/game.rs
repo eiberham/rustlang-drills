@@ -37,7 +37,7 @@ impl Game {
 impl EventHandler for Game {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
       while ctx.time.check_update_time(fps) {
-        self.snake.update(&mut self.food)
+        self.snake.update(&mut self.food, ctx)
       }
 
       Ok(())
@@ -53,6 +53,7 @@ impl EventHandler for Game {
         // The snake is going to have its own draw method.
 
         self.snake.draw(&mut canvas);
+
         self.food.draw(&mut canvas);
 
         canvas.finish(ctx)?;
