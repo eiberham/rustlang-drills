@@ -96,7 +96,7 @@ impl Snake {
         }
       }
       if self.eats(&food) {
-        food.fade();
+        food.serve();
       } else {
         self.body.pop_back();
       }
@@ -104,8 +104,7 @@ impl Snake {
   }
 
   pub fn eats(&mut self, food: &Food) -> bool {
-    self.head.x == food.place.x &&
-    self.head.y == food.place.y
+    self.head.x == food.place.x && self.head.y == food.place.y
   }
 
   pub fn divert(&mut self, direction: Direction) {

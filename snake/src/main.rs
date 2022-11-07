@@ -18,9 +18,6 @@ fn main() {
         .build()
         .expect("upsss, could not create ggez context!");
 
-    // Setup the board dimensions
-    // let board = Board::new((30, 20), (32, 32));
-
     // Create an instance of your event handler.
     // Usually, you should provide it with the Context object to
     // use when setting your game up.
