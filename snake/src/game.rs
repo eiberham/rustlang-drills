@@ -7,7 +7,7 @@ use ggez::{
     Context, GameResult
 };
 
-use crate::{ snake::*, food::*};
+use crate::{ snake::*, food::* };
 
 const fps: u32 = 8;
 
