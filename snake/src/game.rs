@@ -2,7 +2,8 @@ use ggez::{
     graphics::{ self },
     input::keyboard,
     event::{ EventHandler },
-    Context, GameResult
+    Context, GameResult,
+    audio::{ Source, SoundSource }
 };
 
 use crate::{ snake::*, food::* };
@@ -44,7 +45,9 @@ impl EventHandler for Game {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
       while ctx.time.check_update_time(fps) {
         self.snake.update(&mut self.food, ctx);
-        if self.snake.collides() {
+        if !self.game_over && self.snake.collides() {
+          let mut sound = Source::new(ctx, "/over.wav").unwrap();
+          sound.play_detached(ctx).unwrap();
           self.game_over = true;
           self.snake.current_direction = None;
         }
