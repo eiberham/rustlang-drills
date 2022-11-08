@@ -1,10 +1,10 @@
-use ggez::graphics::{ self, Rect, Canvas };
-use ggez::audio::{ self, Source, SoundSource };
+use ggez::graphics::{ self, Canvas };
+use ggez::audio::{ Source, SoundSource };
 use ggez::Context;
 use std::collections::{ LinkedList };
 
-use crate::place::*;
 use crate::food::*;
+use crate::tile::*;
 
 #[derive(Copy, Clone)]
 pub enum Direction {
@@ -14,31 +14,22 @@ pub enum Direction {
   R
 }
 
-pub struct Size<T> {
-  w: T,
-  h: T
-}
-
 pub struct Snake {
-  pub head: Rect,
+  pub head: Tile,
   pub previous: Direction,
   pub current_direction: Option<Direction>,
-  pub body: LinkedList<Rect>,
+  pub body: LinkedList<Tile>,
+  // pub speed: f32
 }
 
 impl Snake {
-  // associated function: struct impl fn that don't take self as parameter
   pub fn new() -> Snake {
 
-    let size = Size {
-      w: 0x20 as f32,
-      h: 0x20 as f32
-    };
+    let head = Tile::new(64.0, 64.0);
+    let tile = Tile::new(32.0, 64.0);
 
-    let place = Place::new(0x40 as f32, 0x40 as f32);
-    let head = Rect::new(place.x, place.y, size.w, size.h);
     let mut body =  LinkedList::new();
-    body.push_back(Rect::new(32.0, 64.0, size.w, size.h));
+    body.push_back(tile);
 
     Snake {
       head,
@@ -51,10 +42,11 @@ impl Snake {
   pub fn draw(&mut self, canvas: &mut Canvas) -> () {
 
     for square in self.body.iter() {
+      let mut tile = square.clone();
       canvas.draw(
             &graphics::Quad,
             graphics::DrawParam::new()
-                .dest_rect(*square)
+                .dest_rect(tile.draw())
                 .color(graphics::Color::GREEN),
         );
     }
@@ -62,7 +54,7 @@ impl Snake {
     canvas.draw(
             &graphics::Quad,
             graphics::DrawParam::new()
-                .dest_rect(self.head)
+                .dest_rect(self.head.draw())
                 .color(graphics::Color::YELLOW),
         );
   }
@@ -73,25 +65,21 @@ impl Snake {
       self.body.push_front(self.head);
       match self.current_direction.unwrap() {
         Direction::R => {
-          self.head = Rect::new(self.head.x + 32.0, self.head.y, self.head.w, self.head.h);
-          if self.head.x >= 960.0 {
-            self.head.x = 0.0;
-          }
+          self.head.move_x(32.0);
+          if self.head.x >= 960.0 { self.head.x = 0.0; }
         }
         Direction::L => {
-          self.head = Rect::new(self.head.x - 32.0, self.head.y, self.head.w, self.head.h);
-          if self.head.x <= -32.0 {
-            self.head.x = 928.0;
-          }
+          self.head.move_x(-32.0);
+          if self.head.x <= -32.0 { self.head.x = 928.0; }
         }
         Direction::U => {
-          self.head = Rect::new(self.head.x, self.head.y - 32.0, self.head.w, self.head.h);
+          self.head.move_y(-32.0);
           if self.head.y <= -32.0 {
             self.head.y = 928.0;
           }
         }
         Direction::D => {
-          self.head = Rect::new(self.head.x, self.head.y + 32.0, self.head.w, self.head.h);
+          self.head.move_y(32.0);
           if self.head.y >= 960.0 {
             self.head.y = -32.0;
           }
@@ -108,11 +96,15 @@ impl Snake {
   }
 
   pub fn eats(&mut self, food: &Food) -> bool {
-    self.head.x == food.place.x && self.head.y == food.place.y
+    self.head == food.piece
   }
 
   pub fn divert(&mut self, direction: Direction) {
     self.current_direction = Some(direction);
     self.previous = direction;
+  }
+
+  pub fn collides(&mut self) -> bool {
+    self.body.iter().any(|&x| x == self.head )
   }
 }

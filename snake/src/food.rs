@@ -1,33 +1,32 @@
-use ggez::{ mint };
-use ggez::graphics::{ self, Rect, Canvas };
+use ggez::graphics::{ self, Canvas };
 
-use crate::place::*;
+use crate::tile::*;
 
 pub struct Food {
-  pub place: Place
+  pub piece: Tile
 }
 
 impl Food {
   pub fn new() -> Self {
-    let place = Place::get();
-    Self { place }
+    let piece = Tile::rand();
+    Self {
+      piece
+    }
   }
 
   pub fn draw(&mut self, canvas: &mut Canvas) {
 
-    let square = Rect::new(self.place.x, self.place.y, 0x20 as f32, 0x20 as f32);
-
     canvas.draw(
             &graphics::Quad,
             graphics::DrawParam::new()
-                .dest_rect(square)
+                .dest_rect(self.piece.draw())
                 .color(graphics::Color::WHITE),
         );
 
   }
 
   pub fn serve(&mut self) {
-    self.place = Place::get();
+    self.piece = Tile::rand();
   }
 
 }

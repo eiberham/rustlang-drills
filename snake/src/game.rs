@@ -1,9 +1,7 @@
 use ggez::{
-    timer,
-    graphics::{self, Color, Canvas},
-    mint,
+    graphics::{ self },
     input::keyboard,
-    event::{self, EventHandler},
+    event::{ EventHandler },
     Context, GameResult
 };
 
@@ -37,7 +35,11 @@ impl Game {
 impl EventHandler for Game {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
       while ctx.time.check_update_time(fps) {
-        self.snake.update(&mut self.food, ctx)
+        self.snake.update(&mut self.food, ctx);
+        if self.snake.collides() {
+          self.game_over = true;
+          self.snake.current_direction = None;
+        }
       }
 
       Ok(())
@@ -48,9 +50,6 @@ impl EventHandler for Game {
         // Draw code here...
 
         let mut canvas = graphics::Canvas::from_frame(ctx, graphics::Color::BLACK);
-
-        // Here I'm supposed to draw the snake and the food.
-        // The snake is going to have its own draw method.
 
         self.snake.draw(&mut canvas);
 
