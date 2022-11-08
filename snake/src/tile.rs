@@ -3,6 +3,15 @@ use rand::seq::SliceRandom;
 
 use ggez::graphics::{ Rect };
 
+/// Trait used to draw anything to the canvas.
+/// It will be implemented for the tile which is used by the snake
+/// and the food.
+pub trait Drawable<T> {
+  fn draw(&mut self) -> T;
+}
+
+/// Represents the position of a tile within the playground.
+///
 #[derive(PartialEq, Copy, Clone)]
 pub struct Tile {
   pub x: f32,
@@ -14,6 +23,8 @@ impl Tile {
     Self { x, y }
   }
 
+  /// Returns a random position for the tile filtering out positions
+  /// that have already been filled.
   pub fn rand() -> Self {
     let cells: Vec<u32> = (0..960)
       .step_by(32)
@@ -33,15 +44,21 @@ impl Tile {
     }
   }
 
+  /// Moves the tile x positions in the x axis
   pub fn move_x(&mut self, x : f32) -> () {
     self.x += x;
   }
 
+  /// Moves the tile y positions in the y axis
   pub fn move_y(&mut self, y: f32) -> () {
     self.y += y
   }
+}
 
-  pub fn draw(&mut self) -> Rect {
+/// Implementation of the drawable trait for the tile. The figure
+/// returned will be a rectangle.
+impl Drawable<Rect> for Tile {
+  fn draw(&mut self) -> Rect {
     Rect::new(self.x, self.y, 32.0, 32.0)
   }
 }

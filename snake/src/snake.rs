@@ -6,14 +6,35 @@ use std::collections::{ LinkedList };
 use crate::food::*;
 use crate::tile::*;
 
+/// Represents the direction the snake could potentially move to
 #[derive(Copy, Clone)]
 pub enum Direction {
+  /// Up
   U,
+  /// Down
   D,
+  /// Left
   L,
+  /// Right
+  /// This will be the default direction when starting the game
   R
 }
 
+
+/// Represents the game's snake. Will be in charge of eating food and
+/// roaming around the entire playground.
+///
+/// The head will be a tile and will help to move around the playground,
+/// identify collisions, food consumption, etc.
+///
+/// The previous field holds the previous direction the snake was heading
+/// towards.
+///
+/// The current direction is held in an <Option> because we would want
+/// to stop the snake when colliding with itself by assigning a None.
+///
+/// The body is a linked list holding tiles. It is helpful when it comes
+/// to adding new tiles on top of the snake.
 pub struct Snake {
   pub head: Tile,
   pub previous: Direction,
@@ -23,6 +44,7 @@ pub struct Snake {
 }
 
 impl Snake {
+  /// Construct a snake representing the main character of the game
   pub fn new() -> Snake {
 
     let head = Tile::new(64.0, 64.0);
@@ -39,6 +61,7 @@ impl Snake {
     }
   }
 
+  /// Draws the snake on the canvas
   pub fn draw(&mut self, canvas: &mut Canvas) -> () {
 
     for square in self.body.iter() {
@@ -59,7 +82,7 @@ impl Snake {
         );
   }
 
-  // updates the snake's position based on its current direction
+  /// Updates the snake's position based on its current direction
   pub fn update(&mut self, food: &mut Food, ctx: &mut Context) {
     if self.current_direction.is_some() {
       self.body.push_front(self.head);
@@ -95,15 +118,19 @@ impl Snake {
     }
   }
 
+  /// Indicates if the snake ate or not by comparing its head's position
+  /// with the food's
   pub fn eats(&mut self, food: &Food) -> bool {
     self.head == food.piece
   }
 
-  pub fn divert(&mut self, direction: Direction) {
+  /// Changes the snake's direction
+  pub fn change_direction(&mut self, direction: Direction) {
     self.current_direction = Some(direction);
     self.previous = direction;
   }
 
+  /// Returns a boolean indicating whether the snake collided or not
   pub fn collides(&mut self) -> bool {
     self.body.iter().any(|&x| x == self.head )
   }
