@@ -35,21 +35,41 @@ impl Game {
         Game {
           snake,
           food,
-          game_over: false,
-          level: 1
+          game_over: true,
+          level: 0x1
         }
     }
+
+    /// Indicates if the game is already over.
+    fn is_over(&self) -> bool {
+      self.game_over
+    }
+
+    /// Ends the game altogether.
+    fn end_game(&mut self, ctx: &mut Context) -> () {
+      self.game_over = true;
+      self.snake.current_direction = None;
+    }
+
 }
 
+/// Implements the EventHandler trait in order to register callbacks for events,
+/// and various sub-modules such as graphics and audio
 impl EventHandler for Game {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
       while ctx.time.check_update_time(fps) {
         self.snake.update(&mut self.food, ctx);
-        if !self.game_over && self.snake.collides() {
-          let mut sound = Source::new(ctx, "/over.wav").unwrap();
-          sound.play_detached(ctx).unwrap();
-          self.game_over = true;
-          self.snake.current_direction = None;
+
+        if !self.is_over() {
+          if self.snake.collides() {
+            let mut sound = Source::new(ctx, "/finish.wav").unwrap();
+            sound.play_detached(ctx).unwrap();
+
+            self.end_game(ctx);
+
+            // draw game over text on the screen
+            // press any key to continue
+          }
         }
       }
 
@@ -70,6 +90,13 @@ impl EventHandler for Game {
         Ok(())
     }
 
+    /// Handles the key events
+    /// General control guidelines:
+    ///
+    /// In order to move the snake around use the arrow keys. In order to start the
+    /// game press the return key.
+    ///
+    /// In order to quit press the escape key.
     fn key_up_event(&mut self, _ctx: &mut Context, input: keyboard::KeyInput) -> GameResult {
       match input.keycode {
         Some(keyboard::KeyCode::Up) => {
@@ -95,7 +122,13 @@ impl EventHandler for Game {
         Some(keyboard::KeyCode::Escape) => {
           _ctx.request_quit();
         }
-        _ => (), // Do nothing
+        Some(keyboard::KeyCode::Return) => {
+          // If the player presses the return key then set game over to falsy and game
+          // starts.
+          self.game_over = false;
+
+        }
+        _ => (), // Do nothing. Any other pressed keys will be ignored at this point.
       }
       Ok(())
     }

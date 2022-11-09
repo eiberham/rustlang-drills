@@ -8,15 +8,18 @@ pub struct Size<T> {
 
 impl<T> Size<T> where
     T: Copy {
+  /// Creates a new instance
   pub fn new(w: T, h: T) -> Self {
     Self { w, h }
   }
 
-  pub fn width(&self) -> T {
+  /// Returns the width
+  pub fn get_width(&self) -> T {
     self.w
   }
 
-  pub fn height(&self) -> T {
+  /// Returns the height
+  pub fn get_height(&self) -> T {
     self.h
   }
 }

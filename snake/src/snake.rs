@@ -120,7 +120,7 @@ impl Snake {
 
   /// Indicates if the snake ate or not by comparing its head's position
   /// with the food's
-  pub fn eats(&mut self, food: &Food) -> bool {
+  fn eats(&mut self, food: &Food) -> bool {
     self.head == food.piece
   }
 
