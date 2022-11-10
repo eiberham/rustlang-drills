@@ -1,3 +1,8 @@
+//! Food abstraction.
+//!
+//! Provides an abstraction over a food.
+//!
+
 use ggez::graphics::{ self, Canvas };
 
 use crate::tile::*;
@@ -12,19 +17,21 @@ pub struct Food {
 }
 
 impl Food {
-  /// Constructs a new food actor.
+  /// Constructs a new food entity.
+  ///
+  /// Normaly we want the food to appear at a random position,
+  /// therefore a call to get_rand is made.
+  ///
+  /// It will place the food randomly within the playground in
+  /// an unoccupied spot
   pub fn new() -> Self {
     let piece = Tile::get_rand();
-    Self {
-      piece
-    }
+    Self { piece }
   }
 
   /// Draws the food over the canvas.
   pub fn draw(&mut self, canvas: &mut Canvas) {
-    canvas.draw(
-      &graphics::Quad,
-      graphics::DrawParam::new()
+    canvas.draw(&graphics::Quad, graphics::DrawParam::new()
         .dest_rect(self.piece.draw())
         .color(graphics::Color::WHITE),
     );

@@ -10,7 +10,8 @@ pub trait Drawable<T> {
   fn draw(&mut self) -> T;
 }
 
-/// Represents the position of a tile within the playground.
+/// Represents the position of a tile within the playground taking
+/// into account the cartesian plane.
 ///
 #[derive(PartialEq, Copy, Clone)]
 pub struct Tile {
@@ -44,12 +45,12 @@ impl Tile {
     }
   }
 
-  /// Moves the tile x positions in the x axis
+  /// Moves the tile x positions in the x axis.
   pub fn move_x(&mut self, x : f32) -> () {
     self.x += x;
   }
 
-  /// Moves the tile y positions in the y axis
+  /// Moves the tile y positions in the y axis.
   pub fn move_y(&mut self, y: f32) -> () {
     self.y += y
   }

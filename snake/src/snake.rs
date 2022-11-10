@@ -1,3 +1,9 @@
+//! Snake abstraction.
+//!
+//! Provides an abstraction over a snake. Will be in charge of eating
+//! food and roaming around the entire playground.
+//!
+
 use ggez::graphics::{ self, Canvas };
 use ggez::audio::{ Source, SoundSource };
 use ggez::Context;
@@ -21,8 +27,7 @@ pub enum Direction {
 }
 
 
-/// Represents the game's snake. Will be in charge of eating food and
-/// roaming around the entire playground.
+/// Represents the game's snake.
 ///
 /// The head will be a tile and will help to move around the playground,
 /// identify collisions, food consumption, etc.
@@ -44,7 +49,7 @@ pub struct Snake {
 }
 
 impl Snake {
-  /// Construct a snake representing the main character of the game
+  /// Construct a snake representing the main character of the game.
   pub fn new() -> Snake {
 
     let head = Tile::new(64.0, 64.0);
@@ -61,7 +66,7 @@ impl Snake {
     }
   }
 
-  /// Draws the snake on the canvas
+  /// Draws the snake on the canvas.
   pub fn draw(&mut self, canvas: &mut Canvas) -> () {
 
     for square in self.body.iter() {
@@ -82,7 +87,11 @@ impl Snake {
         );
   }
 
-  /// Updates the snake's position based on its current direction
+  /// Updates the snake's position based on its current direction.
+  ///
+  /// Handles the movement logic around the playground and ensures
+  /// that whenever the snake surpasses the edge border it will
+  /// continue its course
   pub fn update(&mut self, food: &mut Food, ctx: &mut Context) {
     if self.current_direction.is_some() {
       self.body.push_front(self.head);
@@ -119,18 +128,31 @@ impl Snake {
   }
 
   /// Indicates if the snake ate or not by comparing its head's position
-  /// with the food's
+  /// with that of the food.
+  ///
+  /// Since both the head and the food are the same type and the
+  /// partialeq trait was implemented comparing one against the other is
+  /// utterly possible.
   fn eats(&mut self, food: &Food) -> bool {
     self.head == food.piece
   }
 
-  /// Changes the snake's direction
+  /// Changes the snake's direction.
+  ///
+  /// It's simply setting the direction-related attributes fo the snake.
+  /// For the time being an option is being used on the current_direction
+  /// attribute. That is because we'd want to set it to none once the
+  /// snake collides with itself.
   pub fn change_direction(&mut self, direction: Direction) {
     self.current_direction = Some(direction);
     self.previous = direction;
   }
 
-  /// Returns a boolean indicating whether the snake collided or not
+  /// Returns a boolean indicating whether the snake collided or not.
+  ///
+  /// Since the snake's body is a linked list of tiles, the partialeq
+  /// trait implementation is being taken advantage of in order to
+  /// compare the body position with that of the head.
   pub fn collides(&mut self) -> bool {
     self.body.iter().any(|&x| x == self.head )
   }

@@ -1,5 +1,5 @@
 use ggez::{
-    graphics::{ self },
+    graphics::{ self, Text, Color },
     input::keyboard,
     event::{ EventHandler },
     Context, GameResult,
@@ -11,7 +11,7 @@ use crate::{ snake::*, food::* };
 const fps: u32 = 8;
 
 /// Represents the game itself.
-/// Handles the game event loop, draws all the characters and is composed
+/// Handles the game event loop, draws all the characters and is made out
 /// of the following entities:
 ///
 /// Snake: the main character.
@@ -84,6 +84,17 @@ impl EventHandler for Game {
         self.snake.draw(&mut canvas);
 
         self.food.draw(&mut canvas);
+
+        // It looks like off rip new fonts must be added to the resources folder to be able
+        // to set them.
+        let mut text = Text::new("Game Over");
+        // text.set_font("Chalkduster Normal");
+        text.set_scale(32.0);
+        // When drawing through these calls, `DrawParam` will work as they are documented.
+        canvas.draw(
+            &text,
+            graphics::DrawParam::from([0.0, 0.0]).color(Color::RED),
+        );
 
         canvas.finish(ctx)?;
 
