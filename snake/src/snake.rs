@@ -40,12 +40,14 @@ pub enum Direction {
 ///
 /// The body is a linked list holding tiles. It is helpful when it comes
 /// to adding new tiles on top of the snake.
+///
+/// The velocity is the directional speed the snake is currently at.
 pub struct Snake {
   pub head: Tile,
   pub previous: Direction,
   pub current_direction: Option<Direction>,
   pub body: LinkedList<Tile>,
-  // pub speed: f32
+  pub velocity: f32
 }
 
 impl Snake {
@@ -62,7 +64,8 @@ impl Snake {
       head,
       previous: Direction::R,
       current_direction: Some(Direction::R),
-      body
+      body,
+      velocity: 32.0
     }
   }
 
@@ -121,6 +124,9 @@ impl Snake {
         let mut sound = Source::new(ctx, "/sound.wav").unwrap();
         sound.play_detached(ctx).unwrap();
         food.serve();
+
+        // increase score
+        // check for a level bump as well
       } else {
         self.body.pop_back();
       }

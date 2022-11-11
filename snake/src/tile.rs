@@ -1,6 +1,7 @@
 use rand::{ self };
 use rand::seq::SliceRandom;
-
+use std::thread::sleep;
+use std::time::Duration;
 use ggez::graphics::{ Rect };
 
 /// Trait used to draw anything to the canvas.
@@ -48,11 +49,13 @@ impl Tile {
   /// Moves the tile x positions in the x axis.
   pub fn move_x(&mut self, x : f32) -> () {
     self.x += x;
+    sleep(Duration::from_millis(50));
   }
 
   /// Moves the tile y positions in the y axis.
   pub fn move_y(&mut self, y: f32) -> () {
-    self.y += y
+    self.y += y;
+    sleep(Duration::from_millis(50));
   }
 }
 

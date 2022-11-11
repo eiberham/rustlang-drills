@@ -20,23 +20,19 @@ pub struct Game {
     pub snake: Snake,
     pub food: Food,
     pub game_over: bool,
-    pub level: u8
+    pub level: u8,
+    pub score: usize,
 }
 
 impl Game {
     /// Creates new instances of the game's actors.
     pub fn new(ctx: &mut Context) -> Game {
-        // Load/create resources such as images here.
-
-        let snake = Snake::new();
-
-        let food = Food::new();
-
         Game {
-          snake,
-          food,
+          snake: Snake::new(),
+          food: Food::new(),
           game_over: true,
-          level: 0x1
+          level: 0x1,
+          score: 0x0
         }
     }
 
@@ -87,13 +83,15 @@ impl EventHandler for Game {
 
         // It looks like off rip new fonts must be added to the resources folder to be able
         // to set them.
-        let mut text = Text::new("Game Over");
+        let level = "level".to_uppercase();
+        let mut text = Text::new(format!("{}: {}", level, self.level));
+
         // text.set_font("Chalkduster Normal");
-        text.set_scale(32.0);
+        text.set_scale(28.0);
         // When drawing through these calls, `DrawParam` will work as they are documented.
         canvas.draw(
             &text,
-            graphics::DrawParam::from([0.0, 0.0]).color(Color::RED),
+            graphics::DrawParam::from([0.0, 0.0]).color(Color::WHITE),
         );
 
         canvas.finish(ctx)?;
