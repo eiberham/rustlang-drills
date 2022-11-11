@@ -5,6 +5,7 @@
 
 use ggez::graphics::{ self, Canvas };
 
+/// Brings local crates into scope.
 use crate::tile::*;
 
 /// Represents the food the snake is supposed to eat in order
@@ -38,7 +39,7 @@ impl Food {
   }
 
   /// Places the food randomly within the playground in an
-  /// unoccupied spot
+  /// spot luckily unoccupied by the snake.
   pub fn serve(&mut self) {
     self.piece = Tile::get_rand();
   }
