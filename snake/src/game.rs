@@ -28,7 +28,7 @@ pub struct Game {
 
 impl Game {
     /// Creates new instances of the game's actors.
-    pub fn new(ctx: &mut Context) -> Game {
+    pub fn new() -> Game {
         Game {
           snake: Snake::new(),
           food: Food::new(),
@@ -64,7 +64,7 @@ impl Game {
 
     /// Increases the user's score as the snake eats.
     fn score_up(&mut self) -> () {
-      self.score += 8;
+      self.score += 1;
     }
 
     fn draw_scorekeeping(
@@ -107,10 +107,11 @@ impl EventHandler for Game {
         }
 
         if self.snake.ate.is_some() {
-          // increase score and check for a level bump as well
           self.score_up();
-          self.snake.ate = None;
-
+          self.snake.ate = None; // perhaps create like a toggle ate method would be alright
+          if self.milestones.iter().any(|&x| x == self.score) {
+            self.level_up()
+          }
         }
 
       }
@@ -136,7 +137,12 @@ impl EventHandler for Game {
 
         self.draw_scorekeeping(&mut canvas, "level", 0.0, 0.0, self.level);
 
-        self.draw_scorekeeping(&mut canvas, "score", 720.0, 0.0, self.score);
+        self.draw_scorekeeping(
+          &mut canvas,
+          "score",
+          720.0, 0.0,
+          self.score
+        );
 
         canvas.finish(ctx)?;
 
