@@ -5,6 +5,7 @@ use ggez::{
     Context, GameResult,
     audio::{ Source, SoundSource }
 };
+use std::{fs, io};
 
 use crate::{ snake::*, food::* };
 
@@ -20,8 +21,9 @@ pub struct Game {
     pub snake: Snake,
     pub food: Food,
     pub game_over: bool,
-    pub level: u8,
-    pub score: usize,
+    pub level: u16,
+    pub score: u16,
+    pub milestones: Vec<u16>
 }
 
 impl Game {
@@ -32,7 +34,13 @@ impl Game {
           food: Food::new(),
           game_over: true,
           level: 0x1,
-          score: 0x0
+          // the score is a unsigned 16-bit scalar so
+          // its limited to go from zero up to 65535.
+          score: 0x0,
+          // reaching each milestone makes the game
+          // level go up, therefore the game levels
+          // are only six.
+          milestones: vec![ 8, 16, 32, 40, 48, 56 ]
         }
     }
 
@@ -45,6 +53,37 @@ impl Game {
     fn end_game(&mut self, ctx: &mut Context) -> () {
       self.game_over = true;
       self.snake.current_direction = None;
+    }
+
+    /// Bumps the game's complexity altogether.
+    ///
+    /// The snake moves at a faster speed and it becomes harder not to collide.
+    fn level_up(&mut self) -> () {
+      self.level += 1;
+    }
+
+    /// Increases the user's score as the snake eats.
+    fn score_up(&mut self) -> () {
+      self.score += 8;
+    }
+
+    fn draw_scorekeeping(
+      &mut self,
+      canvas: &mut graphics::Canvas,
+      string: &str,
+      x: f32,
+      y: f32,
+      value: u16
+    ) -> () {
+        let mut text = Text::new(format!("{}: {}", string, value));
+        text.set_font("Arcade")
+            .set_scale(28.0);
+
+        canvas.draw(
+            &text,
+            graphics::DrawParam::from([x, y]).color(Color::WHITE),
+        );
+
     }
 
 }
@@ -63,10 +102,17 @@ impl EventHandler for Game {
 
             self.end_game(ctx);
 
-            // draw game over text on the screen
-            // press any key to continue
+            // draw game over text on the screen and press any key to continue
           }
         }
+
+        if self.snake.ate.is_some() {
+          // increase score and check for a level bump as well
+          self.score_up();
+          self.snake.ate = None;
+
+        }
+
       }
 
       Ok(())
@@ -83,16 +129,14 @@ impl EventHandler for Game {
 
         // It looks like off rip new fonts must be added to the resources folder to be able
         // to set them.
-        let level = "level".to_uppercase();
-        let mut text = Text::new(format!("{}: {}", level, self.level));
-
-        // text.set_font("Chalkduster Normal");
-        text.set_scale(28.0);
-        // When drawing through these calls, `DrawParam` will work as they are documented.
-        canvas.draw(
-            &text,
-            graphics::DrawParam::from([0.0, 0.0]).color(Color::WHITE),
+        ctx.gfx.add_font(
+            "Arcade",
+            graphics::FontData::from_path(ctx, "/arcade.ttf")?,
         );
+
+        self.draw_scorekeeping(&mut canvas, "level", 0.0, 0.0, self.level);
+
+        self.draw_scorekeeping(&mut canvas, "score", 720.0, 0.0, self.score);
 
         canvas.finish(ctx)?;
 

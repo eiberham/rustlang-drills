@@ -26,6 +26,13 @@ pub enum Direction {
   R
 }
 
+// Indicates if the snake has eaten.
+// It is necessary to track down this action from the game crate as it
+// will allow to handle scorekeeping.
+pub enum Ate {
+  Food
+}
+
 
 /// Represents the game's snake.
 ///
@@ -42,12 +49,16 @@ pub enum Direction {
 /// to adding new tiles on top of the snake.
 ///
 /// The velocity is the directional speed the snake is currently at.
+///
+/// The ate field incates if the snake has eaten food or not that's why
+/// an option is being used.
 pub struct Snake {
   pub head: Tile,
   pub previous: Direction,
   pub current_direction: Option<Direction>,
   pub body: LinkedList<Tile>,
-  pub velocity: f32
+  pub velocity: f32,
+  pub ate: Option<Ate>
 }
 
 impl Snake {
@@ -65,7 +76,8 @@ impl Snake {
       previous: Direction::R,
       current_direction: Some(Direction::R),
       body,
-      velocity: 32.0
+      velocity: 32.0,
+      ate: None
     }
   }
 
@@ -121,12 +133,11 @@ impl Snake {
         }
       }
       if self.eats(&food){
+        self.ate = Some(Ate::Food);
         let mut sound = Source::new(ctx, "/sound.wav").unwrap();
         sound.play_detached(ctx).unwrap();
         food.serve();
 
-        // increase score
-        // check for a level bump as well
       } else {
         self.body.pop_back();
       }
