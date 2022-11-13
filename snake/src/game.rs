@@ -1,3 +1,9 @@
+//! Game abstraction.
+//!
+//! Provides an abstraction over the game. It is supposed to handle the
+//! game events and initial graphics.
+//!
+
 use ggez::{
     graphics::{ self, Text, Color },
     input::keyboard,
@@ -5,7 +11,6 @@ use ggez::{
     Context, GameResult,
     audio::{ Source, SoundSource }
 };
-use std::{fs, io};
 
 use crate::{ snake::*, food::* };
 
@@ -40,7 +45,7 @@ impl Game {
           // reaching each milestone makes the game
           // level go up, therefore the game levels
           // are only six.
-          milestones: vec![ 8, 16, 32, 40, 48, 56 ]
+          milestones: vec![ 8, 16, 24, 32, 40, 48, 56 ]
         }
     }
 
@@ -67,6 +72,7 @@ impl Game {
       self.score += 1;
     }
 
+    /// Draws the game stats over the canvas in the given coordinates.
     fn draw_scorekeeping(
       &mut self,
       canvas: &mut graphics::Canvas,
@@ -140,7 +146,7 @@ impl EventHandler for Game {
         self.draw_scorekeeping(
           &mut canvas,
           "score",
-          720.0, 0.0,
+          320.0, 0.0,
           self.score
         );
 

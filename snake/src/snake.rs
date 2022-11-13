@@ -112,21 +112,21 @@ impl Snake {
       self.body.push_front(self.head);
       match self.current_direction.unwrap() {
         Direction::R => {
-          self.head.move_x(32.0);
+          self.head.move_x(self.velocity);
           if self.head.x >= 960.0 { self.head.x = 0.0; }
         }
         Direction::L => {
-          self.head.move_x(-32.0);
+          self.head.move_x(self.velocity * -1.0);
           if self.head.x <= -32.0 { self.head.x = 928.0; }
         }
         Direction::U => {
-          self.head.move_y(-32.0);
+          self.head.move_y(self.velocity * -1.0);
           if self.head.y <= -32.0 {
             self.head.y = 928.0;
           }
         }
         Direction::D => {
-          self.head.move_y(32.0);
+          self.head.move_y(self.velocity);
           if self.head.y >= 960.0 {
             self.head.y = -32.0;
           }

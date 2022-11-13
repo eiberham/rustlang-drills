@@ -1,3 +1,9 @@
+//! Tile abstraction.
+//!
+//! Provides an abstraction over a tile. Is the square shape the
+//! snake and food are made of.
+//!
+
 use rand::{ self };
 use rand::seq::SliceRandom;
 use std::thread::sleep;
