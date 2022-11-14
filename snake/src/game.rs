@@ -30,25 +30,29 @@ pub struct Game {
     pub game_over: bool,
     pub level: u16,
     pub score: u16,
-    pub milestones: Vec<u16>
+    pub milestones: Vec<u16>,
+    pub music: Source
 }
 
 impl Game {
     /// Creates new instances of the game's actors.
-    pub fn new() -> Game {
-        Game {
-          snake: Snake::new(),
-          food: Food::new(),
-          game_over: true,
-          level: 0x1,
-          // the score is a unsigned 16-bit scalar so
-          // its limited to go from zero up to 65535.
-          score: 0x0,
-          // reaching each milestone makes the game
-          // level go up, therefore the game levels
-          // are only six.
-          milestones: vec![ 8, 16, 24, 32, 40, 48, 56, 64 ]
-        }
+    pub fn new(ctx: &mut Context) -> Game {
+      let music = Source::new(ctx, "/music.wav").unwrap();
+      music.play_later().unwrap();
+      Game {
+        snake: Snake::new(),
+        food: Food::new(),
+        game_over: true,
+        level: 0x1,
+        // the score is a unsigned 16-bit scalar so
+        // its limited to go from zero up to 65535.
+        score: 0x0,
+        // reaching each milestone makes the game
+        // level go up, therefore the game levels
+        // are only six.
+        milestones: vec![ 8, 16, 24, 32, 40, 48, 56, 64 ],
+        music
+      }
     }
 
     /// Tells if the game is already over.
@@ -62,6 +66,7 @@ impl Game {
       self.game_over = true;
       self.snake.current_direction = None;
       sleep(Duration::from_millis(5000));
+      self.snake.current_direction = Some(Direction::R);
       self.restart();
     }
 
