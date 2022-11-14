@@ -4,8 +4,6 @@
 //!
 
 use ggez::graphics::{ self, Canvas };
-
-/// Brings local crates into scope.
 use crate::tile::*;
 
 /// Represents the food the snake is supposed to eat in order

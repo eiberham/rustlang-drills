@@ -81,11 +81,12 @@ impl Snake {
     }
   }
 
-  /// Draws the snake on the canvas.
+  /// Draws the snake onto the canvas.
   pub fn draw(&mut self, canvas: &mut Canvas) -> () {
 
     for square in self.body.iter() {
       let mut tile = square.clone();
+
       canvas.draw(
             &graphics::Quad,
             graphics::DrawParam::new()
@@ -121,14 +122,14 @@ impl Snake {
         }
         Direction::U => {
           self.head.move_y(self.velocity * -1.0);
-          if self.head.y <= -32.0 {
+          if self.head.y <= 64.0 {
             self.head.y = 928.0;
           }
         }
         Direction::D => {
           self.head.move_y(self.velocity);
           if self.head.y >= 960.0 {
-            self.head.y = -32.0;
+            self.head.y = 96.0;
           }
         }
       }

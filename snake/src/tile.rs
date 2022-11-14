@@ -34,7 +34,7 @@ impl Tile {
   /// Returns a random position for the tile filtering out positions
   /// that have already been filled.
   pub fn get_rand() -> Self {
-    let cells: Vec<u32> = (0..960)
+    let cells: Vec<u32> = (96..960)
       .step_by(32)
       .map(|v| v)
       .collect();

@@ -3,7 +3,9 @@
 //! Provides an abstraction over the game. It is supposed to handle the
 //! game events and initial graphics.
 //!
-
+use std::thread::sleep;
+use std::time::Duration;
+use ggez::glam::Vec2;
 use ggez::{
     graphics::{ self, Text, Color },
     input::keyboard,
@@ -14,7 +16,7 @@ use ggez::{
 
 use crate::{ snake::*, food::* };
 
-const fps: u32 = 8;
+const GAME_FPS: u32 = 8;
 
 /// Represents the game itself.
 /// Handles the game event loop, draws all the characters and is made out
@@ -45,51 +47,60 @@ impl Game {
           // reaching each milestone makes the game
           // level go up, therefore the game levels
           // are only six.
-          milestones: vec![ 8, 16, 24, 32, 40, 48, 56 ]
+          milestones: vec![ 8, 16, 24, 32, 40, 48, 56, 64 ]
         }
     }
 
-    /// Indicates if the game is already over.
+    /// Tells if the game is already over.
     fn is_over(&self) -> bool {
       self.game_over
     }
 
-    /// Ends the game altogether.
-    fn end_game(&mut self, ctx: &mut Context) -> () {
+    /// Ends the game altogether. Keeps the snake in a steady position and
+    /// restarts the game back again five seconds later.
+    fn end_game(&mut self) -> () {
       self.game_over = true;
       self.snake.current_direction = None;
+      sleep(Duration::from_millis(5000));
+      self.restart();
     }
 
-    /// Bumps the game's complexity altogether.
-    ///
-    /// The snake moves at a faster speed and it becomes harder not to collide.
+    /// Levels up.
     fn level_up(&mut self) -> () {
       self.level += 1;
     }
 
-    /// Increases the user's score as the snake eats.
+    /// Scores up.
     fn score_up(&mut self) -> () {
       self.score += 1;
     }
 
-    /// Draws the game stats over the canvas in the given coordinates.
+    /// Draws the game stats over the canvas in the given point coordinates.
     fn draw_scorekeeping(
       &mut self,
       canvas: &mut graphics::Canvas,
       string: &str,
-      x: f32,
-      y: f32,
+      point: Vec2,
       value: u16
     ) -> () {
         let mut text = Text::new(format!("{}: {}", string, value));
         text.set_font("Arcade")
-            .set_scale(28.0);
+            .set_scale(24.0);
 
         canvas.draw(
             &text,
-            graphics::DrawParam::from([x, y]).color(Color::WHITE),
+            graphics::DrawParam::from(point).color(Color::WHITE),
         );
 
+    }
+
+    /// Resets the game altogether.
+    fn restart(&mut self) {
+        self.snake = Snake::new();
+        self.food = Food::new();
+        self.game_over = false;
+        self.score = 0x0;
+        self.level = 0x1;
     }
 
 }
@@ -98,7 +109,7 @@ impl Game {
 /// and various sub-modules such as graphics and audio
 impl EventHandler for Game {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
-      while ctx.time.check_update_time(fps) {
+      while ctx.time.check_update_time(GAME_FPS) {
         self.snake.update(&mut self.food, ctx);
 
         if !self.is_over() {
@@ -106,9 +117,7 @@ impl EventHandler for Game {
             let mut sound = Source::new(ctx, "/finish.wav").unwrap();
             sound.play_detached(ctx).unwrap();
 
-            self.end_game(ctx);
-
-            // draw game over text on the screen and press any key to continue
+            self.end_game();
           }
         }
 
@@ -141,14 +150,20 @@ impl EventHandler for Game {
             graphics::FontData::from_path(ctx, "/arcade.ttf")?,
         );
 
-        self.draw_scorekeeping(&mut canvas, "level", 0.0, 0.0, self.level);
+        self.draw_scorekeeping(
+          &mut canvas,
+          "level",
+          Vec2::new(32.0, 32.0),
+          self.level
+        );
 
         self.draw_scorekeeping(
           &mut canvas,
           "score",
-          320.0, 0.0,
+          Vec2::new(720.0, 32.0),
           self.score
         );
+
 
         canvas.finish(ctx)?;
 
@@ -193,7 +208,7 @@ impl EventHandler for Game {
           self.game_over = false;
 
         }
-        _ => (), // Do nothing. Any other pressed keys will be ignored at this point.
+        _ => (),
       }
       Ok(())
     }
