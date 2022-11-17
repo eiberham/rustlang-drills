@@ -42,7 +42,7 @@ impl Game {
       Game {
         snake: Snake::new(),
         food: Food::new(),
-        game_over: true,
+        game_over: false,
         level: 0x1,
         // the score is a unsigned 16-bit scalar so
         // its limited to go from zero up to 65535.
@@ -128,7 +128,7 @@ impl EventHandler for Game {
 
         if self.snake.ate.is_some() {
           self.score_up();
-          self.snake.ate = None; // perhaps create like a toggle ate method would be alright
+          self.snake.ate = None;
           if self.milestones.iter().any(|&x| x == self.score) {
             self.level_up()
           }
@@ -140,6 +140,9 @@ impl EventHandler for Game {
     }
 
     /// Draws all the actors in the game.
+    ///
+    /// It looks like off rip new fonts must be added to the resources folder to be able
+    /// to set them.
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
 
         let mut canvas = graphics::Canvas::from_frame(ctx, graphics::Color::BLACK);
@@ -148,8 +151,6 @@ impl EventHandler for Game {
 
         self.food.draw(&mut canvas);
 
-        // It looks like off rip new fonts must be added to the resources folder to be able
-        // to set them.
         ctx.gfx.add_font(
             "Arcade",
             graphics::FontData::from_path(ctx, "/arcade.ttf")?,
@@ -206,12 +207,6 @@ impl EventHandler for Game {
         }
         Some(keyboard::KeyCode::Escape) => {
           _ctx.request_quit();
-        }
-        Some(keyboard::KeyCode::Return) => {
-          // If the player presses the return key then set game over to falsy and game
-          // starts.
-          self.game_over = false;
-
         }
         _ => (),
       }

@@ -36,8 +36,8 @@ impl Food {
     );
   }
 
-  /// Places the food randomly within the playground in an
-  /// spot luckily unoccupied by the snake.
+  /// Places the food randomly within the playground in an spot
+  /// luckily unoccupied by the snake.
   pub fn serve(&mut self) {
     self.piece = Tile::get_rand();
   }

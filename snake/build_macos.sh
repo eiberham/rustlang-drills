@@ -28,7 +28,6 @@ cp -r ../resources $MACOS_APP_DIR/Contents/MacOS
 echo "Copying launcher"
 cp ../macos_launch.sh $MACOS_APP_DIR/Contents/MacOS/$MACOS_APP_NAME
 
-#check here the icon part
 echo "Copying Icon"
 mkdir -p $MACOS_APP_DIR/Contents/Resources
 mv ../resources/Info.plist $MACOS_APP_DIR/Contents/
