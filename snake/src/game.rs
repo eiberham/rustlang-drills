@@ -37,8 +37,11 @@ pub struct Game {
 impl Game {
     /// Creates new instances of the game's actors.
     pub fn new(ctx: &mut Context) -> Game {
-      let music = Source::new(ctx, "/music.wav").unwrap();
-      music.play_later().unwrap();
+      let mut music = Source::new(ctx, "/music.wav").unwrap();
+      music.set_repeat(true);
+      music.play(ctx).unwrap();
+      music.set_volume(0.2);
+
       Game {
         snake: Snake::new(),
         food: Food::new(),
@@ -62,12 +65,13 @@ impl Game {
 
     /// Ends the game altogether. Keeps the snake in a steady position and
     /// restarts the game back again five seconds later.
-    fn end_game(&mut self) -> () {
+    fn end_game(&mut self, ctx: &mut Context) -> () {
+      self.music.stop(ctx).unwrap();
       self.game_over = true;
       self.snake.current_direction = None;
       sleep(Duration::from_millis(5000));
       self.snake.current_direction = Some(Direction::R);
-      self.restart();
+      self.restart(ctx);
     }
 
     /// Levels up.
@@ -100,12 +104,13 @@ impl Game {
     }
 
     /// Resets the game altogether.
-    fn restart(&mut self) {
+    fn restart(&mut self, ctx: &mut Context) {
         self.snake = Snake::new();
         self.food = Food::new();
         self.game_over = false;
         self.score = 0x0;
         self.level = 0x1;
+        self.music.play(ctx).unwrap();
     }
 
 }
@@ -122,7 +127,7 @@ impl EventHandler for Game {
             let mut sound = Source::new(ctx, "/finish.wav").unwrap();
             sound.play_detached(ctx).unwrap();
 
-            self.end_game();
+            self.end_game(ctx);
           }
         }
 
