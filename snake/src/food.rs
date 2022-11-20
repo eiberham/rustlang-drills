@@ -11,7 +11,9 @@ use crate::tile::*;
 ///
 /// Its piece field will hold up a tile indicating where in
 /// the playground the food is
+#[derive(smart_default::SmartDefault)]
 pub struct Food {
+  #[default(Tile::get_rand())]
   pub piece: Tile
 }
 
@@ -24,8 +26,7 @@ impl Food {
   /// It will place the food randomly within the playground in
   /// an unoccupied spot
   pub fn new() -> Self {
-    let piece = Tile::get_rand();
-    Self { piece }
+    Self { piece: Default::default() }
   }
 
   /// Draws the food over the canvas.

@@ -3,6 +3,7 @@
 //! Provides an abstraction over the game. It is supposed to handle the
 //! game events and initial graphics.
 //!
+
 use std::thread::sleep;
 use std::time::Duration;
 use ggez::glam::Vec2;
@@ -13,6 +14,8 @@ use ggez::{
     Context, GameResult,
     audio::{ Source, SoundSource }
 };
+use ggez::graphics::Image;
+use std::f32::consts::TAU;
 
 use crate::{ snake::*, food::* };
 
@@ -24,37 +27,55 @@ const GAME_FPS: u32 = 8;
 ///
 /// Snake: the main character.
 ///
+#[derive(smart_default::SmartDefault)]
 pub struct Game {
+    // Represents the main character of the entire
+    // game.
+    #[default(Snake::new())]
     pub snake: Snake,
+    // Represents the foodstuff needed for the
+    // snake to grow.
+    #[default(Food::new())]
     pub food: Food,
+    // Indicates whether the game is over or not.
+    #[default = false]
     pub game_over: bool,
+    // Indicates the game level. It goes from one
+    // up to 8.
+    #[default = 1 ]
     pub level: u16,
+    // the score is a unsigned 16-bit scalar so
+    // its limited to go from zero up to 65535.
+    #[default = 0 ]
     pub score: u16,
+    // reaching each milestone makes the game
+    // level go up
+    #[default(vec![ 8, 16, 24, 32, 40, 48, 56, 64 ])]
     pub milestones: Vec<u16>,
-    pub music: Source
+    // this represents the background music during
+    // the game
+    pub music: Option<Source>,
+    pub sprite: Option<Image>
 }
 
 impl Game {
-    /// Creates new instances of the game's actors.
     pub fn new(ctx: &mut Context) -> Game {
       let mut music = Source::new(ctx, "/music.wav").unwrap();
       music.set_repeat(true);
       music.play(ctx).unwrap();
       music.set_volume(0.2);
 
+      let sprite = Image::from_path(ctx, "/sprite.png").unwrap();
+
       Game {
-        snake: Snake::new(),
-        food: Food::new(),
-        game_over: false,
-        level: 0x1,
-        // the score is a unsigned 16-bit scalar so
-        // its limited to go from zero up to 65535.
-        score: 0x0,
-        // reaching each milestone makes the game
-        // level go up, therefore the game levels
-        // are only six.
-        milestones: vec![ 8, 16, 24, 32, 40, 48, 56, 64 ],
-        music
+        snake: Default::default(),
+        food: Default::default(),
+        game_over: Default::default(),
+        level: Default::default(),
+        score: Default::default(),
+        milestones: Default::default(),
+        music: Some(music),
+        sprite: Some(sprite)
       }
     }
 
@@ -66,7 +87,7 @@ impl Game {
     /// Ends the game altogether. Keeps the snake in a steady position and
     /// restarts the game back again five seconds later.
     fn end_game(&mut self, ctx: &mut Context) -> () {
-      self.music.stop(ctx).unwrap();
+      self.music.unwrap().stop(ctx).unwrap();
       self.game_over = true;
       self.snake.current_direction = None;
       sleep(Duration::from_millis(5000));
@@ -110,7 +131,7 @@ impl Game {
         self.game_over = false;
         self.score = 0x0;
         self.level = 0x1;
-        self.music.play(ctx).unwrap();
+        self.music.unwrap().play(ctx).unwrap();
     }
 
 }
@@ -175,6 +196,45 @@ impl EventHandler for Game {
           self.score
         );
 
+        /* let params = graphics::DrawParam::from([200.0, 200.0])
+            .scale([-1.0, 1.0])
+            .offset([0.5, 0.5]);
+        canvas.draw(&self.sprite, params); */
+
+        let image = graphics::Image::from_path(ctx, "/sprite.png")?;
+        let mut instances = graphics::InstanceArray::new(ctx, image);
+        instances.resize(ctx, 150 * 150);
+
+        let time = (ctx.time.time_since_start().as_secs_f64() * 1000.0) as u32;
+        let cycle = 10_000;
+        instances.set((0..150).flat_map(|x| {
+            (0..150).map(move |y| {
+                let x = x as f32;
+                let y = y as f32;
+                graphics::DrawParam::new()
+                    .dest(Vec2::new(x * 10.0, y * 10.0))
+                    .scale(Vec2::new(
+                        ((time % cycle * 2) as f32 / cycle as f32 * TAU).cos().abs() * 0.0625,
+                        ((time % cycle * 2) as f32 / cycle as f32 * TAU).cos().abs() * 0.0625,
+                    ))
+                    .rotation(-2.0 * ((time % cycle) as f32 / cycle as f32 * TAU))
+            })
+        }));
+
+        let param = graphics::DrawParam::new()
+            .dest(Vec2::new(
+                ((time % cycle) as f32 / cycle as f32 * TAU).cos() * 50.0 + 100.0,
+                ((time % cycle) as f32 / cycle as f32 * TAU).sin() * 50.0 - 150.0,
+            ))
+            .scale(Vec2::new(
+                ((time % cycle) as f32 / cycle as f32 * TAU).sin().abs() * 2.0 + 1.0,
+                ((time % cycle) as f32 / cycle as f32 * TAU).sin().abs() * 2.0 + 1.0,
+            ))
+            .rotation((time % cycle) as f32 / cycle as f32 * TAU)
+            .offset(Vec2::new(750.0, 750.0))
+            // src has no influence when applied globally to a spritebatch
+            .src(graphics::Rect::new(0.005, 0.005, 0.005, 0.005));
+        canvas.draw(&instances, param);
 
         canvas.finish(ctx)?;
 

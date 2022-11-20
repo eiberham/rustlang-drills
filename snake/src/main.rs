@@ -1,5 +1,8 @@
 //! This is the main file, where the entry point of the game is.
 
+#[macro_use]
+extern crate smart_default;
+
 mod game;
 use crate::game::*; // bring all public stuff into scope
 

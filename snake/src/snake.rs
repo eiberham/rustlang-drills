@@ -13,7 +13,7 @@ use crate::food::*;
 use crate::tile::*;
 
 /// Represents the direction the snake could potentially move to
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, smart_default::SmartDefault )]
 pub enum Direction {
   /// Up
   U,
@@ -23,6 +23,7 @@ pub enum Direction {
   L,
   /// Right
   /// This will be the default direction when starting the game
+  #[default]
   R
 }
 
@@ -52,6 +53,7 @@ pub enum Ate {
 ///
 /// The ate field incates if the snake has eaten food or not that's why
 /// an option is being used.
+#[derive(smart_default::SmartDefault)]
 pub struct Snake {
   pub head: Tile,
   pub previous: Direction,

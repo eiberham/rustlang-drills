@@ -18,7 +18,7 @@ pub trait Drawable<T> {
 /// Represents the position of a tile within the playground taking
 /// into account the cartesian plane.
 ///
-#[derive(PartialEq, Copy, Clone)]
+#[derive(PartialEq, Copy, Clone, smart_default::SmartDefault)]
 pub struct Tile {
   pub x: f32,
   pub y: f32
