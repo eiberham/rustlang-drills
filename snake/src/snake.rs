@@ -4,7 +4,7 @@
 //! food and roaming around the entire playground.
 //!
 
-use ggez::graphics::{ self, Canvas };
+use ggez::graphics::{ self, Canvas, Rect };
 use ggez::audio::{ Source, SoundSource };
 use ggez::Context;
 use std::collections::{ LinkedList };
@@ -84,25 +84,37 @@ impl Snake {
   }
 
   /// Draws the snake onto the canvas.
-  pub fn draw(&mut self, canvas: &mut Canvas) -> () {
-
+  pub fn draw(&mut self, canvas: &mut Canvas, ctx: &mut Context) -> () {
+    let image = graphics::Image::from_path(ctx, "/sprite.png").unwrap();
     for square in self.body.iter() {
-      let mut tile = square.clone();
+      let tile = square.clone();
 
       canvas.draw(
-            &graphics::Quad,
-            graphics::DrawParam::new()
-                .dest_rect(tile.draw())
-                .color(graphics::Color::GREEN),
+          &image,
+          graphics::DrawParam::new()
+            .src(Rect::new(
+              0.166 * 5.0,
+              0.0,
+              1.0 / 6.0,
+              1.0)
+            )
+            .dest([tile.x, tile.y])
         );
     }
 
+    let src = match self.current_direction.unwrap() {
+      Direction::U => Rect::new( 0.166 * 2.0, 0.0, 1.0 / 6.0, 1.0 ),
+      Direction::L => Rect::new( 0.166 * 3.0, 0.0, 1.0 / 6.0, 1.0 ),
+      Direction::R => Rect::new( 0.166 * 4.0, 0.0, 1.0 / 6.0, 1.0 ),
+      Direction::D => Rect::new( 0.166 * 1.0, 0.0, 1.0 / 6.0, 1.0 ),
+    };
+
     canvas.draw(
-            &graphics::Quad,
-            graphics::DrawParam::new()
-                .dest_rect(self.head.draw())
-                .color(graphics::Color::YELLOW),
-        );
+        &image,
+        graphics::DrawParam::new()
+          .src(src)
+          .dest([self.head.x, self.head.y])
+    );
   }
 
   /// Updates the snake's position based on its current direction.

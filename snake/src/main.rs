@@ -1,6 +1,5 @@
 //! This is the main file, where the entry point of the game is.
 
-#[macro_use]
 extern crate smart_default;
 
 mod game;
@@ -18,7 +17,7 @@ use std::path;
 
 fn main() {
     // Make a Context.
-    let (mut ctx, event_loop) = ContextBuilder::new("snake", "eiberham")
+    let (ctx, event_loop) = ContextBuilder::new("snake", "eiberham")
         .add_resource_path(path::PathBuf::from("./resources"))
         .window_setup(ggez::conf::WindowSetup::default().title("snake game"))
         .window_mode(ggez::conf::WindowMode::default().dimensions(960.0, 960.0))
@@ -28,7 +27,7 @@ fn main() {
     // Create an instance of your event handler.
     // Usually, you should provide it with the Context object to
     // use when setting your game up.
-    let game = Game::new(&mut ctx);
+    let game = Game::new();
 
     // Run!
     event::run(ctx, event_loop, game);

@@ -3,7 +3,10 @@
 //! Provides an abstraction over a food.
 //!
 
-use ggez::graphics::{ self, Canvas };
+use ggez::{
+  Context,
+  graphics::{ self, Canvas, Rect }
+};
 use crate::tile::*;
 
 /// Represents the food the snake is supposed to eat in order
@@ -26,14 +29,20 @@ impl Food {
   /// It will place the food randomly within the playground in
   /// an unoccupied spot
   pub fn new() -> Self {
-    Self { piece: Default::default() }
+    Self::default()
   }
 
   /// Draws the food over the canvas.
-  pub fn draw(&mut self, canvas: &mut Canvas) {
-    canvas.draw(&graphics::Quad, graphics::DrawParam::new()
-        .dest_rect(self.piece.draw())
-        .color(graphics::Color::WHITE),
+  pub fn draw(&mut self, canvas: &mut Canvas, ctx: &mut Context) {
+    let image = graphics::Image::from_path(ctx, "/sprite.png").unwrap();
+    canvas.draw(&image, graphics::DrawParam::new()
+        .src(Rect::new(
+            0.0,
+            0.0,
+            1.0 / 6.0,
+            1.0)
+        )
+        .dest([self.piece.x, self.piece.y])
     );
   }
 

@@ -14,8 +14,6 @@ use ggez::{
     Context, GameResult,
     audio::{ Source, SoundSource }
 };
-use ggez::graphics::Image;
-use std::f32::consts::TAU;
 
 use crate::{ snake::*, food::* };
 
@@ -52,31 +50,11 @@ pub struct Game {
     // level go up
     #[default(vec![ 8, 16, 24, 32, 40, 48, 56, 64 ])]
     pub milestones: Vec<u16>,
-    // this represents the background music during
-    // the game
-    pub music: Option<Source>,
-    pub sprite: Option<Image>
 }
 
 impl Game {
-    pub fn new(ctx: &mut Context) -> Game {
-      let mut music = Source::new(ctx, "/music.wav").unwrap();
-      music.set_repeat(true);
-      music.play(ctx).unwrap();
-      music.set_volume(0.2);
-
-      let sprite = Image::from_path(ctx, "/sprite.png").unwrap();
-
-      Game {
-        snake: Default::default(),
-        food: Default::default(),
-        game_over: Default::default(),
-        level: Default::default(),
-        score: Default::default(),
-        milestones: Default::default(),
-        music: Some(music),
-        sprite: Some(sprite)
-      }
+    pub fn new() -> Game {
+      Game::default()
     }
 
     /// Tells if the game is already over.
@@ -86,13 +64,12 @@ impl Game {
 
     /// Ends the game altogether. Keeps the snake in a steady position and
     /// restarts the game back again five seconds later.
-    fn end_game(&mut self, ctx: &mut Context) -> () {
-      self.music.unwrap().stop(ctx).unwrap();
+    fn end_game(&mut self) -> () {
       self.game_over = true;
       self.snake.current_direction = None;
       sleep(Duration::from_millis(5000));
       self.snake.current_direction = Some(Direction::R);
-      self.restart(ctx);
+      self.restart();
     }
 
     /// Levels up.
@@ -125,13 +102,8 @@ impl Game {
     }
 
     /// Resets the game altogether.
-    fn restart(&mut self, ctx: &mut Context) {
-        self.snake = Snake::new();
-        self.food = Food::new();
-        self.game_over = false;
-        self.score = 0x0;
-        self.level = 0x1;
-        self.music.unwrap().play(ctx).unwrap();
+    fn restart(&mut self) {
+        *self = Game::default();
     }
 
 }
@@ -148,7 +120,7 @@ impl EventHandler for Game {
             let mut sound = Source::new(ctx, "/finish.wav").unwrap();
             sound.play_detached(ctx).unwrap();
 
-            self.end_game(ctx);
+            self.end_game();
           }
         }
 
@@ -173,9 +145,9 @@ impl EventHandler for Game {
 
         let mut canvas = graphics::Canvas::from_frame(ctx, graphics::Color::BLACK);
 
-        self.snake.draw(&mut canvas);
+        self.snake.draw(&mut canvas, ctx);
 
-        self.food.draw(&mut canvas);
+        self.food.draw(&mut canvas, ctx);
 
         ctx.gfx.add_font(
             "Arcade",
@@ -195,46 +167,6 @@ impl EventHandler for Game {
           Vec2::new(720.0, 32.0),
           self.score
         );
-
-        /* let params = graphics::DrawParam::from([200.0, 200.0])
-            .scale([-1.0, 1.0])
-            .offset([0.5, 0.5]);
-        canvas.draw(&self.sprite, params); */
-
-        let image = graphics::Image::from_path(ctx, "/sprite.png")?;
-        let mut instances = graphics::InstanceArray::new(ctx, image);
-        instances.resize(ctx, 150 * 150);
-
-        let time = (ctx.time.time_since_start().as_secs_f64() * 1000.0) as u32;
-        let cycle = 10_000;
-        instances.set((0..150).flat_map(|x| {
-            (0..150).map(move |y| {
-                let x = x as f32;
-                let y = y as f32;
-                graphics::DrawParam::new()
-                    .dest(Vec2::new(x * 10.0, y * 10.0))
-                    .scale(Vec2::new(
-                        ((time % cycle * 2) as f32 / cycle as f32 * TAU).cos().abs() * 0.0625,
-                        ((time % cycle * 2) as f32 / cycle as f32 * TAU).cos().abs() * 0.0625,
-                    ))
-                    .rotation(-2.0 * ((time % cycle) as f32 / cycle as f32 * TAU))
-            })
-        }));
-
-        let param = graphics::DrawParam::new()
-            .dest(Vec2::new(
-                ((time % cycle) as f32 / cycle as f32 * TAU).cos() * 50.0 + 100.0,
-                ((time % cycle) as f32 / cycle as f32 * TAU).sin() * 50.0 - 150.0,
-            ))
-            .scale(Vec2::new(
-                ((time % cycle) as f32 / cycle as f32 * TAU).sin().abs() * 2.0 + 1.0,
-                ((time % cycle) as f32 / cycle as f32 * TAU).sin().abs() * 2.0 + 1.0,
-            ))
-            .rotation((time % cycle) as f32 / cycle as f32 * TAU)
-            .offset(Vec2::new(750.0, 750.0))
-            // src has no influence when applied globally to a spritebatch
-            .src(graphics::Rect::new(0.005, 0.005, 0.005, 0.005));
-        canvas.draw(&instances, param);
 
         canvas.finish(ctx)?;
 
