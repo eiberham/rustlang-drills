@@ -139,11 +139,18 @@ impl EventHandler for Game {
 
     /// Draws all the actors in the game.
     ///
-    /// It looks like off rip new fonts must be added to the resources folder to be able
+    /// Off rip new fonts must be added to the resources folder to be able
     /// to set them.
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
 
         let mut canvas = graphics::Canvas::from_frame(ctx, graphics::Color::BLACK);
+
+        // TODO:
+        // Draw here the first scene where it says: press the return key to start
+        // Find a way to clear the screen
+        // Try to create or seek out a background sprite for the game
+        // Compile the game for windows
+        // Optionally save highest score somewhere
 
         self.snake.draw(&mut canvas, ctx);
 
