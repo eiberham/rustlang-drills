@@ -15,7 +15,7 @@ use ggez::{
     audio::{ Source, SoundSource }
 };
 
-use crate::{ snake::*, food::* };
+use crate::{ snake::*, food::*, scene::* };
 
 const GAME_FPS: u32 = 8;
 
@@ -50,6 +50,9 @@ pub struct Game {
     // level go up
     #[default(vec![ 8, 16, 24, 32, 40, 48, 56, 64 ])]
     pub milestones: Vec<u16>,
+    // Represents the actual scene
+    #[default(Scene::new())]
+    pub scene: Scene
 }
 
 impl Game {
@@ -142,7 +145,6 @@ impl EventHandler for Game {
     /// Off rip new fonts must be added to the resources folder to be able
     /// to set them.
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-
         let mut canvas = graphics::Canvas::from_frame(ctx, graphics::Color::BLACK);
 
         // TODO:
@@ -151,32 +153,53 @@ impl EventHandler for Game {
         // Try to create or seek out a background sprite for the game
         // Compile the game for windows
         // Optionally save highest score somewhere
-
-        self.snake.draw(&mut canvas, ctx);
-
-        self.food.draw(&mut canvas, ctx);
+        // Create a text manager crate to handle all the text drawing within the game
 
         ctx.gfx.add_font(
-            "Arcade",
-            graphics::FontData::from_path(ctx, "/arcade.ttf")?,
-        );
+                "Arcade",
+                graphics::FontData::from_path(ctx, "/arcade.ttf")?,
+            );
 
-        self.draw_scorekeeping(
-          &mut canvas,
-          "level",
-          Vec2::new(32.0, 32.0),
-          self.level
-        );
+        match self.scene.current  {
+          Some(State::Start) => {
+            let mut text = Text::new("Welcome to the snake game! \n\n");
+            text.add("Press the return key to start the game \n");
+            text.add("Press the escape key to quit \n");
+            text.add("Press the space key to pause the game  \n");
+            text.set_font("Arcade")
+                .set_scale(24.0);
 
-        self.draw_scorekeeping(
-          &mut canvas,
-          "score",
-          Vec2::new(720.0, 32.0),
-          self.score
-        );
+            canvas.draw(
+                &text,
+                graphics::DrawParam::from([ 32.0, 64.0 ]).color(Color::WHITE),
+            );
+          }
+          Some(State::Running) => {
+            self.snake.draw(&mut canvas, ctx);
+
+            self.food.draw(&mut canvas, ctx);
+
+            self.draw_scorekeeping(
+              &mut canvas,
+              "level",
+              Vec2::new(32.0, 32.0),
+              self.level
+            );
+
+            self.draw_scorekeeping(
+              &mut canvas,
+              "score",
+              Vec2::new(720.0, 32.0),
+              self.score
+            );
+          }
+          Some(State::Pause) => {
+            ()
+          }
+          None => ()
+        }
 
         canvas.finish(ctx)?;
-
         Ok(())
     }
 
@@ -208,6 +231,18 @@ impl EventHandler for Game {
           if !matches!(self.snake.previous, Direction::U ) {
             self.snake.change_direction(Direction::D);
           }
+        }
+        Some(keyboard::KeyCode::Return) => {
+          self.scene.change(State::Running);
+          // It looks like if I call the draw method from the outside it
+          // throws the following error:
+          // RenderError("starting Canvas outside of a frame")
+          // So a workaround I found is to create a new frame beforehand
+          // and end it afterwards
+          // source: https://github.com/ggez/ggez/issues/1056
+          _ctx.gfx.begin_frame()?;
+          self.draw(_ctx)?;
+          _ctx.gfx.end_frame()?;
         }
         Some(keyboard::KeyCode::Escape) => {
           _ctx.request_quit();

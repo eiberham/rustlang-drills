@@ -8,6 +8,7 @@ use crate::game::*; // bring all public stuff into scope
 mod snake;
 mod food;
 mod tile;
+mod scene;
 
 use ggez::{
     event,
