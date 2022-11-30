@@ -11,6 +11,7 @@ mod tile;
 mod scene;
 
 use ggez::{
+    conf::{ WindowSetup, WindowMode },
     event,
     ContextBuilder
 };
@@ -20,8 +21,8 @@ fn main() {
     // Make a Context.
     let (ctx, event_loop) = ContextBuilder::new("snake", "eiberham")
         .add_resource_path(path::PathBuf::from("./resources"))
-        .window_setup(ggez::conf::WindowSetup::default().title("snake game"))
-        .window_mode(ggez::conf::WindowMode::default().dimensions(960.0, 960.0))
+        .window_setup(WindowSetup::default().title("snake game"))
+        .window_mode(WindowMode::default().dimensions(960.0, 960.0))
         .build()
         .expect("upsss, could not create ggez context!");
 

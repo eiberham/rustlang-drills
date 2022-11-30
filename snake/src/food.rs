@@ -5,7 +5,7 @@
 
 use ggez::{
   Context,
-  graphics::{ self, Canvas, Rect }
+  graphics::{ Image, DrawParam, Canvas, Rect }
 };
 use crate::tile::*;
 
@@ -33,9 +33,11 @@ impl Food {
   }
 
   /// Draws the food over the canvas.
+  /// It takes into account the position of the food within the
+  /// sprite image.
   pub fn draw(&mut self, canvas: &mut Canvas, ctx: &mut Context) {
-    let image = graphics::Image::from_path(ctx, "/sprite.png").unwrap();
-    canvas.draw(&image, graphics::DrawParam::new()
+    let image = Image::from_path(ctx, "/sprite.png").unwrap();
+    canvas.draw(&image, DrawParam::new()
         .src(Rect::new(
             0.0,
             0.0,

@@ -4,7 +4,7 @@
 //! food and roaming around the entire playground.
 //!
 
-use ggez::graphics::{ self, Canvas, Rect };
+use ggez::graphics::{ Image, Canvas, DrawParam, Rect };
 use ggez::audio::{ Source, SoundSource };
 use ggez::Context;
 use std::collections::{ LinkedList };
@@ -83,15 +83,16 @@ impl Snake {
     }
   }
 
-  /// Draws the snake onto the canvas.
+  /// Draws the snake onto the canvas out of a sprite image
+  ///
   pub fn draw(&mut self, canvas: &mut Canvas, ctx: &mut Context) -> () {
-    let image = graphics::Image::from_path(ctx, "/sprite.png").unwrap();
+    let image = Image::from_path(ctx, "/sprite.png").unwrap();
     for square in self.body.iter() {
       let tile = square.clone();
 
       canvas.draw(
           &image,
-          graphics::DrawParam::new()
+          DrawParam::new()
             .src(Rect::new(
               0.166 * 5.0,
               0.0,
@@ -102,6 +103,10 @@ impl Snake {
         );
     }
 
+    // TODO:
+    // Create the sprite image again and investigate how to export
+    // it to a .json file so that we can use the serde package to
+    // get the location of every tile.
     let src = match self.current_direction.unwrap() {
       Direction::U => Rect::new( 0.166 * 2.0, 0.0, 1.0 / 6.0, 1.0 ),
       Direction::L => Rect::new( 0.166 * 3.0, 0.0, 1.0 / 6.0, 1.0 ),
@@ -111,7 +116,7 @@ impl Snake {
 
     canvas.draw(
         &image,
-        graphics::DrawParam::new()
+        DrawParam::new()
           .src(src)
           .dest([self.head.x, self.head.y])
     );
