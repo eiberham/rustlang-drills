@@ -8,6 +8,7 @@ use std::thread::sleep;
 use std::time::Duration;
 use ggez::glam::Vec2;
 use ggez::{
+    timer,
     graphics::{ Text, Color, DrawParam, Canvas, FontData },
     input::keyboard,
     event::{ EventHandler },
@@ -156,10 +157,18 @@ impl EventHandler for Game {
 
         match self.scene.current  {
           Some(State::Start) => {
-            let mut text = Text::new("Welcome to the arcade snake game !!! \n\n\n");
-            text.add("Press the return key to get started \n");
-            text.add("Press the escape key to quit \n");
-            text.add("Press the space key to pause the game  \n");
+            let mut text = Text::new(r#"
+
+Welcome to the snake game by eiberham
+
+Ultimate Goal:
+
+> Eat as much as you can and be
+careful of not biting your own tale.
+
+* Press the return key to get started
+* Press the escape key to quit
+            "#);
             text.set_font("Arcade")
                 .set_scale(24.0);
 
@@ -179,13 +188,11 @@ impl EventHandler for Game {
             self.draw_score( &mut canvas, "level", Vec2::new(32.0, 32.0), self.level );
             self.draw_score( &mut canvas, "score", Vec2::new(720.0, 32.0), self.score );
           }
-          Some(State::Pause) => {
-            ()
-          }
           None => ()
         }
 
         canvas.finish(ctx)?;
+        timer::sleep(std::time::Duration::from_millis(16));
         Ok(())
     }
 

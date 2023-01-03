@@ -18,9 +18,9 @@ pub enum State {
 /// Defines the callbacks the scene uses:
 /// a common context type `C`, and an input event type `Ev`.
 pub trait Scene<C, Ev> {
-    fn update(&mut self, ctx: &mut ggez::Context) -> SceneSwitch<C, Ev>;
-    fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()>;
-    fn input(&mut self, event: Ev, started: bool);
+    fn update(&mut self, gameworld: &mut C, ctx: &mut ggez::Context) -> SceneSwitch<C, Ev>;
+    fn draw(&mut self, gameworld: &mut C, ctx: &mut ggez::Context) -> ggez::GameResult<()>;
+    fn input(&mut self, gameworld: &mut C, event: Ev, started: bool);
     /// Only used for human-readable convenience (or not at all, tbh)
     fn name(&self) -> &str;
     /// This returns whether or not to draw the next scene down on the
@@ -29,6 +29,11 @@ pub trait Scene<C, Ev> {
     fn draw_previous(&self) -> bool {
         false
     }
+}
+
+// The scene manager has a stack of scenes
+pub struct SceneManager {
+    pub stack: Vec<Box<Scene<C, E>>>
 }
 
 pub struct MainScene {
@@ -61,17 +66,7 @@ impl EventHandler for MainScene {
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
 
-        match self.scene  {
-            State::Start => {
 
-            }
-            State::Running => {
-
-            }
-            State::Pause => {
-
-            }
-        }
 
         canvas.finish(ctx)?;
         Ok(())

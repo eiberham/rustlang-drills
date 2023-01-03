@@ -1,6 +1,7 @@
 //! Scene abstraction.
 //!
-//!
+//! Handles the game's scenes i.e menu scene
+//! transition to game scene
 //!
 
 
@@ -10,13 +11,11 @@
 #[derive(Copy, Clone, smart_default::SmartDefault )]
 pub enum State {
   // The game hasn't started yet
-  // It is awaiting the user to hit esc to start
+  // It is awaiting the user to hit enter to start
   #[default]
   Start,
   // The game has already started.
-  Running,
-  // The user has hit the space key
-  Pause
+  Running
 }
 
 #[derive(smart_default::SmartDefault)]
@@ -28,6 +27,7 @@ pub struct Scene {
 impl Scene {
   pub fn new() -> Self {  Self::default() }
 
+  /// Changes from one scene to another.
   pub fn change(&mut self, state: State) -> () {
     self.current = Some(state)
   }
