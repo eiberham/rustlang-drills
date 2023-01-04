@@ -15,7 +15,9 @@ pub enum State {
   #[default]
   Start,
   // The game has already started.
-  Running
+  Running,
+  // The game is over
+  Over
 }
 
 #[derive(smart_default::SmartDefault)]

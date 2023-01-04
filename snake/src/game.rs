@@ -68,12 +68,16 @@ impl Game {
 
     /// Ends the game altogether. Keeps the snake in a steady position and
     /// restarts the game back again five seconds later.
-    fn end_game(&mut self) -> () {
+    fn end_game(&mut self, ctx: &mut Context) -> () {
       self.game_over = true;
       self.snake.current_direction = None;
       sleep(Duration::from_millis(5000));
+      self.scene.change(State::Over);
       self.snake.current_direction = Some(Direction::R);
-      self.restart();
+
+      ctx.gfx.begin_frame();
+      self.draw(ctx);
+      ctx.gfx.end_frame();
     }
 
     /// Levels up.
@@ -121,7 +125,7 @@ impl EventHandler for Game {
           if self.snake.collides() {
             let mut sound = Source::new(ctx, "/finish.wav").unwrap();
             sound.play_detached(ctx).unwrap();
-            self.end_game();
+            self.end_game(ctx);
           }
         }
 
@@ -164,9 +168,9 @@ Welcome to the snake game by eiberham
 Ultimate Goal:
 
 > Eat as much as you can and be
-careful of not biting your own tale.
+careful of not biting your own tail.
 
-* Press the return key to get started
+* Press the enter key to get started
 * Press the escape key to quit
             "#);
             text.set_font("Arcade")
@@ -187,6 +191,25 @@ careful of not biting your own tale.
             self.food.draw(&mut canvas, ctx);
             self.draw_score( &mut canvas, "level", Vec2::new(32.0, 32.0), self.level );
             self.draw_score( &mut canvas, "score", Vec2::new(720.0, 32.0), self.score );
+          }
+          Some(State::Over) => {
+            let mut text = Text::new(r#"
+
+Game Over Muahahaha !
+
+Don't get discouraged, you'll
+eventually get good at it.
+
+* Press the enter key to continue
+* Press the escape key to quit
+            "#);
+            text.set_font("Arcade")
+                .set_scale(24.0);
+
+            canvas.draw(
+                &text,
+                DrawParam::from([ 32.0, 160.0 ]).color(Color::RED),
+            );
           }
           None => ()
         }
@@ -226,7 +249,13 @@ careful of not biting your own tale.
           }
         }
         Some(keyboard::KeyCode::Return) => {
-          self.scene.change(State::Running);
+          if matches!(self.scene.current, Some(State::Over)) {
+            self.scene.change(State::Start);
+            self.restart();
+          } else if matches!(self.scene.current, Some(State::Start)) {
+            self.scene.change(State::Running);
+          } else { return Ok(()) }
+
           // It looks like if I call the draw method from the outside it
           // throws the following error:
           // RenderError("starting Canvas outside of a frame")
