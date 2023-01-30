@@ -6,14 +6,18 @@ use rand::{
     Rng,
 };
 
-pub trait Behaviour {
-  pub fn rotate();
-  pub fn move_l();
-  pub fn move_r();
+/// Trait that defines the tetromino's behaviour
+pub trait Tetromino {
+  fn rotate(&self);
+  fn move_l(&self);
+  fn move_r(&self);
+  fn render(&self, canvas: &mut Canvas, context: &mut Context);
 }
 
-#[derive(Debug)]
+/// Different kind of shapes
+#[derive(Debug, Copy, Clone, smart_default::SmartDefault )]
 pub enum Shape {
+  #[default]
   I,
   O,
   T,
@@ -23,6 +27,8 @@ pub enum Shape {
   L
 }
 
+/// In order to get random shape with rand::random() ...
+/// Refer to https://stackoverflow.com/a/48491021
 impl Distribution<Shape> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Spinner {
         match rng.gen_range(0..=6) {
@@ -36,41 +42,5 @@ impl Distribution<Shape> for Standard {
             _ => Shape::I
         }
     }
-}
-
-#[derive(smart_default::SmartDefault)]
-pub struct Tetromino {
-   #[default(rand::random())]
-  pub kind: Shape
-}
-
-impl Tetromino {
-  pub fn new () -> Self {
-    Self::default()
-  }
-
-  pub fn draw(
-    &mut self,
-    canvas: &mut Canvas,
-    ctx: &mut Context) {
-
-  }
-}
-
-impl Behaviour for Tetromino {
-  /// Rotates the tetromino in clockwise direction
-  pub fn rotate() -> () {
-
-  }
-
-  /// Moves the tetromino to the left
-  pub fn move_l() -> () {
-
-  }
-
-  /// Moves the tetromino to the right
-  pub fn move_r() -> () {
-
-  }
 }
 

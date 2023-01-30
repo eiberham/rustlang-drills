@@ -1,9 +1,6 @@
 use crate::{ tetromino };
 
-pub struct Factory {}
-
-impl Factory {
-  pub fn create() -> Tetromino {
-    Tetromino::default()
-  }
+pub trait Factory {
+  /// The factory method. It must be overridden with a concrete implementation.
+  fn create(shape: Shape) -> Box<dyn Tetromino>;
 }

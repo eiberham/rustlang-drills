@@ -9,13 +9,11 @@ use ggez::{
 
 use crate::{tetromino::*, factory::*};
 
-pub struct Game {
-  tetromino: Tetromino
-}
+pub struct Game
 
 impl Game {
   pub fn new() -> Self {
-    Self { tetromino: Tetromino::new() }
+    Self
   }
 }
 
@@ -25,7 +23,8 @@ impl EventHandler for Game {
   }
 
   fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-    Factory::create();
+    let shape: Shape = rand::random()
+    Factory::create(Shape::default());
   }
 
   fn key_up_event(
