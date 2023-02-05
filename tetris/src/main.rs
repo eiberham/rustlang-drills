@@ -5,8 +5,10 @@ extern crate smart_default;
 mod game;
 use crate::game::*;
 
-mod food;
-mod scene;
+mod factory;
+mod shapes;
+mod tetromino;
+
 use ggez::{
     conf::{WindowMode, WindowSetup},
     event, ContextBuilder,

@@ -1,6 +1,6 @@
-use crate::{ tetromino };
+use crate::tetromino::{self, Shape, Tetromino};
 
 pub trait Factory {
   /// The factory method. It must be overridden with a concrete implementation.
-  fn create(shape: Shape) -> Box<dyn Tetromino>;
+  fn create() -> Box<dyn Tetromino>;
 }
