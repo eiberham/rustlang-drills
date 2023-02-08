@@ -9,7 +9,7 @@ use ggez::{
 
 use crate::{tetromino::*, factory::*};
 
-use crate::shapes::{i::*};
+use crate::shapes::{i::*, o::*};
 
 const GAME_FPS: u32 = 8;
 
@@ -37,42 +37,43 @@ impl EventHandler for Game {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
     let shape: Shape = rand::random();
 
-    /* let rectangle = graphics::Mesh::new_rectangle(
-        ctx,
-        graphics::DrawMode::fill(),
-        Rect::new(0.0, 0.0, 64.0, 128.0),
-        Color::WHITE,
-    )?;
-
-    canvas.draw(&rectangle, DrawParam::new()); */
-
     match shape {
       Shape::I => {
         let mut piece: Box<dyn Tetromino> = I::create();
-        piece.draw(&mut canvas, ctx )
-          .expect("Failed to render");
+        piece.draw(&mut canvas, ctx ).expect("failed to render");
         self.tetromino = Some(piece);
       }
       Shape::O => {
-
+        let mut piece: Box<dyn Tetromino> = O::create();
+        piece.draw(&mut canvas, ctx ).expect("failed to render");
+        self.tetromino = Some(piece);
       }
       Shape::T => {
-
+        let mut piece: Box<dyn Tetromino> = I::create();
+        piece.draw(&mut canvas, ctx ).expect("failed to render");
+        self.tetromino = Some(piece);
       }
       Shape::S => {
-
+        let mut piece: Box<dyn Tetromino> = I::create();
+        piece.draw(&mut canvas, ctx ).expect("failed to render");
+        self.tetromino = Some(piece);
       }
       Shape::Z => {
-
+        let mut piece: Box<dyn Tetromino> = I::create();
+        piece.draw(&mut canvas, ctx ).expect("failed to render");
+        self.tetromino = Some(piece);
       }
       Shape::J => {
-
+        let mut piece: Box<dyn Tetromino> = I::create();
+        piece.draw(&mut canvas, ctx ).expect("failed to render");
+        self.tetromino = Some(piece);
       }
       Shape::L => {
-
+        let mut piece: Box<dyn Tetromino> = I::create();
+        piece.draw(&mut canvas, ctx ).expect("failed to render");
+        self.tetromino = Some(piece);
       }
     }
-    // Factory::create(Shape::default());
 
     canvas.finish(ctx)?;
     timer::sleep(std::time::Duration::from_millis(16));

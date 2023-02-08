@@ -45,20 +45,6 @@ impl Tetromino for I {
     canvas: &mut Canvas,
     ctx: &mut Context ) -> Result<(), GameError> {
 
-      /* let mesh = Mesh::new_line(
-        ctx,
-        &[
-          Vec2::new(0.0, 0.0),
-          Vec2::new(0.0, 32.0),
-          Vec2::new(0.0, 64.0),
-          Vec2::new(0.0, 96.0),
-        ],
-        64.0,
-        Color::BLUE
-      )?;
-
-      canvas.draw(&mesh, DrawParam::new()); */
-
       let rectangle = graphics::Mesh::new_rectangle(
             ctx,
             graphics::DrawMode::fill(),
@@ -67,15 +53,6 @@ impl Tetromino for I {
         )?;
 
       canvas.draw(&rectangle, DrawParam::new());
-
-      /* let rect = Rect::new(450.0, 450.0, 50.0, 50.0);
-        canvas.draw(
-            &graphics::Quad,
-            graphics::DrawParam::new()
-                .dest(rect.point())
-                .scale(rect.size())
-                .color(Color::WHITE),
-        ); */
 
       Ok(())
   }
