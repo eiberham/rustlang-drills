@@ -2,7 +2,7 @@ use ggez::glam::Vec2;
 use ggez::{
     audio::{SoundSource, Source},
     event::EventHandler,
-    graphics::{Canvas, Color, DrawParam, FontData, Text},
+    graphics::{self, Canvas, Color, DrawParam, FontData, Text, Rect},
     input::keyboard,
     timer, Context, GameResult,
 };
@@ -12,6 +12,7 @@ use crate::{tetromino::*, factory::*};
 use crate::shapes::{i::*};
 
 const GAME_FPS: u32 = 8;
+
 pub struct Game {
   pub tetromino: Option<Box<dyn Tetromino>>
 }
@@ -32,13 +33,24 @@ impl EventHandler for Game {
     Ok(())
   }
 
-  fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
+  fn draw(&mut self, ctx: &mut Context) -> GameResult {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
     let shape: Shape = rand::random();
+
+    /* let rectangle = graphics::Mesh::new_rectangle(
+        ctx,
+        graphics::DrawMode::fill(),
+        Rect::new(0.0, 0.0, 64.0, 128.0),
+        Color::WHITE,
+    )?;
+
+    canvas.draw(&rectangle, DrawParam::new()); */
+
     match shape {
       Shape::I => {
         let mut piece: Box<dyn Tetromino> = I::create();
-        piece.render(&mut canvas, ctx )?;
+        piece.draw(&mut canvas, ctx )
+          .expect("Failed to render");
         self.tetromino = Some(piece);
       }
       Shape::O => {

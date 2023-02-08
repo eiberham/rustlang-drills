@@ -7,12 +7,14 @@ use rand::{
     Rng
 };
 
+use core::fmt::Debug;
+
 /// Trait that defines the tetromino's behaviour
 pub trait Tetromino {
   fn rotate(&self);
   fn move_l(&self);
   fn move_r(&self);
-  fn render(&self, canvas: &mut Canvas, context: &mut Context) -> Result<(), GameError>;
+  fn draw(&mut self, canvas: &mut Canvas, context: &mut Context) -> Result<(), GameError>;
 }
 
 /// Different kind of shapes
@@ -26,6 +28,18 @@ pub enum Shape {
   Z,
   J,
   L
+}
+
+/// Represents the direction the snake could potentially move to
+#[derive(Copy, Clone, smart_default::SmartDefault )]
+pub enum Direction {
+  /// Right
+  R,
+  /// Left
+  L,
+  /// Down
+  #[default]
+  D
 }
 
 /// In order to get random shape with rand::random() ...
@@ -43,16 +57,5 @@ impl Distribution<Shape> for Standard {
             _ => Shape::I
         }
     }
-}
-
-pub struct Position {
-  pub x: f32,
-  pub y: f32
-}
-
-impl Position {
-  pub fn new(x: f32, y: f32) -> Self {
-    Self { x, y }
-  }
 }
 

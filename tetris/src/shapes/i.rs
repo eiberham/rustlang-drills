@@ -1,6 +1,7 @@
 use ggez::{
-  graphics::{ Color, Canvas, DrawParam, Mesh },
+  graphics::{ self, Color, Canvas, DrawParam, Mesh, Rect },
   glam::{ Vec2 },
+  mint::{ Point2 },
   Context,
   GameError
 };
@@ -8,12 +9,14 @@ use ggez::{
 use crate::{tetromino::*, factory::*};
 
 pub struct I {
-  pub position: Position // should be a Point/Vec2 instead
+  pub position: Point2<f64>
 }
 
 impl Factory for I {
+  /// It will return a trait object.
+  /// Trait objects are normal values that store a value of any type that implements the given trait
   fn create() -> Box<dyn Tetromino> {
-    let position = Position::new(0.0, 0.0);
+    let position: Point2<f64> = Point2::from([0.0, 0.0]);
     Box::new(Self {
       position
     })
@@ -37,12 +40,12 @@ impl Tetromino for I {
 
   }
 
-  fn render(
-    &self,
+  fn draw(
+    &mut self,
     canvas: &mut Canvas,
     ctx: &mut Context ) -> Result<(), GameError> {
 
-      let mesh = Mesh::new_line(
+      /* let mesh = Mesh::new_line(
         ctx,
         &[
           Vec2::new(0.0, 0.0),
@@ -54,7 +57,25 @@ impl Tetromino for I {
         Color::BLUE
       )?;
 
-      canvas.draw(&mesh, DrawParam::new());
+      canvas.draw(&mesh, DrawParam::new()); */
+
+      let rectangle = graphics::Mesh::new_rectangle(
+            ctx,
+            graphics::DrawMode::fill(),
+            Rect::new(0.0, 0.0, 64.0, 128.0),
+            Color::WHITE,
+        )?;
+
+      canvas.draw(&rectangle, DrawParam::new());
+
+      /* let rect = Rect::new(450.0, 450.0, 50.0, 50.0);
+        canvas.draw(
+            &graphics::Quad,
+            graphics::DrawParam::new()
+                .dest(rect.point())
+                .scale(rect.size())
+                .color(Color::WHITE),
+        ); */
 
       Ok(())
   }

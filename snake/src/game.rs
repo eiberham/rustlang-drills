@@ -148,7 +148,6 @@ impl EventHandler for Game {
     /// to set them.
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
-
         // TODO:
         // Compile the game for windows
         // Create a text manager crate to handle all the text drawing within the game
