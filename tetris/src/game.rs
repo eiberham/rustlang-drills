@@ -14,20 +14,25 @@ use crate::shapes::{i::*, o::*};
 const GAME_FPS: u32 = 8;
 
 pub struct Game {
+  // The current tetromino respectively
   pub tetromino: Option<Box<dyn Tetromino>>,
-  // A 10x20 array of squares; arrays have a fixed size, known at compile time
-  // 20 rows, 10 columns
-  // pub board: [[Square; 10]; 20]
-  pub board: [[i32; 10]; 20]
+  // The incoming tetromino if any
+  pub next_tetromino: Option<Box<dyn Tetromino>>,
+  // A 20x10 array of squares; arrays have a fixed size, known at compile time
+  // 20 rows, 10 columns e.g pub board: [[Square; 10]; 20]
+  pub board: [[i32; 10]; 20],
+  // the player's score
+  pub score: usize
 }
 
 impl Game {
   pub fn new() -> Self {
-    // the inner square brackets are the columns, the outter square brackets are rows.
-    let board : [[i32; 10]; 20] = [[0; 10]; 20];
     Self {
       tetromino: None,
-      board
+      next_tetromino: None,
+      // the inner square brackets are the columns, the outter square brackets are rows.
+      board: [[0; 10]; 20],
+      score: 0
     }
   }
 }
@@ -43,6 +48,8 @@ impl EventHandler for Game {
   fn draw(&mut self, ctx: &mut Context) -> GameResult {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
     let shape: Shape = rand::random();
+
+    println!("{:?}", self.board);
 
     match shape {
       Shape::I => {

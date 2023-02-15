@@ -9,7 +9,9 @@ use ggez::{
 use crate::{tetromino::*, factory::*};
 
 pub struct O {
-  pub position: Point2<f64>
+  pub position: Point2<f64>,
+  shape: Shape,
+  form: [[i32;4]; 4]
 }
 
 impl Factory for O {
@@ -18,7 +20,9 @@ impl Factory for O {
   fn create() -> Box<dyn Tetromino> {
     let position: Point2<f64> = Point2::from([0.0, 0.0]);
     Box::new(Self {
-      position
+      position,
+      shape: Shape::O,
+      form: [[0; 4]; 4]
     })
   }
 }

@@ -42,6 +42,14 @@ pub enum Direction {
   D
 }
 
+#[derive(Clone, Copy, Debug)]
+pub enum Orientation {
+    Left,
+    Right,
+    Up,
+    Down,
+}
+
 /// In order to get random shape with rand::random() ...
 /// Refer to https://stackoverflow.com/a/48491021
 impl Distribution<Shape> for Standard {
