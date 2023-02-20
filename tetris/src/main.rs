@@ -6,7 +6,7 @@ mod game;
 use crate::game::*;
 
 mod factory;
-mod shapes;
+mod block;
 mod tetromino;
 mod square;
 

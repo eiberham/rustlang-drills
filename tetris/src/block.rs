@@ -6,28 +6,28 @@ use ggez::{
   GameError
 };
 
-use crate::{tetromino::*, factory::*};
 
-pub struct O {
-  pub position: Point2<f64>,
+use crate::{ tetromino::* };
+
+pub struct Block {
   shape: Shape,
-  form: [[i32;4]; 4]
+  form: [[i32;10]; 20],
+  orientation: Orientation,
+  color: Color
 }
 
-impl Factory for O {
-  /// It will return a trait object.
-  /// Trait objects are normal values that store a value of any type that implements the given trait
-  fn create() -> Box<dyn Tetromino> {
-    let position: Point2<f64> = Point2::from([0.0, 0.0]);
-    Box::new(Self {
-      position,
-      shape: Shape::O,
-      form: [[0; 4]; 4]
-    })
+impl Block {
+  /// Creates a new instance of block
+  pub fn new(
+    shape: Shape,
+    form: [[i32;10]; 20],
+    orientation: Orientation,
+    color: Color ) -> Self {
+      Self { shape, form, orientation, color }
   }
 }
 
-impl Tetromino for O {
+impl Tetromino for Block {
   /// Rotates the tetromino in clockwise
   /// direction
   fn rotate(&self) -> () {
@@ -44,6 +44,7 @@ impl Tetromino for O {
 
   }
 
+  /// Draws the block onto the canvas
   fn draw(
     &mut self,
     canvas: &mut Canvas,
@@ -59,5 +60,9 @@ impl Tetromino for O {
       );
 
       Ok(())
+  }
+
+  fn clone(&self) -> Box<dyn Tetromino> {
+    Box::new(self.clone()) // Forward to the derive(Clone) impl
   }
 }

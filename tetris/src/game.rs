@@ -7,9 +7,7 @@ use ggez::{
     timer, Context, GameResult,
 };
 
-use crate::{tetromino::*, factory::*, square::*};
-
-use crate::shapes::{i::*, o::*};
+use crate::{tetromino::*, factory::*, square::*, block::*};
 
 const GAME_FPS: u32 = 8;
 
@@ -47,47 +45,21 @@ impl EventHandler for Game {
 
   fn draw(&mut self, ctx: &mut Context) -> GameResult {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
-    let shape: Shape = rand::random();
+
+    if self.tetromino.is_none() {
+      let shape: Shape = rand::random();
+      self.tetromino = Some(Builder::create(shape));
+
+      match &self.tetromino {
+        Some(block) => {
+          let tetromino = block.copy();
+          tetromino.draw(&mut canvas, ctx)
+        },
+        _ => unreachable!()
+      };
+    }
 
     println!("{:?}", self.board);
-
-    match shape {
-      Shape::I => {
-        let mut piece: Box<dyn Tetromino> = I::create();
-        piece.draw(&mut canvas, ctx ).expect("failed to render");
-        self.tetromino = Some(piece);
-      }
-      Shape::O => {
-        let mut piece: Box<dyn Tetromino> = O::create();
-        piece.draw(&mut canvas, ctx ).expect("failed to render");
-        self.tetromino = Some(piece);
-      }
-      Shape::T => {
-        let mut piece: Box<dyn Tetromino> = I::create();
-        piece.draw(&mut canvas, ctx ).expect("failed to render");
-        self.tetromino = Some(piece);
-      }
-      Shape::S => {
-        let mut piece: Box<dyn Tetromino> = I::create();
-        piece.draw(&mut canvas, ctx ).expect("failed to render");
-        self.tetromino = Some(piece);
-      }
-      Shape::Z => {
-        let mut piece: Box<dyn Tetromino> = I::create();
-        piece.draw(&mut canvas, ctx ).expect("failed to render");
-        self.tetromino = Some(piece);
-      }
-      Shape::J => {
-        let mut piece: Box<dyn Tetromino> = I::create();
-        piece.draw(&mut canvas, ctx ).expect("failed to render");
-        self.tetromino = Some(piece);
-      }
-      Shape::L => {
-        let mut piece: Box<dyn Tetromino> = I::create();
-        piece.draw(&mut canvas, ctx ).expect("failed to render");
-        self.tetromino = Some(piece);
-      }
-    }
 
     canvas.finish(ctx)?;
     timer::sleep(std::time::Duration::from_millis(16));

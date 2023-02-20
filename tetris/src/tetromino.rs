@@ -15,6 +15,13 @@ pub trait Tetromino {
   fn move_l(&self);
   fn move_r(&self);
   fn draw(&mut self, canvas: &mut Canvas, context: &mut Context) -> Result<(), GameError>;
+  fn clone(&self) -> Box<dyn Tetromino>;
+}
+
+impl Clone for Box<dyn Tetromino> {
+    fn clone(&self) -> Self {
+        self.clone()
+    }
 }
 
 /// Different kind of shapes
