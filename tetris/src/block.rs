@@ -6,9 +6,9 @@ use ggez::{
   GameError
 };
 
-
 use crate::{ tetromino::* };
 
+#[derive(Clone)]
 pub struct Block {
   shape: Shape,
   form: [[i32;10]; 20],
@@ -62,7 +62,7 @@ impl Tetromino for Block {
       Ok(())
   }
 
-  fn clone(&self) -> Box<dyn Tetromino> {
+  fn clone_dyn(&self) -> Box<dyn Tetromino> {
     Box::new(self.clone()) // Forward to the derive(Clone) impl
   }
 }

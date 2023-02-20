@@ -52,8 +52,8 @@ impl EventHandler for Game {
 
       match &self.tetromino {
         Some(block) => {
-          let tetromino = block.copy();
-          tetromino.draw(&mut canvas, ctx)
+          let mut tetromino = block.clone();
+          tetromino.draw(&mut canvas, ctx)?;
         },
         _ => unreachable!()
       };
