@@ -11,37 +11,48 @@ use crate::{ tetromino::* };
 #[derive(Clone)]
 pub struct Block {
   shape: Shape,
-  form: [[i32;10]; 20],
+  form: [[u8;4]; 4],
   orientation: Orientation,
-  color: Color
+  color: Color,
+  rect: Rect
 }
 
 impl Block {
   /// Creates a new instance of block
   pub fn new(
     shape: Shape,
-    form: [[i32;10]; 20],
+    form: [[u8;4]; 4],
     orientation: Orientation,
-    color: Color ) -> Self {
-      Self { shape, form, orientation, color }
+    color: Color,
+    rect: Rect ) -> Self {
+      Self { shape, form, orientation, color, rect }
+  }
+
+  /// Tells whether the form index is
+  /// filled or not
+  pub fn filled(&mut self, x: u8, y: u8) -> bool {
+    match self.orientation {
+      Orientation::Down => self.form[0][4][x][y] == 1,
+      _ => false
+    }
   }
 }
 
 impl Tetromino for Block {
   /// Rotates the tetromino in clockwise
   /// direction
-  fn rotate(&self) -> () {
+  fn rotate(&mut self) -> () {
 
   }
 
   /// Moves the tetromino to the left
-  fn move_l(&self) -> () {
-
+  fn move_l(&mut self) -> () {
+    self.rect.x -= 32.0;
   }
 
   /// Moves the tetromino to the right
-  fn move_r(&self) -> () {
-
+  fn move_r(&mut self) -> () {
+    self.rect.x += 32.0;
   }
 
   /// Draws the block onto the canvas
@@ -50,19 +61,27 @@ impl Tetromino for Block {
     canvas: &mut Canvas,
     ctx: &mut Context ) -> Result<(), GameError> {
 
-      let rect = Rect::new(64.0, 0.0, 64.0, 64.0);
+
+      for i in 0..4 {
+          for j in 0..4 {
+              if self.filled(i, j) {
+                  f(i, j);
+              }
+          }
+      }
+
       canvas.draw(
           &graphics::Quad,
           graphics::DrawParam::new()
-              .dest(rect.point())
-              .scale(rect.size())
-              .color(Color::WHITE),
+              .dest(self.rect.point())
+              .scale(self.rect.size())
+              .color(self.color),
       );
 
       Ok(())
   }
 
   fn clone_dyn(&self) -> Box<dyn Tetromino> {
-    Box::new(self.clone()) // Forward to the derive(Clone) impl
+    Box::new(self.clone())
   }
 }

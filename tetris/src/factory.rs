@@ -1,5 +1,5 @@
 use ggez::{
-  graphics::{ self, Color },
+  graphics::{ self, Color, Rect },
 };
 use crate::tetromino::{self, Shape, Tetromino, Orientation};
 use crate::block::*;
@@ -22,9 +22,10 @@ impl Factory for Builder {
     // let position: Point2<f64> = Point2::from([0.0, 0.0]);
     Box::new(Block::new(
       shape,
-      [[0; 10]; 20],
+      [[0; 4]; 4],
       Orientation::Down,
-      Color::WHITE
+      Color::WHITE,
+      Rect::new(0.0, 0.0, 32.0, 32.0)
     ))
   }
 }

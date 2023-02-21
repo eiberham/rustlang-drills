@@ -11,9 +11,9 @@ use core::fmt::Debug;
 
 /// Trait that defines the tetromino's behaviour
 pub trait Tetromino {
-  fn rotate(&self);
-  fn move_l(&self);
-  fn move_r(&self);
+  fn rotate(&mut self);
+  fn move_l(&mut self);
+  fn move_r(&mut self);
   fn draw(&mut self, canvas: &mut Canvas, context: &mut Context) -> Result<(), GameError>;
   fn clone_dyn(&self) -> Box<dyn Tetromino>;
 }
