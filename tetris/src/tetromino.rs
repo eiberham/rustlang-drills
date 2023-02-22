@@ -1,12 +1,18 @@
+//! Tetromino interface.
+//!
+//! Provides an interface and some enums to be used
+//! by blocks.
+//!
+
+
 use ggez::{
-    graphics::{ Text, Color, DrawParam, Canvas, FontData },
+    graphics::{ Canvas },
     Context, GameError
 };
 use rand::{
     distributions::{ Distribution, Standard },
     Rng
 };
-
 use core::fmt::Debug;
 
 /// Trait that defines the tetromino's behaviour
@@ -14,9 +20,13 @@ pub trait Tetromino {
   fn rotate(&mut self);
   fn move_l(&mut self);
   fn move_r(&mut self);
-  fn draw(&mut self, canvas: &mut Canvas, context: &mut Context) -> Result<(), GameError>;
+  fn draw(
+    &mut self,
+    canvas: &mut Canvas,
+    context: &mut Context) -> Result<(), GameError>;
   fn clone_dyn(&self) -> Box<dyn Tetromino>;
 }
+
 
 impl Clone for Box<dyn Tetromino> {
     fn clone(&self) -> Self {
@@ -24,31 +34,14 @@ impl Clone for Box<dyn Tetromino> {
     }
 }
 
-/// Different kind of shapes
+/// Different kind of shapes for tetrominoes
 #[derive(Debug, Copy, Clone, smart_default::SmartDefault )]
 pub enum Shape {
-  #[default]
-  I,
-  O,
-  T,
-  S,
-  Z,
-  J,
-  L
+  #[default] I, O, T, S, Z, J, L
 }
 
-/// Represents the direction the snake could potentially move to
-#[derive(Copy, Clone, smart_default::SmartDefault )]
-pub enum Direction {
-  /// Right
-  R,
-  /// Left
-  L,
-  /// Down
-  #[default]
-  D
-}
-
+/// Orientations that could potentially change
+/// the tetromino to
 #[derive(Clone, Copy, Debug)]
 pub enum Orientation {
     Left,
@@ -57,8 +50,7 @@ pub enum Orientation {
     Down,
 }
 
-/// In order to get random shape with rand::random() ...
-/// Refer to https://stackoverflow.com/a/48491021
+/// In order to get a random shape with rand::random()
 impl Distribution<Shape> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Shape {
         match rng.gen_range(0..=6) {

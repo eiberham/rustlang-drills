@@ -32,7 +32,7 @@ impl Block {
   /// filled or not
   pub fn filled(&mut self, x: u8, y: u8) -> bool {
     match self.orientation {
-      Orientation::Down => self.form[0][4][x][y] == 1,
+      Orientation::Down => self.form[x][y] == 1,
       _ => false
     }
   }

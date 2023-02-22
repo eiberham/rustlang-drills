@@ -7,7 +7,7 @@ use ggez::{
     timer, Context, GameResult,
 };
 
-use crate::{tetromino::*, factory::*, square::*, block::*};
+use crate::{tetromino::*, factory::*, block::*};
 
 const GAME_FPS: u32 = 8;
 

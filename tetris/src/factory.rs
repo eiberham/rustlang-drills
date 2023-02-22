@@ -1,8 +1,14 @@
+//! Factory interface.
+//!
+//! Provides methods to summon new shaped blocks.
+//!
+
 use ggez::{
-  graphics::{ self, Color, Rect },
+  graphics::{Color, Rect },
 };
-use crate::tetromino::{self, Shape, Tetromino, Orientation};
+use crate::tetromino::{Shape, Tetromino, Orientation};
 use crate::block::*;
+use crate::shapes::*;
 
 pub trait Factory {
   /// The factory method. It must be overridden with a concrete
@@ -19,10 +25,9 @@ impl Factory for Builder {
   /// Trait objects are normal values that store a value of any
   /// type that implements the given trait
   fn create(shape: Shape) -> Box<dyn Tetromino> {
-    // let position: Point2<f64> = Point2::from([0.0, 0.0]);
     Box::new(Block::new(
       shape,
-      [[0; 4]; 4],
+      SHAPE[0][0][0],
       Orientation::Down,
       Color::WHITE,
       Rect::new(0.0, 0.0, 32.0, 32.0)

@@ -8,7 +8,7 @@ use crate::game::*;
 mod factory;
 mod block;
 mod tetromino;
-mod square;
+mod shapes;
 
 use ggez::{
     conf::{WindowMode, WindowSetup},
