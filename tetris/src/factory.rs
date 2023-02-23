@@ -8,7 +8,7 @@ use ggez::{
 };
 use crate::tetromino::{Shape, Tetromino, Orientation};
 use crate::block::*;
-use crate::shapes::*;
+use crate::squares::*;
 
 pub trait Factory {
   /// The factory method. It must be overridden with a concrete
@@ -27,7 +27,7 @@ impl Factory for Builder {
   fn create(shape: Shape) -> Box<dyn Tetromino> {
     Box::new(Block::new(
       shape,
-      SHAPE[0][0][0],
+      squares[0][0],
       Orientation::Down,
       Color::WHITE,
       Rect::new(0.0, 0.0, 32.0, 32.0)

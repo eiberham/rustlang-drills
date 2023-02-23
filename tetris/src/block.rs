@@ -11,7 +11,7 @@ use crate::{ tetromino::* };
 #[derive(Clone)]
 pub struct Block {
   shape: Shape,
-  form: [[u8;4]; 4],
+  form: [[u8; 4]; 4],
   orientation: Orientation,
   color: Color,
   rect: Rect
@@ -21,7 +21,7 @@ impl Block {
   /// Creates a new instance of block
   pub fn new(
     shape: Shape,
-    form: [[u8;4]; 4],
+    form: [[u8; 4]; 4],
     orientation: Orientation,
     color: Color,
     rect: Rect ) -> Self {
@@ -30,7 +30,7 @@ impl Block {
 
   /// Tells whether the form index is
   /// filled or not
-  pub fn filled(&mut self, x: u8, y: u8) -> bool {
+  pub fn filled(&mut self, x: usize, y: usize) -> bool {
     match self.orientation {
       Orientation::Down => self.form[x][y] == 1,
       _ => false
@@ -65,18 +65,16 @@ impl Tetromino for Block {
       for i in 0..4 {
           for j in 0..4 {
               if self.filled(i, j) {
-                  f(i, j);
+                  canvas.draw(
+          &graphics::Quad,
+              graphics::DrawParam::new()
+                    .dest(self.rect.point())
+                    .scale(self.rect.size())
+                    .color(self.color),
+                  );
               }
           }
       }
-
-      canvas.draw(
-          &graphics::Quad,
-          graphics::DrawParam::new()
-              .dest(self.rect.point())
-              .scale(self.rect.size())
-              .color(self.color),
-      );
 
       Ok(())
   }

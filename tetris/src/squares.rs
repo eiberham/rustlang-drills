@@ -1,4 +1,5 @@
-static SHAPE: [[[[u8; 7]; 7]; 4]; 7] = [
+#[allow(non_upper_case_globals)]
+pub static squares: [[[[u8; 4]; 4]; 4]; 7] = [
     // L shape
     [
         [
