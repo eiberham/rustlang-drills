@@ -8,13 +8,13 @@ use ggez::{
 
 use crate::{ tetromino::* };
 
-#[derive(Clone)]
+#[derive(Clone, Copy, Debug)]
 pub struct Block {
   shape: Shape,
   form: [[u8; 4]; 4],
   orientation: Orientation,
   color: Color,
-  rect: Rect
+  position: Position
 }
 
 impl Block {
@@ -24,17 +24,16 @@ impl Block {
     form: [[u8; 4]; 4],
     orientation: Orientation,
     color: Color,
-    rect: Rect ) -> Self {
-      Self { shape, form, orientation, color, rect }
+    position: Position ) -> Self {
+      Self { shape, form, orientation, color, position }
   }
 
   /// Tells whether the form index is
   /// filled or not
-  pub fn filled(&mut self, x: usize, y: usize) -> bool {
-    match self.orientation {
-      Orientation::Down => self.form[x][y] == 1,
-      _ => false
-    }
+  pub fn filled(&self, x: usize, y: usize) -> bool {
+    // println!("{}", self.form[x][y]);
+    let r: bool = self.form[x][y] == 1;
+    r
   }
 }
 
@@ -47,12 +46,14 @@ impl Tetromino for Block {
 
   /// Moves the tetromino to the left
   fn move_l(&mut self) -> () {
-    self.rect.x -= 32.0;
+    self.position.x -= 32.0;
+    // println!("{:?}", self.position);
   }
 
   /// Moves the tetromino to the right
   fn move_r(&mut self) -> () {
-    self.rect.x += 32.0;
+    self.position.x += 32.0;
+    // println!("{:?}", self.position);
   }
 
   /// Draws the block onto the canvas
@@ -60,22 +61,22 @@ impl Tetromino for Block {
     &mut self,
     canvas: &mut Canvas,
     ctx: &mut Context ) -> Result<(), GameError> {
-
-
       for i in 0..4 {
           for j in 0..4 {
               if self.filled(i, j) {
+                // println!("i: {}, j: {}", i, j);
+                  let x: f32 = self.position.x + ((i as f32 + 1.0) * 32.0);
+                  let y: f32 = self.position.y + ((j as f32 + 1.0) * 32.0);
                   canvas.draw(
           &graphics::Quad,
               graphics::DrawParam::new()
-                    .dest(self.rect.point())
-                    .scale(self.rect.size())
-                    .color(self.color),
+                    .dest([x, y])
+                    .scale([32., 32.])
+                    .color(self.color)
                   );
               }
           }
       }
-
       Ok(())
   }
 

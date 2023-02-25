@@ -6,7 +6,7 @@
 use ggez::{
   graphics::{Color, Rect },
 };
-use crate::tetromino::{Shape, Tetromino, Orientation};
+use crate::tetromino::{Shape, Position, Orientation};
 use crate::block::*;
 use crate::squares::*;
 
@@ -15,7 +15,8 @@ pub trait Factory {
   /// implementation.
   /// Trait objects are normal values that store a value of any
   /// type that implements the given trait.
-  fn create(shape: Shape) -> Box<dyn Tetromino>;
+  //fn create(shape: Shape) -> Box<dyn Tetromino>;
+  fn create(shape: Shape) -> Block;
 }
 
 pub struct Builder;
@@ -24,13 +25,13 @@ impl Factory for Builder {
   /// It will return a trait object.
   /// Trait objects are normal values that store a value of any
   /// type that implements the given trait
-  fn create(shape: Shape) -> Box<dyn Tetromino> {
-    Box::new(Block::new(
+  fn create(shape: Shape) -> Block { // Box<dyn Tetromino>
+    Block::new(
       shape,
       squares[0][0],
       Orientation::Down,
       Color::WHITE,
-      Rect::new(0.0, 0.0, 32.0, 32.0)
-    ))
+      Position::new(0., 0.)
+    )
   }
 }
