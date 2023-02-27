@@ -4,7 +4,7 @@
 //!
 
 use ggez::{
-  graphics::{Color, Rect },
+  graphics::{Color},
 };
 use crate::tetromino::{Shape, Position, Orientation};
 use crate::block::*;

@@ -9,6 +9,7 @@ mod factory;
 mod block;
 mod tetromino;
 mod squares;
+mod bundle;
 
 use ggez::{
     conf::{WindowMode, WindowSetup},

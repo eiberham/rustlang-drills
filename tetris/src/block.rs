@@ -10,11 +10,11 @@ use crate::{ tetromino::* };
 
 #[derive(Clone, Copy, Debug)]
 pub struct Block {
-  shape: Shape,
-  form: [[u8; 4]; 4],
-  orientation: Orientation,
-  color: Color,
-  position: Position
+  pub shape: Shape,
+  pub form: [[u8; 4]; 4],
+  pub orientation: Orientation,
+  pub color: Color,
+  pub position: Position
 }
 
 impl Block {
@@ -83,4 +83,10 @@ impl Tetromino for Block {
   fn clone_dyn(&self) -> Box<dyn Tetromino> {
     Box::new(self.clone())
   }
+}
+
+impl PartialEq for Block {
+    fn eq(&self, other: &Self) -> bool {
+        self.position == other.position && self.shape == other.shape
+    }
 }

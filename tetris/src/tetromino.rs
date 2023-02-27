@@ -35,7 +35,7 @@ impl Clone for Box<dyn Tetromino> {
 }
 
 /// Different kind of shapes for tetrominoes
-#[derive(Debug, Copy, Clone, smart_default::SmartDefault )]
+#[derive(Debug, Copy, Clone, smart_default::SmartDefault, PartialEq )]
 pub enum Shape {
   #[default] I, O, T, S, Z, J, L
 }
@@ -49,6 +49,12 @@ pub struct Position {
 impl Position {
     pub fn new(x: f32, y: f32) -> Self {
         Self { x, y }
+    }
+}
+
+impl PartialEq for Position {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
     }
 }
 
