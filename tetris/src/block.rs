@@ -1,3 +1,4 @@
+use std::ops::Deref;
 use ggez::{
   graphics::{ self, Color, Canvas, DrawParam, Mesh, Rect },
   glam::{ Vec2 },
@@ -80,9 +81,9 @@ impl Tetromino for Block {
       Ok(())
   }
 
-  fn clone_dyn(&self) -> Box<dyn Tetromino> {
+  /* fn clone_dyn(&self) -> Box<dyn Tetromino> {
     Box::new(self.clone())
-  }
+  } */
 }
 
 impl PartialEq for Block {
@@ -90,3 +91,11 @@ impl PartialEq for Block {
         self.position == other.position && self.shape == other.shape
     }
 }
+
+/* impl Deref for Block {
+    type Target = Self;
+
+    fn deref(&self) -> &Self {
+        &self
+    }
+} */

@@ -1,3 +1,4 @@
+#![recursion_limit = "250"]
 //! This is the main file, where the entry point of the game is.
 
 extern crate smart_default;

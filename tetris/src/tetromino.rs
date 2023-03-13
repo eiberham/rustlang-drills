@@ -24,15 +24,15 @@ pub trait Tetromino {
     &mut self,
     canvas: &mut Canvas,
     context: &mut Context) -> Result<(), GameError>;
-  fn clone_dyn(&self) -> Box<dyn Tetromino>;
+  // fn clone_dyn(&self) -> Box<dyn Tetromino>;
 }
 
 
-impl Clone for Box<dyn Tetromino> {
+/* impl Clone for Box<dyn Tetromino> {
     fn clone(&self) -> Self {
         self.clone_dyn()
     }
-}
+} */
 
 /// Different kind of shapes for tetrominoes
 #[derive(Debug, Copy, Clone, smart_default::SmartDefault, PartialEq )]
