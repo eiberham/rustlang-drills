@@ -20,11 +20,11 @@ impl Bundle<Block> {
   }
 
   pub fn update(&mut self, value: Block) -> () {
-    self.values[self.index_of(value).unwrap()].position.x = value.position.x;
-    self.values[self.index_of(value).unwrap()].position.y = value.position.y;
+    // self.values[self.index_of(value).unwrap()].position.x = value.position.x;
+    // self.values[self.index_of(value).unwrap()].position.y = value.position.y;
   }
 
-  pub fn index_of(
+  /* pub fn index_of(
     &mut self,
     value: Block) -> Option<usize> where Block: PartialEq<Block> {
     let mut index = None;
@@ -36,7 +36,7 @@ impl Bundle<Block> {
     }
 
     index
-  }
+  } */
 
   pub fn is_empty(&self) -> bool {
     self.values.is_empty()

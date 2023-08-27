@@ -48,13 +48,11 @@ impl Tetromino for Block {
   /// Moves the tetromino to the left
   fn move_l(&mut self) -> () {
     self.position.x -= 32.0;
-    // println!("{:?}", self.position);
   }
 
   /// Moves the tetromino to the right
   fn move_r(&mut self) -> () {
     self.position.x += 32.0;
-    // println!("{:?}", self.position);
   }
 
   /// Draws the block onto the canvas
@@ -62,10 +60,11 @@ impl Tetromino for Block {
     &mut self,
     canvas: &mut Canvas,
     ctx: &mut Context ) -> Result<(), GameError> {
+      // println!("{:?}", self.form);
       for i in 0..4 {
           for j in 0..4 {
-              if self.filled(i, j) {
-                // println!("i: {}, j: {}", i, j);
+              // println!("i: {}, j: {}, value: {}", i, j, self.form[i][j]);
+              if self.filled(j, i) {
                   let x: f32 = self.position.x + ((i as f32 + 1.0) * 32.0);
                   let y: f32 = self.position.y + ((j as f32 + 1.0) * 32.0);
                   canvas.draw(

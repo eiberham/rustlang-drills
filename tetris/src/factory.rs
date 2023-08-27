@@ -19,16 +19,16 @@ pub trait Factory {
   fn create(shape: Shape) -> Block;
 }
 
-pub struct Builder;
+pub struct Piece;
 
-impl Factory for Builder {
+impl Factory for Piece {
   /// It will return a trait object.
   /// Trait objects are normal values that store a value of any
   /// type that implements the given trait
   fn create(shape: Shape) -> Block { // Box<dyn Tetromino>
     Block::new(
       shape,
-      squares[0][0],
+      squares[0][2],
       Orientation::Down,
       Color::WHITE,
       Position::new(0., 0.)

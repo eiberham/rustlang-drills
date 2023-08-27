@@ -7,16 +7,16 @@ use ggez::{
     timer, Context, GameResult,
 };
 
-use crate::{tetromino::*, factory::*, block::*, bundle::*};
+use crate::{tetromino::*, factory::*, block::* }; // bundle::*
 
 const GAME_FPS: u32 = 8;
 
 pub struct Game {
   // The current tetromino respectively
-  // pub tetromino: Option<Box<dyn Tetromino>>,
   pub tetromino: Option<Block>,
-  // A block bundle that will hold every shape that has come up in the game
-  pub bundle: Bundle<Block>,
+  // A block bundle that will hold every shape comes up in the game
+  // commented out til i find out why this
+  // pub bundle: Bundle<Block>,
   // A 20x10 array of squares; arrays have a fixed size, known at compile time
   // 20 rows, 10 columns e.g pub board: [[Square; 10]; 20]
   pub board: [[i32; 10]; 20],
@@ -27,8 +27,10 @@ pub struct Game {
 impl Game {
   pub fn new() -> Self {
     Self {
+      // At the beginning there's no piece
       tetromino: None,
-      bundle: Bundle::new(),
+      // find out why do i need this bundle thing.
+      // bundle: Bundle::new(),
       // the inner square brackets are the columns, the outter square brackets are rows.
       board: [[0; 10]; 20],
       score: 0
@@ -48,24 +50,35 @@ impl EventHandler for Game {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
 
     if self.tetromino.is_none() {
+      // gets a random shape i,l,z,o, etc ...
       let shape: Shape = rand::random();
-      self.tetromino = Some(Builder::create(shape));
 
-      let mut tetromino: Block = self.tetromino.unwrap();
-      self.bundle.push(tetromino);
-      tetromino.draw(&mut canvas, ctx)?;
+      let piece: Block = Piece::create(shape);
+
+      self.tetromino = Some(piece);
+
+      self.tetromino.unwrap().draw(&mut canvas, ctx)?;
+
+      // let mut tetromino: Block = self.tetromino.unwrap();
+      // commented out til i find out why a bundle
+      // self.bundle.push(tetromino);
+      // tetromino.draw(&mut canvas, ctx)?;
+    } else {
+      // println!("{:?}", self.tetromino.unwrap().position);
+      self.tetromino.unwrap().draw(&mut canvas, ctx)?;
     }
 
-    let tetromino: Block = self.tetromino.unwrap();
-    let mut block = self.bundle.values
-      .clone()
-      .into_iter()
-      .find(move | &x| x == tetromino)
-      .unwrap();
+    // commented out til i find out why a bundle
+    // let tetromino: Block = self.tetromino.unwrap();
+    // let mut block = self.bundle.values
+    //   .clone()
+    //   .into_iter()
+    //   .find(move | &x| x == tetromino)
+    //   .unwrap();
 
     // block.position = tetromino.position;
-    self.bundle.update(tetromino);
-    block.draw(&mut canvas, ctx)?;
+    // self.bundle.update(tetromino);
+    // block.draw(&mut canvas, ctx)?;
 
     canvas.finish(ctx)?;
     timer::sleep(std::time::Duration::from_millis(16));
@@ -78,14 +91,14 @@ impl EventHandler for Game {
     input: keyboard::KeyInput) -> GameResult {
       match input.keycode {
         Some(keyboard::KeyCode::Left) => {
-          self.tetromino
-            .unwrap()
-            .move_l();
+          let mut block: Block = self.tetromino.unwrap();
+          block.move_l();
+          self.tetromino = Some(block);
         }
         Some(keyboard::KeyCode::Right) => {
-          self.tetromino
-            .unwrap()
-            .move_r();
+          let mut block: Block = self.tetromino.unwrap();
+          block.move_r();
+          self.tetromino = Some(block);
         }
         _ => (),
       }
