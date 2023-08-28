@@ -57,14 +57,14 @@ impl EventHandler for Game {
 
       self.tetromino = Some(piece);
 
-      self.tetromino.unwrap().draw(&mut canvas, ctx)?;
+      self.tetromino.unwrap()
+        .draw(&mut canvas, ctx)?;
 
       // let mut tetromino: Block = self.tetromino.unwrap();
       // commented out til i find out why a bundle
       // self.bundle.push(tetromino);
       // tetromino.draw(&mut canvas, ctx)?;
     } else {
-      // println!("{:?}", self.tetromino.unwrap().position);
       self.tetromino.unwrap().draw(&mut canvas, ctx)?;
     }
 
@@ -98,6 +98,11 @@ impl EventHandler for Game {
         Some(keyboard::KeyCode::Right) => {
           let mut block: Block = self.tetromino.unwrap();
           block.move_r();
+          self.tetromino = Some(block);
+        }
+        Some(keyboard::KeyCode::Up) => {
+          let mut block: Block = self.tetromino.unwrap();
+          block.rotate();
           self.tetromino = Some(block);
         }
         _ => (),

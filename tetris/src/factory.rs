@@ -3,34 +3,24 @@
 //! Provides methods to summon new shaped blocks.
 //!
 
-use ggez::{
-  graphics::{Color},
-};
 use crate::tetromino::{Shape, Position, Orientation};
 use crate::block::*;
-use crate::squares::*;
 
 pub trait Factory {
   /// The factory method. It must be overridden with a concrete
   /// implementation.
-  /// Trait objects are normal values that store a value of any
-  /// type that implements the given trait.
-  //fn create(shape: Shape) -> Box<dyn Tetromino>;
   fn create(shape: Shape) -> Block;
 }
 
 pub struct Piece;
 
 impl Factory for Piece {
-  /// It will return a trait object.
-  /// Trait objects are normal values that store a value of any
-  /// type that implements the given trait
-  fn create(shape: Shape) -> Block { // Box<dyn Tetromino>
+  fn create(shape: Shape) -> Block {
     Block::new(
       shape,
-      squares[0][2],
+      shape.matrix(),
       Orientation::Down,
-      Color::WHITE,
+      shape.color(),
       Position::new(0., 0.)
     )
   }

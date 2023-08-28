@@ -6,7 +6,7 @@
 
 
 use ggez::{
-    graphics::{ Canvas },
+    graphics::{ self, Color, Canvas },
     Context, GameError
 };
 use rand::{
@@ -14,6 +14,8 @@ use rand::{
     Rng
 };
 use core::fmt::Debug;
+
+use crate::squares::*;
 
 /// Trait that defines the tetromino's behaviour
 pub trait Tetromino {
@@ -24,20 +26,38 @@ pub trait Tetromino {
     &mut self,
     canvas: &mut Canvas,
     context: &mut Context) -> Result<(), GameError>;
-  // fn clone_dyn(&self) -> Box<dyn Tetromino>;
 }
-
-
-/* impl Clone for Box<dyn Tetromino> {
-    fn clone(&self) -> Self {
-        self.clone_dyn()
-    }
-} */
 
 /// Different kind of shapes for tetrominoes
 #[derive(Debug, Copy, Clone, smart_default::SmartDefault, PartialEq )]
 pub enum Shape {
   #[default] I, O, T, S, Z, J, L
+}
+
+impl Shape {
+    pub fn color(&self) -> Color {
+        match &self {
+            Shape::L => Color::BLUE,
+            Shape::J => Color::YELLOW,
+            Shape::T => Color::GREEN,
+            Shape::I => Color::MAGENTA,
+            Shape::Z => Color::WHITE,
+            Shape::S => Color::RED,
+            Shape::O => Color::CYAN
+        }
+    }
+
+    pub fn matrix(&self) -> [[u8; 4]; 4] {
+        match &self {
+            Shape::L => squares[0][0],
+            Shape::J => squares[1][0],
+            Shape::T => squares[2][0],
+            Shape::I => squares[3][0],
+            Shape::Z => squares[4][0],
+            Shape::S => squares[5][0],
+            Shape::O => squares[6][0]
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug)]

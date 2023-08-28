@@ -7,7 +7,7 @@ use ggez::{
   GameError
 };
 
-use crate::{ tetromino::* };
+use crate::{ tetromino::*, squares::* };
 
 #[derive(Clone, Copy, Debug)]
 pub struct Block {
@@ -32,7 +32,6 @@ impl Block {
   /// Tells whether the form index is
   /// filled or not
   pub fn filled(&self, x: usize, y: usize) -> bool {
-    // println!("{}", self.form[x][y]);
     let r: bool = self.form[x][y] == 1;
     r
   }
@@ -60,10 +59,8 @@ impl Tetromino for Block {
     &mut self,
     canvas: &mut Canvas,
     ctx: &mut Context ) -> Result<(), GameError> {
-      // println!("{:?}", self.form);
       for i in 0..4 {
           for j in 0..4 {
-              // println!("i: {}, j: {}, value: {}", i, j, self.form[i][j]);
               if self.filled(j, i) {
                   let x: f32 = self.position.x + ((i as f32 + 1.0) * 32.0);
                   let y: f32 = self.position.y + ((j as f32 + 1.0) * 32.0);
@@ -79,10 +76,6 @@ impl Tetromino for Block {
       }
       Ok(())
   }
-
-  /* fn clone_dyn(&self) -> Box<dyn Tetromino> {
-    Box::new(self.clone())
-  } */
 }
 
 impl PartialEq for Block {
