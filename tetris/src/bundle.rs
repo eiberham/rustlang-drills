@@ -6,6 +6,7 @@
 
 use crate::{block::*};
 
+#[derive(Debug, Clone)]
 pub struct Bundle<Block : Copy> {
   pub values: Vec<Block>
 }

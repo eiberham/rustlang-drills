@@ -4,6 +4,7 @@
 //! by blocks.
 //!
 
+use std::collections::LinkedList;
 
 use ggez::{
     graphics::{ self, Color, Canvas },
@@ -22,6 +23,7 @@ pub trait Tetromino {
   fn rotate(&mut self);
   fn move_l(&mut self);
   fn move_r(&mut self);
+  fn move_d(&mut self);
   fn draw(
     &mut self,
     canvas: &mut Canvas,
@@ -47,15 +49,24 @@ impl Shape {
         }
     }
 
-    pub fn matrix(&self) -> [[u8; 4]; 4] {
+    pub fn matrix(&self) -> [[[u8; 4]; 4]; 4] {
         match &self {
-            Shape::L => squares[0][0],
-            Shape::J => squares[1][0],
-            Shape::T => squares[2][0],
-            Shape::I => squares[3][0],
-            Shape::Z => squares[4][0],
-            Shape::S => squares[5][0],
-            Shape::O => squares[6][0]
+            Shape::L => squares[0],
+            Shape::J => squares[1],
+            Shape::T => squares[2],
+            Shape::I => squares[3],
+            Shape::Z => squares[4],
+            Shape::S => squares[5],
+            Shape::O => squares[6]
+        }
+    }
+
+    pub fn current(&self, orientation: Orientation) -> usize {
+        match orientation {
+            Orientation::Up => 0,
+            Orientation::Right => 1,
+            Orientation::Down => 2,
+            Orientation::Left => 3,
         }
     }
 }
@@ -80,7 +91,7 @@ impl PartialEq for Position {
 
 /// Orientations that could potentially change
 /// the tetromino to
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Orientation {
     Left,
     Right,
