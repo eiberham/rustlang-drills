@@ -27,7 +27,7 @@ fn main() {
                 .title("tetris")
                 .icon("/icon.png")
         )
-        .window_mode(WindowMode::default().dimensions(960.0, 960.0))
+        .window_mode(WindowMode::default().dimensions(384.0, 960.0))
         .build()
         .expect("upsss, could not create ggez context!");
 

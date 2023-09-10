@@ -4,10 +4,8 @@
 //! by blocks.
 //!
 
-use std::collections::LinkedList;
-
 use ggez::{
-    graphics::{ self, Color, Canvas },
+    graphics::{ Color, Canvas },
     Context, GameError
 };
 use rand::{

@@ -1,14 +1,16 @@
-use std::ops::Deref;
-use std::collections::{ LinkedList };
+//! Block element.
+//!
+//! Provides an entity that will represent the
+//! blocks or tetromioes around the game.
+//!
+
 use ggez::{
-  graphics::{ self, Color, Canvas, DrawParam, Mesh, Rect },
-  glam::{ Vec2 },
-  mint::{ Point2 },
+  graphics::{ self, Color, Canvas, Image },
   Context,
   GameError
 };
 
-use crate::{ tetromino::*, squares::*, bundle::* };
+use crate::{ tetromino::*, bundle::* };
 
 #[derive(Clone, Copy, Debug)]
 pub struct Block {
@@ -20,7 +22,7 @@ pub struct Block {
 }
 
 impl Block {
-  /// Creates a new instance of block
+  /// Creates a new instance of block / tetromino
   pub fn new(
     shape: Shape,
     form: [[[u8; 4]; 4]; 4],
@@ -54,14 +56,24 @@ impl Block {
   /// Checks if the block has reached the bottom
   /// of the board
   pub fn landed(&self) -> bool {
-    self.tiles().iter()
-          .any(|&position| position.y == 928.0)
+    self.tiles().into_iter()
+          .any(|position: Position| position.y == 928.0)
   }
 
+  /// Checks if the block collided with any landed
+  /// block
   pub fn collides(&self, bundle: Bundle<Block>) -> bool {
-    self.tiles().iter().any(|&p|{
-      bundle.values.iter().any(|&b| b.tiles().iter().any(|x| *x == p))
-    })
+    self.tiles()
+        .into_iter()
+        .any(|p|{
+          bundle.values.iter()
+                       .any(|&b| {
+                          b.tiles()
+                           .into_iter()
+                           .any(|t: Position| t == Position::new(p.x, p.y + 32.0))
+                        })
+        }
+    )
   }
 }
 
@@ -87,12 +99,20 @@ impl Tetromino for Block {
 
   /// Moves the tetromino to the left
   fn move_l(&mut self) -> () {
-    self.position.x -= 32.0;
+    let tiles: Vec<Position> = self.tiles();
+    if !tiles.into_iter()
+             .any(|position| position.x == 0. ) {
+      self.position.x -= 32.0;
+    }
   }
 
   /// Moves the tetromino to the right
   fn move_r(&mut self) -> () {
-    self.position.x += 32.0;
+    let tiles: Vec<Position> = self.tiles();
+    if !tiles.into_iter()
+             .any(|position| position.x == 384. ) {
+      self.position.x += 32.0;
+    }
   }
 
   /// Moves the tetromino to the bottom
@@ -105,13 +125,13 @@ impl Tetromino for Block {
     &mut self,
     canvas: &mut Canvas,
     ctx: &mut Context ) -> Result<(), GameError> {
+      let image = Image::from_path(ctx, "/block.png").unwrap();
       let tiles: Vec<Position> = self.tiles();
       for Position {x, y} in tiles {
         canvas.draw(
-          &graphics::Quad,
+          &image,
           graphics::DrawParam::new()
             .dest([x, y])
-            .scale([32., 32.])
             .color(self.color)
           );
       }
@@ -119,16 +139,10 @@ impl Tetromino for Block {
   }
 }
 
+/// Allows later equal comparison between
+/// block elements
 impl PartialEq for Block {
     fn eq(&self, other: &Self) -> bool {
         self.position == other.position && self.shape == other.shape
     }
 }
-
-/* impl Deref for Block {
-    type Target = Self;
-
-    fn deref(&self) -> &Self {
-        &self
-    }
-} */
