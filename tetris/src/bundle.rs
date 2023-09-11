@@ -18,7 +18,7 @@ impl Bundle<Block> {
     Self { values:  Vec::new() }
   }
 
-  /// Pushes a block onto the bundle
+  /// Pushes a block into the bundle
   pub fn push(&mut self, value: Block) -> () {
     self.values.push(value);
   }
@@ -26,5 +26,11 @@ impl Bundle<Block> {
   /// Checks if the bundle is empty
   pub fn is_empty(&self) -> bool {
     self.values.is_empty()
+  }
+
+  /// Renders all the blocks within
+  /// the bundle
+  pub fn render(&self) -> () {
+
   }
 }

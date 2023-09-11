@@ -2,7 +2,7 @@ use ggez::glam::Vec2;
 use ggez::{
     audio::{SoundSource, Source},
     event::EventHandler,
-    graphics::{self, Canvas, Color, DrawParam, FontData, Text, Rect},
+    graphics::{Canvas, Color, Text},
     input::keyboard,
     timer, Context, GameResult,
 };
@@ -64,7 +64,7 @@ impl EventHandler for Game {
         // if so then
 
 
-        timer::sleep(std::time::Duration::from_millis(60));
+        // timer::sleep(std::time::Duration::from_millis(60));
       }
     }
     Ok(())

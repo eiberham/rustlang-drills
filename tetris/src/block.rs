@@ -41,11 +41,12 @@ impl Block {
   /// Retrieves the corresponding position tiles
   pub fn tiles(&self) -> Vec<Position> {
     let mut tiles: Vec<Position> = Vec::new();
+    let Position { x, y } = self.position;
     for i in 0..4 {
       for j in 0..4 {
         if self.filled(j, i) {
-          let x: f32 = self.position.x + ((i as f32 + 1.0) * 32.0);
-          let y: f32 = self.position.y + ((j as f32 + 1.0) * 32.0);
+          let x: f32 = x + ((i as f32 + 1.) * 32.);
+          let y: f32 = y + ((j as f32 + 1.) * 32.);
           tiles.push(Position::new(x, y))
         }
       }
@@ -57,7 +58,7 @@ impl Block {
   /// of the board
   pub fn landed(&self) -> bool {
     self.tiles().into_iter()
-          .any(|position: Position| position.y == 928.0)
+          .any(|Position {x : _, y}| y == 928.)
   }
 
   /// Checks if the block collided with any landed
@@ -65,13 +66,14 @@ impl Block {
   pub fn collides(&self, bundle: Bundle<Block>) -> bool {
     self.tiles()
         .into_iter()
-        .any(|p|{
-          bundle.values.iter()
-                       .any(|&b| {
-                          b.tiles()
-                           .into_iter()
-                           .any(|t: Position| t == Position::new(p.x, p.y + 32.0))
-                        })
+        .any(|Position {x, y}|{
+          bundle.values
+          .iter()
+          .any(|&b| {
+            b.tiles()
+              .into_iter()
+              .any(|t: Position| t == Position::new(x, y + 32.))
+          })
         }
     )
   }
@@ -88,12 +90,12 @@ impl Tetromino for Block {
       Orientation::Left
     ];
 
-    let i: usize = rotation
+    let position: usize = rotation
       .iter()
       .position(|x: &Orientation| *x == self.orientation)
       .unwrap();
 
-    let index: usize =  if i == rotation.len() -1 { 0 } else { i + 1 };
+    let index: usize =  if position == rotation.len() -1 { 0 } else { position + 1 };
     self.orientation = rotation[index]
   }
 
@@ -101,8 +103,8 @@ impl Tetromino for Block {
   fn move_l(&mut self) -> () {
     let tiles: Vec<Position> = self.tiles();
     if !tiles.into_iter()
-             .any(|position| position.x == 0. ) {
-      self.position.x -= 32.0;
+             .any(|Position {x, y: _}| x == 0. ) {
+      self.position.x -= 32.;
     }
   }
 
@@ -110,14 +112,14 @@ impl Tetromino for Block {
   fn move_r(&mut self) -> () {
     let tiles: Vec<Position> = self.tiles();
     if !tiles.into_iter()
-             .any(|position| position.x == 384. ) {
-      self.position.x += 32.0;
+             .any(|Position {x, y:_}| x == 384. ) {
+      self.position.x += 32.;
     }
   }
 
   /// Moves the tetromino to the bottom
   fn move_d(&mut self) -> () {
-    self.position.y += 32.0;
+    self.position.y += 16.;
   }
 
   /// Draws the block onto the canvas

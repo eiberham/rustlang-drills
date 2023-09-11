@@ -21,7 +21,7 @@ impl Factory for Piece {
       shape.matrix(),
       Orientation::Down,
       shape.color(),
-      Position::new(0., 0.)
+      Position::new(128., 0.)
     )
   }
 }
