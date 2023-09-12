@@ -3,7 +3,7 @@
 //! Provides methods to summon new shaped blocks.
 //!
 
-use crate::tetromino::{Shape, Position, Orientation};
+use crate::tetromino::{Shape, Position, Orientation, Direction};
 use crate::block::*;
 
 pub trait Factory {
@@ -19,6 +19,7 @@ impl Factory for Piece {
     Block::new(
       shape,
       shape.matrix(),
+      Direction::D,
       Orientation::Down,
       shape.color(),
       Position::new(128., 0.)

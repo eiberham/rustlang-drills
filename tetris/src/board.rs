@@ -1,26 +1,26 @@
-#[derive(Clone, Copy, Debug, smart_default::SmartDefault,)]
-pub struct Cell {
-  #[default = false]
-  pub value: bool
-}
+use crate::tetromino::*;
 
-impl Cell {
-  pub fn ocupied(&self) -> bool {
-    self.value == true
-  }
-}
-
-/// a 30x30 board
+/// a 12x30 board
 #[derive(Debug)]
 pub struct Board {
-  pub cells: [[Cell; 12]; 30]
+  pub cells: [[usize; 12]; 30]
 }
 
 impl Board {
   pub fn new() -> Self {
-    Self {
-      cells: [[Cell::default(); 12]; 30]
-    }
+    Self { cells: [[0; 12]; 30] }
+  }
+
+  pub fn ocupy(&mut self, positions: Vec<Position>) -> () {
+    for Position { x, y} in positions.into_iter() {
+      let row: usize = (x as i32 % 32).try_into()
+        .unwrap();
+
+      let col: usize = (y as i32 % 32).try_into()
+        .unwrap();
+
+      self.cells[row][col] = 1;
+    };
   }
 
   // clears out the board's row

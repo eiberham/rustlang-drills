@@ -5,17 +5,16 @@
 //!
 
 use ggez::{
-  graphics::{ self, Color, Canvas, Image },
-  Context,
-  GameError
+  graphics::{ self, Color, Canvas, Image }, Context, GameError
 };
 
-use crate::{ tetromino::*, bundle::* };
+use crate::{ tetromino::*, bundle::*, board::* };
 
 #[derive(Clone, Copy, Debug)]
 pub struct Block {
   pub shape: Shape,
   pub form: [[[u8; 4]; 4]; 4],
+  pub direction: Direction,
   pub orientation: Orientation,
   pub color: Color,
   pub position: Position
@@ -26,10 +25,11 @@ impl Block {
   pub fn new(
     shape: Shape,
     form: [[[u8; 4]; 4]; 4],
+    direction: Direction,
     orientation: Orientation,
     color: Color,
     position: Position ) -> Self {
-      Self { shape, form, orientation, color, position }
+      Self { shape, form, direction, orientation, color, position }
   }
 
   /// Tells whether the form index is filled
@@ -63,19 +63,25 @@ impl Block {
 
   /// Checks if the block collided with any landed
   /// block
-  pub fn collides(&self, bundle: Bundle<Block>) -> bool {
+  pub fn collides(&self, bundle: Bundle<BundleBlock>) -> bool {
+    let mut positions = Vec::new();
+    for bundle_block in bundle.values.iter() {
+      for position in bundle_block.positions.iter() {
+        positions.push(position)
+      }
+    }
+
     self.tiles()
         .into_iter()
         .any(|Position {x, y}|{
-          bundle.values
-          .iter()
-          .any(|&b| {
-            b.tiles()
-              .into_iter()
-              .any(|t: Position| t == Position::new(x, y + 32.))
-          })
-        }
-    )
+          positions
+            .clone()
+            .into_iter()
+            .any(|&position| {
+              return position == Position::new(x, y + 32.)
+            })
+        })
+
   }
 }
 
@@ -104,6 +110,7 @@ impl Tetromino for Block {
     let tiles: Vec<Position> = self.tiles();
     if !tiles.into_iter()
              .any(|Position {x, y: _}| x == 0. ) {
+      self.direction = Direction::L;
       self.position.x -= 32.;
     }
   }
@@ -113,12 +120,14 @@ impl Tetromino for Block {
     let tiles: Vec<Position> = self.tiles();
     if !tiles.into_iter()
              .any(|Position {x, y:_}| x == 384. ) {
+      self.direction = Direction::R;
       self.position.x += 32.;
     }
   }
 
   /// Moves the tetromino to the bottom
   fn move_d(&mut self) -> () {
+    self.direction = Direction::D;
     self.position.y += 16.;
   }
 

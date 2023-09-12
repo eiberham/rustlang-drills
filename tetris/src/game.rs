@@ -17,7 +17,7 @@ pub struct Game {
   pub tetromino: Option<Block>,
   // A block bundle that will hold every shape comes up in the game
   // commented out til i find out why this
-  pub bundle: Bundle<Block>,
+  pub bundle: Bundle<BundleBlock>,
   // A 20x10 array of squares; arrays have a fixed size, known at compile time
   // 20 rows, 10 columns e.g pub board: [[Square; 10]; 20]
   // pub board: [[i32; 10]; 20],
@@ -55,16 +55,19 @@ impl EventHandler for Game {
           block.move_d();
           self.tetromino = Some(block);
         } else {
-          // save block titles in bundle
-          self.bundle.push(block);
+          // save block into bundle
+          let positions: Vec<Position> = block.tiles();
+          let bundle_block = BundleBlock::new(positions, block.color);
+          self.bundle.push(bundle_block);
+
+          // ocupy position on board
+          self.board.ocupy(block.tiles());
           self.tetromino = None
         }
 
         // check if the board row has been completed
         // if so then
 
-
-        // timer::sleep(std::time::Duration::from_millis(60));
       }
     }
     Ok(())
@@ -85,10 +88,7 @@ impl EventHandler for Game {
 
     // draws all the blocks saved in the bundle
     if !self.bundle.is_empty() {
-      let blocks: Vec<Block> = self.bundle.values.clone();
-      for mut block in blocks {
-        block.draw(&mut canvas, ctx)?;
-      }
+      self.bundle.render(&mut canvas, ctx)
     }
 
     canvas.finish(ctx)?;

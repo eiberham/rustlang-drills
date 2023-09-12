@@ -97,6 +97,13 @@ pub enum Orientation {
     Down,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Direction {
+    L,
+    R,
+    D
+}
+
 /// In order to get a random shape with rand::random()
 impl Distribution<Shape> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Shape {
