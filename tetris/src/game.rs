@@ -7,7 +7,7 @@ use ggez::{
     timer, Context, GameResult,
 };
 
-use crate::{tetromino::*, factory::*, block::*, board::*, bundle::* };
+use crate::{tetromino::*, factory::*, block::*, board::*};
 
 const GAME_FPS: u32 = 8;
 
@@ -15,9 +15,6 @@ const GAME_FPS: u32 = 8;
 pub struct Game {
   // The current tetromino respectively
   pub tetromino: Option<Block>,
-  // A block bundle that will hold every shape comes up in the game
-  // commented out til i find out why this
-  pub bundle: Bundle<BundleBlock>,
   // A 20x10 array of squares; arrays have a fixed size, known at compile time
   // 20 rows, 10 columns e.g pub board: [[Square; 10]; 20]
   // pub board: [[i32; 10]; 20],
@@ -31,7 +28,6 @@ impl Game {
     Self {
       // At the beginning there's no piece
       tetromino: None,
-      bundle: Bundle::new(),
       // the inner square brackets are the columns, the outter square brackets are rows.
       board: Board::new(),
       score: 0
@@ -51,23 +47,19 @@ impl EventHandler for Game {
         // the block's rotation
         // check if there's a collision between the block and the bundle blocks
         // if there is then set the tetromino to None.
-        if !block.landed() && !block.collides(self.bundle.clone()) {
+        if !block.landed() && !block.collides(self.board) {
           block.move_d();
           self.tetromino = Some(block);
         } else {
-          // save block into bundle
-          let positions: Vec<Position> = block.tiles();
-          let bundle_block = BundleBlock::new(positions, block.color);
-          self.bundle.push(bundle_block);
 
           // ocupy position on board
-          self.board.ocupy(block.tiles());
+          self.board.fill(block.tiles(), block.color);
           self.tetromino = None
         }
 
         // check if the board row has been completed
         // if so then
-
+        // self.board.clear()
       }
     }
     Ok(())
@@ -87,9 +79,12 @@ impl EventHandler for Game {
     }
 
     // draws all the blocks saved in the bundle
-    if !self.bundle.is_empty() {
+    /* if !self.bundle.is_empty() {
       self.bundle.render(&mut canvas, ctx)
-    }
+    } */
+
+    // draws the board
+    self.board.render(&mut canvas, ctx);
 
     canvas.finish(ctx)?;
     timer::sleep(std::time::Duration::from_millis(16));

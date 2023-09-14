@@ -10,7 +10,6 @@ mod factory;
 mod block;
 mod tetromino;
 mod squares;
-mod bundle;
 mod board;
 
 use ggez::{

@@ -8,7 +8,7 @@ use ggez::{
   graphics::{ self, Color, Canvas, Image }, Context, GameError
 };
 
-use crate::{ tetromino::*, bundle::*, board::* };
+use crate::{ tetromino::*, board::* };
 
 #[derive(Clone, Copy, Debug)]
 pub struct Block {
@@ -63,25 +63,12 @@ impl Block {
 
   /// Checks if the block collided with any landed
   /// block
-  pub fn collides(&self, bundle: Bundle<BundleBlock>) -> bool {
-    let mut positions = Vec::new();
-    for bundle_block in bundle.values.iter() {
-      for position in bundle_block.positions.iter() {
-        positions.push(position)
-      }
-    }
-
+  pub fn collides(&self, board: Board) -> bool {
     self.tiles()
         .into_iter()
         .any(|Position {x, y}|{
-          positions
-            .clone()
-            .into_iter()
-            .any(|&position| {
-              return position == Position::new(x, y + 32.)
-            })
+          board.cells[(y as usize / 32) + 1 ][(x as usize / 32)].is_full()
         })
-
   }
 }
 
@@ -119,7 +106,7 @@ impl Tetromino for Block {
   fn move_r(&mut self) -> () {
     let tiles: Vec<Position> = self.tiles();
     if !tiles.into_iter()
-             .any(|Position {x, y:_}| x == 384. ) {
+             .any(|Position {x, y:_}| x == 352. ) {
       self.direction = Direction::R;
       self.position.x += 32.;
     }
