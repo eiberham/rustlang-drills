@@ -45,8 +45,8 @@ impl EventHandler for Game {
         // check if the block position already reached the bottom
         // take into account the difference in height according to
         // the block's rotation
-        // check if there's a collision between the block and the bundle blocks
-        // if there is then set the tetromino to None.
+        // check if there's a collision between the block and the
+        // board; if there is then set the tetromino to None.
         if !block.landed() && !block.collides(self.board) {
           block.move_d();
           self.tetromino = Some(block);
@@ -54,12 +54,11 @@ impl EventHandler for Game {
 
           // ocupy position on board
           self.board.fill(block.tiles(), block.color);
-          self.tetromino = None
+          self.tetromino = None;
         }
 
-        // check if the board row has been completed
-        // if so then
-        // self.board.clear()
+        // check if any row has been filled
+        self.board.clear();
       }
     }
     Ok(())
@@ -77,11 +76,6 @@ impl EventHandler for Game {
     } else {
       self.tetromino.unwrap().draw(&mut canvas, ctx)?;
     }
-
-    // draws all the blocks saved in the bundle
-    /* if !self.bundle.is_empty() {
-      self.bundle.render(&mut canvas, ctx)
-    } */
 
     // draws the board
     self.board.render(&mut canvas, ctx);
