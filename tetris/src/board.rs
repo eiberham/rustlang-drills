@@ -2,6 +2,7 @@ use std::default::Default;
 
 use ggez::{
   graphics::{ self, Color, Canvas, Image },
+  audio::{SoundSource, Source},
   Context
 };
 
@@ -79,7 +80,7 @@ impl Board {
   }
 
   // clears out the filled rows
-  pub fn clear(&mut self) -> () {
+  pub fn clear(&mut self, ctx: &mut Context) -> () {
     let mut cells = self.cells.to_vec();
 
     for i in (0..30).rev() {
@@ -88,6 +89,8 @@ impl Board {
         .all(Cell::is_full);
 
       if full {
+        let mut sound = Source::new(ctx, "/sound.mp3").unwrap();
+        sound.play_detached(ctx).unwrap();
         cells.remove(i as usize);
         let mut row: [Cell; 12] = Default::default();
         cells.insert(0, row);

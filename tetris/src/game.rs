@@ -58,7 +58,7 @@ impl EventHandler for Game {
         }
 
         // check if any row has been filled
-        self.board.clear();
+        self.board.clear(ctx);
       }
     }
     Ok(())
