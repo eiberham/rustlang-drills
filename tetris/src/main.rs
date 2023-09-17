@@ -8,7 +8,7 @@ use crate::game::*;
 
 mod factory;
 mod block;
-mod tetromino;
+mod utils;
 mod squares;
 mod board;
 
@@ -19,7 +19,7 @@ use ggez::{
 use std::path;
 
 fn main() {
-    let (ctx, event_loop) = ContextBuilder::new("tetris", "eiberham")
+    let (mut ctx, event_loop) = ContextBuilder::new("tetris", "eiberham")
         .add_resource_path(path::PathBuf::from("./resources"))
         .window_setup(
             WindowSetup::default()
@@ -30,6 +30,6 @@ fn main() {
         .build()
         .expect("upsss, could not create ggez context!");
 
-    let game = Game::new();
+    let game = Game::new(&mut ctx);
     event::run(ctx, event_loop, game);
 }

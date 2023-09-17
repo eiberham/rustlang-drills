@@ -4,10 +4,10 @@ use ggez::{
     event::EventHandler,
     graphics::{Canvas, Color, Text},
     input::keyboard,
-    timer, Context, GameResult,
+    timer, Context, GameResult, GameError
 };
 
-use crate::{tetromino::*, factory::*, block::*, board::*};
+use crate::{utils::*, factory::*, block::*, board::*};
 
 const GAME_FPS: u32 = 8;
 
@@ -20,17 +20,24 @@ pub struct Game {
   // pub board: [[i32; 10]; 20],
   pub board: Board,
   // the player's score
-  pub score: usize
+  pub score: usize,
+  pub music: Source
 }
 
 impl Game {
-  pub fn new() -> Self {
+  pub fn new(ctx: &mut Context) -> Self {
+    let mut music = Source::new(ctx, "/music.mp3").unwrap();
+    music.set_repeat(true);
+    music.play(ctx).unwrap();
+    music.set_volume(0.2);
+
     Self {
       // At the beginning there's no piece
       tetromino: None,
       // the inner square brackets are the columns, the outter square brackets are rows.
       board: Board::new(),
-      score: 0
+      score: 0,
+      music
     }
   }
 }

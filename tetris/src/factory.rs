@@ -3,7 +3,7 @@
 //! Provides methods to summon new shaped blocks.
 //!
 
-use crate::tetromino::{Shape, Position, Orientation, Direction};
+use crate::utils::{Shape, Position, Orientation, Direction};
 use crate::block::*;
 
 pub trait Factory {

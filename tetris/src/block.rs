@@ -8,7 +8,7 @@ use ggez::{
   graphics::{ self, Color, Canvas, Image }, Context, GameError
 };
 
-use crate::{ tetromino::*, board::* };
+use crate::{ utils::*, board::* };
 
 #[derive(Clone, Copy, Debug)]
 pub struct Block {

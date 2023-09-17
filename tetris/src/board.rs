@@ -1,3 +1,9 @@
+//! Bloard element.
+//!
+//! In charge of rendering the already landed blocks
+//! and clearing out the filled rows.
+//!
+
 use std::default::Default;
 
 use ggez::{
@@ -9,7 +15,7 @@ use ggez::{
 extern crate arrayvec;
 use arrayvec::ArrayVec;
 
-use crate::tetromino::*;
+use crate::utils::*;
 
 #[derive(Debug, Copy, Clone)]
 pub enum Cell {
@@ -92,7 +98,7 @@ impl Board {
         let mut sound = Source::new(ctx, "/sound.mp3").unwrap();
         sound.play_detached(ctx).unwrap();
         cells.remove(i as usize);
-        let mut row: [Cell; 12] = Default::default();
+        let row: [Cell; 12] = Default::default();
         cells.insert(0, row);
       }
     }
