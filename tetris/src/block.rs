@@ -5,10 +5,15 @@
 //!
 
 use ggez::{
-  graphics::{ self, Color, Canvas, Image }, Context, GameError
+  graphics::{ self, Color, Canvas, Image },
+  Context,
+  GameError
 };
 
-use crate::{ utils::*, board::* };
+use crate::{
+  utils::{ Position, Direction, Orientation, Shape, Tetromino },
+  board::{ self, Board }
+};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Block {

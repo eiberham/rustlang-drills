@@ -15,7 +15,9 @@ use ggez::{
 extern crate arrayvec;
 use arrayvec::ArrayVec;
 
-use crate::utils::*;
+use crate::utils::{
+  Position,
+};
 
 #[derive(Debug, Copy, Clone)]
 pub enum Cell {
@@ -38,7 +40,7 @@ impl Default for Cell {
   }
 }
 
-/// a 12x30 board
+// thirty rows, twelve cols
 #[derive(Debug, Clone, Copy)]
 pub struct Board {
   pub cells: [[Cell; 12]; 30]
@@ -49,6 +51,7 @@ impl Board {
     Self { cells: [[Cell::Void; 12]; 30] }
   }
 
+  // ocupies positions
   pub fn fill(
     &mut self,
     positions: Vec<Position>,
@@ -66,6 +69,7 @@ impl Board {
       };
   }
 
+  // renders the board
   pub fn render(&self, canvas: &mut Canvas, ctx : &mut Context) -> () {
     let image = Image::from_path(ctx, "/block.png").unwrap();
     for i in 0..30 {
@@ -86,8 +90,9 @@ impl Board {
   }
 
   // clears out the filled rows
-  pub fn clear(&mut self, ctx: &mut Context) -> () {
+  pub fn clear(&mut self, ctx: &mut Context) -> usize {
     let mut cells = self.cells.to_vec();
+    let mut count = 0;
 
     for i in (0..30).rev() {
       let full: bool = cells[i as usize]
@@ -100,6 +105,7 @@ impl Board {
         cells.remove(i as usize);
         let row: [Cell; 12] = Default::default();
         cells.insert(0, row);
+        count += 1;
       }
     }
 
@@ -112,5 +118,6 @@ impl Board {
       .unwrap();
 
     self.cells = board;
+    count
   }
 }
