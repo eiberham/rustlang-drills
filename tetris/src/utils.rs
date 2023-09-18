@@ -22,6 +22,7 @@ pub trait Tetromino {
   fn move_l(&mut self);
   fn move_r(&mut self);
   fn move_d(&mut self);
+  fn drop(&mut self);
   fn draw(
     &mut self,
     canvas: &mut Canvas,

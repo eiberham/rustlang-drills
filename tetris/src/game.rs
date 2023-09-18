@@ -105,4 +105,25 @@ impl EventHandler for Game {
       }
       Ok(())
   }
+
+  // TODO: fix this
+  fn key_down_event(
+    &mut self, ctx:
+    &mut Context,
+    input: keyboard::KeyInput,
+    _repeat: bool) -> GameResult {
+        if input.keycode == Some(keyboard::KeyCode::Down) {
+          if ctx.keyboard.is_key_repeated() {
+            let mut block: Block = self.block.unwrap();
+            while !block.landed() {
+              block.position.y += 1.;
+              self.block = Some(block);
+            }
+          }
+        }
+        Ok(())
+    }
+
+
 }
+

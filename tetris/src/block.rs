@@ -123,6 +123,11 @@ impl Tetromino for Block {
     self.position.y += 16.;
   }
 
+  fn drop(&mut self) -> () {
+    self.direction = Direction::D;
+    self.position.y += 64.;
+  }
+
   /// Draws the block onto the canvas
   fn draw(
     &mut self,
