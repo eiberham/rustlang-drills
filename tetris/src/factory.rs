@@ -4,7 +4,7 @@
 //!
 
 use crate::utils::{Shape, Position, Orientation, Direction};
-use crate::block::*;
+use crate::block::{ Block };
 
 pub trait Factory {
   /// The factory method. It must be overridden with a concrete
