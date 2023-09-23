@@ -44,32 +44,32 @@ impl Block {
   }
 
   /// Retrieves the corresponding position tiles
-  pub fn tiles(&self) -> Vec<Position> {
-    let mut tiles: Vec<Position> = Vec::new();
+  pub fn get_positions(&self) -> Vec<Position> {
+    let mut positions: Vec<Position> = Vec::new();
     let Position { x, y } = self.position;
     for i in 0..4 {
       for j in 0..4 {
         if self.filled(j, i) {
           let x: f32 = x + ((i as f32 + 1.) * 32.);
           let y: f32 = y + ((j as f32 + 1.) * 32.);
-          tiles.push(Position::new(x, y))
+          positions.push(Position::new(x, y))
         }
       }
     }
-    tiles
+    positions
   }
 
   /// Checks if the block has reached the bottom
   /// of the board
-  pub fn landed(&self) -> bool {
-    self.tiles().into_iter()
+  pub fn has_landed(&self) -> bool {
+    self.get_positions().into_iter()
           .any(|Position {x : _, y}| y == 928.)
   }
 
   /// Checks if the block collided with any landed
   /// block
   pub fn collides(&self, board: Board) -> bool {
-    self.tiles()
+    self.get_positions()
         .into_iter()
         .any(|Position {x, y}|{
           board.cells[(y as usize / 32) + 1 ][(x as usize / 32)].is_full()
@@ -98,9 +98,9 @@ impl Tetromino for Block {
   }
 
   /// Moves the tetromino to the left
-  fn move_l(&mut self) -> () {
-    let tiles: Vec<Position> = self.tiles();
-    if !tiles.into_iter()
+  fn move_left(&mut self) -> () {
+    let positions: Vec<Position> = self.get_positions();
+    if !positions.into_iter()
              .any(|Position {x, y: _}| x == 0. ) {
       self.direction = Direction::L;
       self.position.x -= 32.;
@@ -108,9 +108,9 @@ impl Tetromino for Block {
   }
 
   /// Moves the tetromino to the right
-  fn move_r(&mut self) -> () {
-    let tiles: Vec<Position> = self.tiles();
-    if !tiles.into_iter()
+  fn move_right(&mut self) -> () {
+    let positions: Vec<Position> = self.get_positions();
+    if !positions.into_iter()
              .any(|Position {x, y:_}| x == 352. ) {
       self.direction = Direction::R;
       self.position.x += 32.;
@@ -118,14 +118,16 @@ impl Tetromino for Block {
   }
 
   /// Moves the tetromino to the bottom
-  fn move_d(&mut self) -> () {
+  fn move_down(&mut self) -> () {
     self.direction = Direction::D;
     self.position.y += 16.;
   }
 
   fn drop(&mut self) -> () {
     self.direction = Direction::D;
-    self.position.y += 64.;
+    while !self.has_landed() {
+      self.position.y += 1.;
+    }
   }
 
   /// Draws the block onto the canvas
@@ -134,8 +136,8 @@ impl Tetromino for Block {
     canvas: &mut Canvas,
     ctx: &mut Context ) -> Result<(), GameError> {
       let image = Image::from_path(ctx, "/block.png").unwrap();
-      let tiles: Vec<Position> = self.tiles();
-      for Position {x, y} in tiles {
+      let positions: Vec<Position> = self.get_positions();
+      for Position {x, y} in positions {
         canvas.draw(
           &image,
           graphics::DrawParam::new()

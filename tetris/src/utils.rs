@@ -19,9 +19,9 @@ use crate::squares::*;
 /// Trait that defines the tetromino's behaviour
 pub trait Tetromino {
   fn rotate(&mut self);
-  fn move_l(&mut self);
-  fn move_r(&mut self);
-  fn move_d(&mut self);
+  fn move_left(&mut self);
+  fn move_right(&mut self);
+  fn move_down(&mut self);
   fn drop(&mut self);
   fn draw(
     &mut self,

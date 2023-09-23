@@ -15,9 +15,7 @@ use ggez::{
 extern crate arrayvec;
 use arrayvec::ArrayVec;
 
-use crate::utils::{
-  Position,
-};
+use crate::utils::Position;
 
 #[derive(Debug, Copy, Clone)]
 pub enum Cell {

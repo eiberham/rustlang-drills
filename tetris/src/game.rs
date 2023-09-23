@@ -1,10 +1,9 @@
-use ggez::glam::Vec2;
 use ggez::{
     audio::{SoundSource, Source},
     event::EventHandler,
     graphics::{Canvas, Color, Text},
-    input::keyboard,
-    timer, Context, GameResult, GameError
+    input::keyboard::{KeyCode, KeyInput},
+    timer, Context, GameResult
 };
 
 use crate::{utils::*, factory::*, block::*, board::*};
@@ -43,19 +42,27 @@ impl EventHandler for Game {
 
         // checks if the block has landed
         // checks if there's a collision
-        if !block.landed() && !block.collides(self.board) {
-          block.move_d();
+        if !block.has_landed() && !block.collides(self.board) {
+          block.move_down();
           self.block = Some(block);
+
+          if ctx.keyboard.is_key_pressed(KeyCode::Down) {
+            if ctx.keyboard.is_key_repeated() {
+              let mut block: Block = self.block.unwrap();
+              block.drop();
+              self.block = Some(block);
+            }
+          }
+
         } else {
           // ocupies position on board
-          self.board.fill(block.tiles(), block.color);
+          self.board.fill(block.get_positions(), block.color);
           self.block = None;
         }
 
         // checks if any row has been filled
-        if let count = self.board.clear(ctx) {
-          self.score += count;
-        }
+        let count = self.board.clear(ctx);
+        self.score += count;
       }
     }
     Ok(())
@@ -83,20 +90,20 @@ impl EventHandler for Game {
 
   fn key_up_event(
     &mut self,
-    ctx: &mut Context,
-    input: keyboard::KeyInput) -> GameResult {
+    _ctx: &mut Context,
+    input: KeyInput) -> GameResult {
       match input.keycode {
-        Some(keyboard::KeyCode::Left) => {
+        Some(KeyCode::Left) => {
           let mut block: Block = self.block.unwrap();
-          block.move_l();
+          block.move_left();
           self.block = Some(block);
         }
-        Some(keyboard::KeyCode::Right) => {
+        Some(KeyCode::Right) => {
           let mut block: Block = self.block.unwrap();
-          block.move_r();
+          block.move_right();
           self.block = Some(block);
         }
-        Some(keyboard::KeyCode::Up) => {
+        Some(KeyCode::Up) => {
           let mut block: Block = self.block.unwrap();
           block.rotate();
           self.block = Some(block);
@@ -105,25 +112,6 @@ impl EventHandler for Game {
       }
       Ok(())
   }
-
-  // TODO: fix this
-  fn key_down_event(
-    &mut self, ctx:
-    &mut Context,
-    input: keyboard::KeyInput,
-    _repeat: bool) -> GameResult {
-        if input.keycode == Some(keyboard::KeyCode::Down) {
-          if ctx.keyboard.is_key_repeated() {
-            let mut block: Block = self.block.unwrap();
-            while !block.landed() {
-              block.position.y += 1.;
-              self.block = Some(block);
-            }
-          }
-        }
-        Ok(())
-    }
-
 
 }
 
