@@ -6,8 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ggez = "0.8.1"
+ggez = "0.9.3"
 rand = "0.8.5"
-smart-default = "0.6.0"
-strum = { version = "0.25", features = ["derive"] }
+smart-default = "0.7.1"
+strum = { version = "0.26.2", features = ["derive"] }
 arrayvec = "0.7.4"

@@ -88,7 +88,7 @@ impl Board {
   }
 
   // clears out the filled rows
-  pub fn clear(&mut self, ctx: &mut Context) -> usize {
+  pub fn clear(&mut self, ctx: &mut Context) -> u16 {
     let mut cells = self.cells.to_vec();
     let mut count = 0;
 

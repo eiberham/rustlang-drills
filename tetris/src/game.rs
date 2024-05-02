@@ -1,7 +1,8 @@
 use ggez::{
+    glam::Vec2,
     audio::{SoundSource, Source},
     event::EventHandler,
-    graphics::{Canvas, Color, Text},
+    graphics::{Canvas, Color, Text, DrawParam, FontData},
     input::keyboard::{KeyCode, KeyInput},
     timer, Context, GameResult
 };
@@ -14,7 +15,7 @@ const GAME_FPS: u32 = 8;
 pub struct Game {
   pub block: Option<Block>,
   pub board: Board,
-  pub score: usize,
+  pub score: u16,
   pub music: Source
 }
 
@@ -32,6 +33,21 @@ impl Game {
       music
     }
   }
+  
+  /// Draws the game stats over the canvas.
+    fn draw_score(
+      &mut self,
+      canvas: &mut Canvas,
+      point: Vec2,
+      value: u16
+    ) -> () {
+        let mut text = Text::new(format!("{}", value));
+        text.set_font("arcade").set_scale(24.0);
+        canvas.draw(
+            &text,
+            DrawParam::from(point).color(Color::WHITE),
+        );
+    }
 }
 
 impl EventHandler for Game {
@@ -48,8 +64,7 @@ impl EventHandler for Game {
 
           if ctx.keyboard.is_key_pressed(KeyCode::Down) {
             if ctx.keyboard.is_key_repeated() {
-              let mut block: Block = self.block.unwrap();
-              block.drop();
+              block.drop(self.board);
               self.block = Some(block);
             }
           }
@@ -70,6 +85,9 @@ impl EventHandler for Game {
 
   fn draw(&mut self, ctx: &mut Context) -> GameResult {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
+    ctx.gfx.add_font("arcade", FontData::from_path(ctx, "/arcade.ttf")?,);
+            
+    self.draw_score( &mut canvas, Vec2::new(32., 32.), self.score );
 
     if self.block.is_none() {
       let shape: Shape = rand::random();

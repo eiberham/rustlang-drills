@@ -15,6 +15,7 @@ use rand::{
 use core::fmt::Debug;
 
 use crate::squares::*;
+use crate::board::Board;
 
 /// Trait that defines the tetromino's behaviour
 pub trait Tetromino {
@@ -22,7 +23,7 @@ pub trait Tetromino {
   fn move_left(&mut self);
   fn move_right(&mut self);
   fn move_down(&mut self);
-  fn drop(&mut self);
+  fn drop(&mut self, board: Board);
   fn draw(
     &mut self,
     canvas: &mut Canvas,

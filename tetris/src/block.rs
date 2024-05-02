@@ -72,7 +72,7 @@ impl Block {
     self.get_positions()
         .into_iter()
         .any(|Position {x, y}|{
-          board.cells[(y as usize / 32) + 1 ][(x as usize / 32)].is_full()
+          board.cells[(y as usize / 32) + 1 ][x as usize / 32].is_full()
         })
   }
 }
@@ -123,9 +123,9 @@ impl Tetromino for Block {
     self.position.y += 16.;
   }
 
-  fn drop(&mut self) -> () {
+  fn drop(&mut self, board: Board) -> () {
     self.direction = Direction::D;
-    while !self.has_landed() {
+    while !self.has_landed() && !self.collides(board) {
       self.position.y += 1.;
     }
   }
