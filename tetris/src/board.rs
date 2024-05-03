@@ -17,7 +17,7 @@ use arrayvec::ArrayVec;
 
 use crate::utils::Position;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Cell {
   Void,
   Full(Color)
@@ -118,4 +118,33 @@ impl Board {
     self.cells = board;
     count
   }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ggez::graphics::Color;
+    use crate::utils::Position;
+
+    #[test]
+    fn test_fill() {
+        let mut cells: [[Cell; 12]; 30] = [[Cell::Void; 12]; 30];
+        let mut board = Board { cells };
+        
+        let mut filled: [[Cell; 12]; 30] = [[Cell::Void; 12]; 30];
+
+        // iterate over each cell in first row and fill it
+        for j in 0..12 {
+            filled[1][j] = Cell::Full(Color::BLUE);
+        }
+        
+        let mut positions: Vec<Position> = Vec::new();
+        for i in 0..12 {
+          positions.push(Position::new(i as f32 * 32., 32.))
+        }
+        
+        board.fill(positions, Color::BLUE);
+        
+        assert_eq!(board.cells, filled);
+    }
 }

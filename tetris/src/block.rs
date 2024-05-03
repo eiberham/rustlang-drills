@@ -156,3 +156,47 @@ impl PartialEq for Block {
         self.position == other.position && self.shape == other.shape
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::factory::Factory;
+    use crate::factory::Piece;
+    
+    #[test]
+    fn test_rotate() {
+        let shape: Shape = Shape::J;
+        let mut block: Block = Piece::create(shape);
+        block.rotate();
+        assert_eq!(block.orientation, Orientation::Left);
+        block.rotate();
+        assert_eq!(block.orientation, Orientation::Up);
+    }
+
+    #[test]
+    fn test_move_right() {
+        let shape: Shape = rand::random();
+        let mut block: Block = Piece::create(shape);
+        block.move_right();
+        assert_eq!(block.position.x, 160.);
+        assert_eq!(block.direction, Direction::R);
+    }
+
+    #[test]
+    fn test_move_left() {
+        let shape: Shape = rand::random();
+        let mut block: Block = Piece::create(shape);
+        block.move_left();
+        assert_eq!(block.position.x, 96.);
+        assert_eq!(block.direction, Direction::L);
+    }
+    
+    #[test]
+    fn test_move_down() {
+        let shape: Shape = rand::random();
+        let mut block: Block = Piece::create(shape);
+        block.move_down();
+        assert_eq!(block.position.y, 16.);
+        assert_eq!(block.direction, Direction::D);
+    }
+}
