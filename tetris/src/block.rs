@@ -12,7 +12,7 @@ use ggez::{
 
 use crate::{
   utils::{ Position, Direction, Orientation, Shape, Tetromino },
-  board::{ self, Board }
+  board::Board
 };
 
 #[derive(Clone, Copy, Debug)]

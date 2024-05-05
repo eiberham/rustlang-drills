@@ -16,7 +16,8 @@ pub struct Game {
   pub block: Option<Block>,
   pub board: Board,
   pub score: u16,
-  pub music: Source
+  pub music: Source,
+  pub pause: bool
 }
 
 impl Game {
@@ -30,7 +31,8 @@ impl Game {
       block: None,
       board: Board::new(),
       score: 0,
-      music
+      music,
+      pause: false
     }
   }
   
@@ -53,6 +55,13 @@ impl Game {
 impl EventHandler for Game {
   fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
     while ctx.time.check_update_time(GAME_FPS) {
+      if self.pause { 
+        if self.music.playing() { self.music.pause(); }
+        continue; 
+      } else {
+        if self.music.paused() { self.music.resume(); }
+      }
+      
       if self.block.is_some() {
         let mut block: Block = self.block.unwrap();
 
@@ -125,6 +134,9 @@ impl EventHandler for Game {
           let mut block: Block = self.block.unwrap();
           block.rotate();
           self.block = Some(block);
+        }
+        Some(KeyCode::P) => {
+          self.pause = !self.pause;
         }
         _ => (),
       }

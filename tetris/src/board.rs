@@ -128,7 +128,7 @@ mod tests {
 
     #[test]
     fn test_fill() {
-        let mut cells: [[Cell; 12]; 30] = [[Cell::Void; 12]; 30];
+        let cells: [[Cell; 12]; 30] = [[Cell::Void; 12]; 30];
         let mut board = Board { cells };
         
         let mut filled: [[Cell; 12]; 30] = [[Cell::Void; 12]; 30];
