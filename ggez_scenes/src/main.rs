@@ -1,60 +1,31 @@
+mod scene;
+
+use crate::scene::*;
 use ggez::{
-    graphics::{ Color, Canvas },
-    conf::{ WindowSetup, WindowMode },
-    input::keyboard,
-    event::{ self, EventHandler },
-    ContextBuilder,
-    Context,
-    GameResult
+    conf::{WindowMode, WindowSetup},
+    event, ContextBuilder,
+    audio::{SoundSource, Source},
+    event::EventHandler,
+    graphics::{Canvas, Color, Text, DrawParam, FontData},
+    input::{self, keyboard::{KeyCode, KeyInput}},
+    context,
+    timer, Context, GameResult
 };
 
-pub enum State {
-  Start,
-  Running,
-  Pause
+pub struct MainState {
+	pub stack: scene::SceneStack<ggez::Context>,
 }
 
-/// A trait for you to implement on a scene.
-/// Defines the callbacks the scene uses:
-/// a common context type `C`, and an input event type `Ev`.
-pub trait Scene<C, Ev> {
-    fn update(&mut self, gameworld: &mut C, ctx: &mut ggez::Context) -> SceneSwitch<C, Ev>;
-    fn draw(&mut self, gameworld: &mut C, ctx: &mut ggez::Context) -> ggez::GameResult<()>;
-    fn input(&mut self, gameworld: &mut C, event: Ev, started: bool);
-    /// Only used for human-readable convenience (or not at all, tbh)
-    fn name(&self) -> &str;
-    /// This returns whether or not to draw the next scene down on the
-    /// stack as well; this is useful for layers or GUI stuff that
-    /// only partially covers the screen.
-    fn draw_previous(&self) -> bool {
-        false
-    }
+impl MainState {
+  // create a function that would sum two floating numbers
+  pub fn new(ctx: &mut Context) -> Self {
+    // scene::SceneStack<World, input::InputEvent>;
+    let stack = scene::SceneStack::new(ctx);
+    Self { stack }
+  }
 }
 
-// The scene manager has a stack of scenes
-pub struct SceneManager {
-    pub stack: Vec<Box<Scene<C, E>>>
-}
-
-pub struct MainScene {
-    pub scene: State,
-	pub stack: Vec<Context>
-}
-
-impl MainScene {
-    pub fn new() -> Self {
-        Self {
-            scene: State::Start,
-            stack: Vec::new()
-        }
-    }
-
-	pub fn switch(&mut self, new_state: State) -> () {
-
-	}
-}
-
-impl EventHandler for MainScene {
+impl EventHandler for MainState {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
       while ctx.time.check_update_time(8) {
 
@@ -64,38 +35,26 @@ impl EventHandler for MainScene {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
-
-
-
-        canvas.finish(ctx)?;
+        self.stack.current().draw(ctx);
         Ok(())
     }
 
-    fn key_up_event(&mut self, _ctx: &mut Context, input: keyboard::KeyInput) -> GameResult {
-      match input.keycode {
-        Some(keyboard::KeyCode::Return) => {
-          self.switch(State::Running);
-        }
-        Some(keyboard::KeyCode::Escape) => {
-          _ctx.request_quit();
-        }
-        _ => (),
-      }
+    fn key_up_event(&mut self, _ctx: &mut Context, input: KeyInput) -> GameResult {
+      self.stack.current().input(input, false);
       Ok(())
     }
 }
 
 
 fn main() {
-    let (ctx, event_loop) = ContextBuilder::new("scenes", "eiberham")
+    let (mut ctx, event_loop) = ContextBuilder::new("scenes", "eiberham")
         .window_setup(WindowSetup::default().title("scenes ggez"))
-        .window_mode(WindowMode::default().dimensions(960.0, 960.0))
+        .window_mode(WindowMode::default().dimensions(384.0, 960.0))
         .build()
         .expect("upsss, could not create ggez context!");
 
-    let game = MainScene::new();
-
-    event::run(ctx, event_loop, game);
+    // let c = ggez::Context::from_ctx(ctx);
+    let state = MainState::new(&mut ctx);
+    event::run(ctx, event_loop, state);
 }
 
