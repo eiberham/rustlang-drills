@@ -2,21 +2,23 @@ use ggez::{
   glam::Vec2,
   audio::{SoundSource, Source},
   event::EventHandler,
-  graphics::{Canvas, Color, Text, DrawParam, FontData},
+  graphics::{self, Canvas, Color, Text, DrawParam, FontData},
   input::keyboard::{KeyCode, KeyInput},
   timer, Context, GameResult
 };
+
+use crate::scene::*;
 
 pub struct OverScene {
   done: bool
 }
 
-impl Scene for OverScene {
-  fn update(&mut self, gameworld: &mut C, ctx: &mut ggez::Context) -> SceneSwitch<C, Ev> {
-    Ok(())
+impl<Ev> Scene<Ev> for OverScene {
+  fn update(&mut self, ctx: &mut ggez::Context) -> SceneSwitch<Ev> {
+    SceneSwitch::None
   }
   
-  fn draw(&mut self, gameworld: &mut C, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
+  fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
     let circle = graphics::Mesh::new_circle(
       ctx,
@@ -27,10 +29,11 @@ impl Scene for OverScene {
       Color::RED,
     )?;
     canvas.draw(&circle, Vec2::new(0., 0.));
+    Ok(())
   }
   
-  fn input(&mut self, gameworld: &mut C, event: Ev, started: bool) {
-    
+  fn input(&mut self, event: Ev, started: bool) -> () {
+
   }
   
   fn name(&self) -> &str {

@@ -1,6 +1,12 @@
-mod scene;
+mod states;
+use crate::states::{
+  start::*, play::*, over::*
+};
 
+mod scene;
 use crate::scene::*;
+
+
 use ggez::{
     conf::{WindowMode, WindowSetup},
     event, ContextBuilder,
@@ -13,14 +19,16 @@ use ggez::{
 };
 
 pub struct MainState {
-	pub stack: scene::SceneStack<ggez::Context>,
+	pub stack: SceneStack<ggez::Context>,
 }
 
 impl MainState {
   // create a function that would sum two floating numbers
   pub fn new(ctx: &mut Context) -> Self {
     // scene::SceneStack<World, input::InputEvent>;
-    let stack = scene::SceneStack::new(ctx);
+    let mut stack = SceneStack::new(ctx);
+    stack.push(Box::new(StartScene::new()));
+    
     Self { stack }
   }
 }
@@ -35,12 +43,12 @@ impl EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        self.stack.current().draw(ctx);
+        self.stack.draw(ctx);
         Ok(())
     }
 
     fn key_up_event(&mut self, _ctx: &mut Context, input: KeyInput) -> GameResult {
-      self.stack.current().input(input, false);
+      // self.stack.input(_ctx, input);
       Ok(())
     }
 }
