@@ -25,8 +25,9 @@ pub struct MainState {
 impl MainState {
   // create a function that would sum two floating numbers
   pub fn new(ctx: &mut Context) -> Self {
-    // scene::SceneStack<World, input::InputEvent>;
-    let mut stack = SceneStack::new(ctx);
+    let mut stack: SceneStack<Context> = SceneStack::new(ctx);
+    stack.push(Box::new(OverScene::new()));
+    stack.push(Box::new(PlayScene::new()));
     stack.push(Box::new(StartScene::new()));
     
     Self { stack }
@@ -36,7 +37,7 @@ impl MainState {
 impl EventHandler for MainState {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
       while ctx.time.check_update_time(8) {
-
+        self.stack.update(ctx);
       }
 
       Ok(())
@@ -47,8 +48,9 @@ impl EventHandler for MainState {
         Ok(())
     }
 
-    fn key_up_event(&mut self, _ctx: &mut Context, input: KeyInput) -> GameResult {
-      // self.stack.input(_ctx, input);
+    fn key_up_event(&mut self, ctx: &mut Context, input: KeyInput) -> GameResult {
+      // Idea: to send whatever key was pressed along to the current scene to ber handled on the input event
+      self.stack.input(ctx, input); 
       Ok(())
     }
 }
@@ -61,7 +63,6 @@ fn main() {
         .build()
         .expect("upsss, could not create ggez context!");
 
-    // let c = ggez::Context::from_ctx(ctx);
     let state = MainState::new(&mut ctx);
     event::run(ctx, event_loop, state);
 }

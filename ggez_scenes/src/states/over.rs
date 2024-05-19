@@ -13,6 +13,12 @@ pub struct OverScene {
   done: bool
 }
 
+impl OverScene {
+  pub fn new() -> Self {
+      Self { done: false }
+    }
+}
+
 impl<Ev> Scene<Ev> for OverScene {
   fn update(&mut self, ctx: &mut ggez::Context) -> SceneSwitch<Ev> {
     SceneSwitch::None
@@ -26,13 +32,14 @@ impl<Ev> Scene<Ev> for OverScene {
       Vec2::new(0.0, 0.0),
       100.0,
       2.0,
-      Color::RED,
+      Color::BLUE,
     )?;
     canvas.draw(&circle, Vec2::new(0., 0.));
+    canvas.finish(ctx)?;
     Ok(())
   }
   
-  fn input(&mut self, event: Ev, started: bool) -> () {
+  fn input(&mut self, ctx: &mut Context, input: KeyInput) -> () {
 
   }
   

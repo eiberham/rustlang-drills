@@ -7,7 +7,7 @@ use ggez::{
   timer, Context, GameResult
 };
 
-use crate::scene::*;
+use crate::{scene::*, PlayScene};
 
 pub struct StartScene {
   done: bool
@@ -21,8 +21,11 @@ impl StartScene {
 
 impl<Ev> Scene<Ev> for StartScene {
   fn update(&mut self, ctx: &mut ggez::Context) -> SceneSwitch<Ev> {
-    // Ok(())
-    SceneSwitch::None
+    if self.done {
+        SceneSwitch::Pop
+    } else {
+        SceneSwitch::None
+    }
   }
   
   fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
@@ -40,8 +43,14 @@ impl<Ev> Scene<Ev> for StartScene {
     Ok(())
   }
   
-  fn input(&mut self, event: Ev, started: bool) -> () {
-    
+  fn input(&mut self, ctx: &mut Context, input: KeyInput) -> () {
+    match input.keycode {
+      Some(KeyCode::Return) => {
+          println!("return has been pressed");
+          self.done = true;
+      }
+      _ => (),
+    }
   }
   
   fn name(&self) -> &str {

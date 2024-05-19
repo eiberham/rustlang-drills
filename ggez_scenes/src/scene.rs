@@ -16,6 +16,11 @@
 
 use ggez;
 
+use ggez::{
+    input::{self, keyboard::{KeyCode, KeyInput}},
+    Context
+};
+
 /// A command to change to a new scene, either by pushign a new one,
 /// popping one or replacing the current scene (pop and then push).
 pub enum SceneSwitch<Ev> {
@@ -31,7 +36,8 @@ pub enum SceneSwitch<Ev> {
 pub trait Scene<Ev> {
     fn update(&mut self, ctx: &mut ggez::Context) -> SceneSwitch<Ev>;
     fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()>;
-    fn input(&mut self, event: Ev, started: bool);
+    // fn input(&mut self, event: Ev, started: bool); // Seems like Ev in this case should be a Context type
+    fn input(&mut self, ctx: &mut Context, input: KeyInput); // Seems like Ev in this case should be a Context type
     /// Only used for human-readable convenience (or not at all, tbh)
     fn name(&self) -> &str;
     /// This returns whether or not to draw the next scene down on the
@@ -153,11 +159,11 @@ impl<Ev> SceneStack<Ev> {
     }
 
     /// Feeds the given input event to the current scene.
-    pub fn input(&mut self, event: Ev, started: bool) {
+    pub fn input(&mut self, ctx: &mut Context, input: KeyInput) {
         let current_scene = &mut **self
             .scenes
             .last_mut()
             .expect("Tried to do input for empty scene stack");
-        current_scene.input( event, started);
+        current_scene.input( ctx, input);
     }
 }
