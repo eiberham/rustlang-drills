@@ -2,7 +2,7 @@ use ggez::{
   glam::Vec2,
   audio::{SoundSource, Source},
   event::EventHandler,
-  graphics::{self, Canvas, Color, Text, DrawParam, FontData},
+  graphics::{self, Canvas, Color, Text, DrawParam, FontData, Image, Rect},
   input::keyboard::{KeyCode, KeyInput},
   timer, Context, GameResult
 };
@@ -30,15 +30,16 @@ impl<Ev> Scene<Ev> for StartScene {
   
   fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
-    let circle = graphics::Mesh::new_circle(
-      ctx,
-      graphics::DrawMode::fill(),
-      Vec2::new(64.0, 64.0),
-      100.0,
-      2.0,
-      Color::RED,
-    )?;
-    canvas.draw(&circle, Vec2::new(0., 0.));
+    let background = Image::from_path(ctx, "/tetris.png").unwrap();
+    
+    // Draw the background image covering the whole screen
+    canvas.draw(
+        &background,
+        DrawParam::new()
+          .src(Rect::new(0., 0., 1., 0.5))
+          .dest([0., 0.])
+    );
+        
     canvas.finish(ctx)?;
     Ok(())
   }

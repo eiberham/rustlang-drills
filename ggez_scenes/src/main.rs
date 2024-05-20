@@ -18,6 +18,8 @@ use ggez::{
     timer, Context, GameResult
 };
 
+use std::path;
+
 pub struct MainState {
 	pub stack: SceneStack<ggez::Context>,
 }
@@ -58,6 +60,7 @@ impl EventHandler for MainState {
 
 fn main() {
     let (mut ctx, event_loop) = ContextBuilder::new("scenes", "eiberham")
+        .add_resource_path(path::PathBuf::from("./resources"))
         .window_setup(WindowSetup::default().title("scenes ggez"))
         .window_mode(WindowMode::default().dimensions(384.0, 960.0))
         .build()
