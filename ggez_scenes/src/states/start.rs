@@ -1,13 +1,11 @@
 use ggez::{
-  glam::Vec2,
   audio::{SoundSource, Source},
-  event::EventHandler,
-  graphics::{self, Canvas, Color, Text, DrawParam, FontData, Image, Rect},
+  graphics::{Canvas, Color, Text, DrawParam, FontData, Image, Rect},
   input::keyboard::{KeyCode, KeyInput},
-  timer, Context, GameResult
+  Context
 };
 
-use crate::{scene::*, PlayScene};
+use crate::scene::*;
 
 pub struct StartScene {
   done: bool
@@ -15,8 +13,23 @@ pub struct StartScene {
 
 impl StartScene {
   pub fn new() -> Self {
-      Self { done: false }
-    }
+    Self { done: false }
+  }
+  
+  pub fn draw_text(
+    &mut self,
+    canvas: &mut Canvas, 
+    text: &str, 
+    point: [f32; 2], 
+    scale: f32, 
+    color: Color) -> () {
+      let mut text = Text::new(format!("{}", text));
+      text.set_font("arcade").set_scale(scale);
+      canvas.draw(
+          &text,
+          DrawParam::from(point).color(color),
+      );
+  }
 }
 
 impl<Ev> Scene<Ev> for StartScene {
@@ -34,14 +47,9 @@ impl<Ev> Scene<Ev> for StartScene {
     
     ctx.gfx.add_font("arcade", FontData::from_path(ctx, "/arcade.ttf")?,);
     
-    let mut text = Text::new(format!("Tetris"));
-    text.set_font("arcade").set_scale(40.);
+    self.draw_text(&mut canvas, "Tetris", [64., 430.], 40., Color::RED);
     
-    // Draw the game title
-    canvas.draw(
-        &text,
-        DrawParam::from([64., 430.]).color(Color::RED),
-    );
+    self.draw_text(&mut canvas, "Press Enter Key", [64., 580.], 18., Color::WHITE);
     
     // Draw the top image
     canvas.draw(

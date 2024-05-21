@@ -26,15 +26,16 @@ impl<Ev> Scene<Ev> for OverScene {
   
   fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
-    let circle = graphics::Mesh::new_circle(
-      ctx,
-      graphics::DrawMode::fill(),
-      Vec2::new(0.0, 0.0),
-      100.0,
-      2.0,
-      Color::BLUE,
-    )?;
-    canvas.draw(&circle, Vec2::new(0., 0.));
+    ctx.gfx.add_font("arcade", FontData::from_path(ctx, "/arcade.ttf")?,);
+    
+    let mut text = Text::new(format!("Game Over !!"));
+    text.set_font("arcade").set_scale(32.);
+    
+    // Draw the game title
+    canvas.draw(
+        &text,
+        DrawParam::from([32., 430.]).color(Color::RED),
+    );
     canvas.finish(ctx)?;
     Ok(())
   }
