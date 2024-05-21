@@ -32,7 +32,18 @@ impl<Ev> Scene<Ev> for StartScene {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
     let background = Image::from_path(ctx, "/tetris.png").unwrap();
     
-    // Draw the background image covering the whole screen
+    ctx.gfx.add_font("arcade", FontData::from_path(ctx, "/arcade.ttf")?,);
+    
+    let mut text = Text::new(format!("Tetris"));
+    text.set_font("arcade").set_scale(40.);
+    
+    // Draw the game title
+    canvas.draw(
+        &text,
+        DrawParam::from([64., 430.]).color(Color::RED),
+    );
+    
+    // Draw the top image
     canvas.draw(
         &background,
         DrawParam::new()
