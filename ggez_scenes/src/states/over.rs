@@ -2,7 +2,7 @@ use ggez::{
   glam::Vec2,
   audio::{SoundSource, Source},
   event::EventHandler,
-  graphics::{self, Canvas, Color, Text, DrawParam, FontData},
+  graphics::{self, Canvas, Color, Text, DrawParam, FontData, Image, Rect},
   input::keyboard::{KeyCode, KeyInput},
   timer, Context, GameResult
 };
@@ -27,8 +27,9 @@ impl<Ev> Scene<Ev> for OverScene {
   fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
     ctx.gfx.add_font("arcade", FontData::from_path(ctx, "/arcade.ttf")?,);
+    let background = Image::from_path(ctx, "/over.png").unwrap();
     
-    let mut text = Text::new(format!("Game Over !!"));
+    let mut text = Text::new(format!("It's Over!"));
     text.set_font("arcade").set_scale(32.);
     
     // Draw the game title
@@ -36,6 +37,15 @@ impl<Ev> Scene<Ev> for OverScene {
         &text,
         DrawParam::from([32., 430.]).color(Color::RED),
     );
+    
+    // Draw the top image
+    canvas.draw(
+        &background,
+        DrawParam::new()
+          .src(Rect::new(0., 0., 1., 1.))
+          .dest([0., 0.])
+    );
+    
     canvas.finish(ctx)?;
     Ok(())
   }

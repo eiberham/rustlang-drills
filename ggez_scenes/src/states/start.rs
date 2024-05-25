@@ -43,7 +43,7 @@ impl<Ev> Scene<Ev> for StartScene {
   
   fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
     let mut canvas = Canvas::from_frame(ctx, Color::BLACK);
-    let background = Image::from_path(ctx, "/tetris.png").unwrap();
+    let background = Image::from_path(ctx, "/logo.png").unwrap();
     
     ctx.gfx.add_font("arcade", FontData::from_path(ctx, "/arcade.ttf")?,);
     
@@ -55,7 +55,7 @@ impl<Ev> Scene<Ev> for StartScene {
     canvas.draw(
         &background,
         DrawParam::new()
-          .src(Rect::new(0., 0., 1., 0.5))
+          .src(Rect::new(0., 0., 1., 1.))
           .dest([0., 0.])
     );
         
