@@ -43,12 +43,13 @@ impl Game {
       point: Vec2,
       value: u16
     ) -> () {
-        let mut text = Text::new(format!("{}", value));
-        text.set_font("arcade").set_scale(24.0);
-        canvas.draw(
-            &text,
-            DrawParam::from(point).color(Color::WHITE),
-        );
+      let score = format!("{:0>7}", value);
+      let mut text = Text::new(format!("score {}", score));
+      text.set_font("arcade").set_scale(24.0);
+      canvas.draw(
+          &text,
+          DrawParam::from(point).color(Color::WHITE),
+      );
     }
 }
 
