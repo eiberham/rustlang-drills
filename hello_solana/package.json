@@ -1,0 +1,16 @@
+{
+  "name": "hello_solana",
+  "version": "1.0.0",
+  "description": "solana send --url localhost <YOUR_PUBLIC_KEY> <AMOUNT> --fee-payer <YOUR_PRIVATE_KEY> --from <YOUR_PUBLIC_KEY>",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@solana/web3.js": "^1.91.8",
+    "borsh": "^2.0.0",
+    "buffer-layout": "^1.2.2"
+  }
+}
