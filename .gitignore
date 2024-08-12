@@ -12,3 +12,4 @@ www/encryption.js
 www/encryption_bg.wasm
 
 trash
+.vscode
